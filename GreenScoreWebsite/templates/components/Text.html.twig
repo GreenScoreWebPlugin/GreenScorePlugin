@@ -1,0 +1,37 @@
+{% props variant='b', as = "p", asSpan=false %}
+{% if asSpan %}
+    {% set as = 'span' %}
+{% endif %}
+
+{% set text = cva({
+    base: "",
+    variants: {
+        variant: {
+            bsb: [
+                'text-base font-semibold leading-6',
+            ],
+            b: [
+                'text-base font-medium leading-6',
+            ],
+            smsb: [
+                'text-sm font-semibold leading-5',
+            ],
+            sm: [
+                'text-sm font-medium leading-5',
+            ],
+            xssb: [
+                'text-xs font-semibold leading-4',
+            ],
+            xs: [
+                'text-xs font-medium leading-4',
+            ]
+        },
+    },
+    defaultVariants: {
+        style: "b",
+    }
+}) %}
+
+<{{ as }} class="{{ text.apply({variant}, attributes.render('class')|default(''))|tailwind_merge }}" {{ attributes.without('class') }}>
+{% block content %}{% endblock %}
+</{{ as }}>
