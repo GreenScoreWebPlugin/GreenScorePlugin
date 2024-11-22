@@ -269,6 +269,7 @@
       <excludeFolder url="file://$MODULE_DIR$/GreenScoreWebsite/vendor/twig/extra-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/GreenScoreWebsite/vendor/twig/twig" />
       <excludeFolder url="file://$MODULE_DIR$/GreenScoreWebsite/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/GreenScoreWebsite/vendor/symfonycasts/verify-email-bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

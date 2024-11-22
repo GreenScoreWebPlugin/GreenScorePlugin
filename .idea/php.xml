@@ -274,6 +274,7 @@
       <path value="$PROJECT_DIR$/GreenScoreWebsite/vendor/phpdocumentor/reflection-common" />
       <path value="$PROJECT_DIR$/GreenScoreWebsite/vendor/phpdocumentor/reflection-docblock" />
       <path value="$PROJECT_DIR$/GreenScoreWebsite/vendor/symfony/ux-autocomplete" />
+      <path value="$PROJECT_DIR$/GreenScoreWebsite/vendor/symfonycasts/verify-email-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
