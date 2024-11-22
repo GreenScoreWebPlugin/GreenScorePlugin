@@ -1,0 +1,13 @@
+{
+    "manifest_version": 2,
+    "name": "Network Data Analyzer",
+    "version": "1.0",
+    "permissions": ["activeTab", "<all_urls>", "devtools"],
+    "devtools_page": "devtools.html",
+    "browser_action": {
+        "default_popup": "./src/popup.html"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    }
+}
