@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Graphique CO2{% endblock %}
+
+{% block body %}
+
+{% if page == 'mon-organisation' %}
+<p>Bienvenue dans la section "Mon Organisation".</p>
+{% elseif page == 'mes-donnees' %}
+<p>Bienvenue dans la section "Mes Données".</p>
+{% elseif page == 'site-web-surveille' %}
+<p>Bienvenue dans la section "Site Web Surveillé".</p>
+{% endif %}
+
+<div class="graph-container">
+    <div class="head-chart">
+        <h3>Votre consommation (en gCO2e)</h3>
+        <select id="filter" onchange="updateChart()">
+            <option value="mois">Mois</option>
+            <option value="semaine">Semaine</option>
+            <option value="jour">Jour</option>
+        </select>
+    </div>
+    <canvas id="co2Chart"></canvas>
+</div>
+
+<div class="chart-container">
+    <h3>Top 5 des sites les plus polluants</h3>
+    <div class="custom-chart-wrapper">
+        <canvas id="pollutionChart"></canvas>
+        <div class="values-wrapper">
+            <div class="value-box" style="background-color: #D4A3FF;">800 gCO2e</div>
+            <div class="value-box" style="background-color: #A3D4FF;">750 gCO2e</div>
+            <div class="value-box" style="background-color: #FFC3A3;">700 gCO2e</div>
+            <div class="value-box" style="background-color: #FFA3A3;">650 gCO2e</div>
+            <div class="value-box" style="background-color: #A3FFD4;">600 gCO2e</div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('build/dashboard-js.js') }}"></script>
+{% endblock %}

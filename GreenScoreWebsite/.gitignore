@@ -23,3 +23,9 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+# Fichiers générés automatiquement par Visual Studio Code
+.sqlite
+*.wsuo
+FileContentIndex/
+VSWorkspaceState.json
