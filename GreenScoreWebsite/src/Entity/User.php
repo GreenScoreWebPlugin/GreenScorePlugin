@@ -43,6 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $totalCarbonFootprint = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Organisation $organisation = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -162,6 +165,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTotalCarbonFootprint(?float $totalCarbonFootprint): static
     {
         $this->totalCarbonFootprint = $totalCarbonFootprint;
+
+        return $this;
+    }
+
+    public function getOrganisationId(): ?Organisation
+    {
+        return $this->organisationId;
+    }
+
+    public function setOrganisationId(?Organisation $organisationId): static
+    {
+        $this->organisationId = $organisationId;
 
         return $this;
     }
