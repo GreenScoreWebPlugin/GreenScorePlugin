@@ -3,6 +3,7 @@
         GreenScore - Inscription
     </title>
 {% endblock %}
+
 {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
 {% endblock %}
@@ -10,7 +11,7 @@
 {% block body %}
     <div class="flex items-center w-screen h-screen">
         <img src="{{ asset("/images/register-image1.png") }}" alt="GreenScore" class="hidden xl:flex w-1/2 h-full object-cover">
-        <div class="w-full xl:w-1/2 h-full px-[120px] py-24">
+        <div class="w-full xl:w-1/2 h-full px-[120px] py-24 flex items-center">
             <div class="flex flex-col gap-10">
                 <div class="flex gap-2 items-center">
                     <img src="{{ asset('/images/greenscore-logo.png') }}" alt="GreenScore Logo">
@@ -28,33 +29,71 @@
                     </div>
                 </div>
 
-                    {{ form_start(registrationForm, { attr: { class: 'gap-4' } })}}
-                    <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
-                        <div class="w-full">
-                            {{ form_label(registrationForm.firstName) }}
-                            {{ form_widget(registrationForm.firstName, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-                        </div>
-                        <div class="w-full">
-                            {{ form_label(registrationForm.lastName) }}
-                            {{ form_widget(registrationForm.lastName, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-                        </div>
+                {{ form_start(registrationForm, { attr: { class: 'flex flex-col gap-4' } })}}
+                <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                    <div class="w-full">
+                        {{ form_label(registrationForm.firstName) }}
+                        {{ form_widget(registrationForm.firstName, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
                     </div>
-
-                    <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
-                        <div class="w-full">
-                            {{ form_label(registrationForm.email) }}
-                            {{ form_widget(registrationForm.email, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-                        </div>
+                    <div class="w-full">
+                        {{ form_label(registrationForm.lastName) }}
+                        {{ form_widget(registrationForm.lastName, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
                     </div>
+                </div>
 
-
-                    <div class="flex gap-2 items-center text-grey-700">
-                        {{ form_row(registrationForm.agreeTerms) }}
-                        <p class="text-sm font-semibold">En vous inscrivant sur GreenScore, vous acceptez nos conditions générales d'utilisation</p>
+                <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                    <div class="w-full">
+                        {{ form_label(registrationForm.email) }}
+                        {{ form_widget(registrationForm.email, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
+                        {% for error in registrationForm.plainPassword.vars.errors %}
+                            <div class="text-red-700 text-sm">{{ error.message }}</div>
+                        {% endfor %}
                     </div>
+                </div>
 
-                    <button type="submit" class="btn">Register</button>
-                    {{ form_end(registrationForm) }}
+                <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                    <div class="w-full">
+                        {{ form_label(registrationForm.plainPassword) }}
+                        {{ form_widget(registrationForm.plainPassword, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
+                        {% for error in registrationForm.plainPassword.vars.errors %}
+                            <div class="text-red-700 text-sm">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="w-full">
+                        {{ form_label(registrationForm.passwordConfirmation) }}
+                        {{ form_widget(registrationForm.passwordConfirmation, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
+                        {% for error in registrationForm.passwordConfirmation.vars.errors %}
+                            <div class="text-red-700 text-sm">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="flex gap-2 items-center text-grey-700 font-semibold text-sm">
+                    {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'w-4 h-4 rounded text-grey-950 bg-gray-100 border-gray-700' } }) }}
+                    {{ form_label(registrationForm.agreeTerms) }}
+                    {% for error in registrationForm.agreeTerms.vars.errors %}
+                        <div class="text-red-700 text-sm">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                    <div class="w-full">
+                        {{ form_label(registrationForm.organisation) }}
+                        {{ form_widget(registrationForm.organisation, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
+                    </div>
+                </div>
+
+                {% for message in app.flashes('error') %}
+                    <div class="text-red-700 text-sm">{{ message }}</div>
+                {% endfor %}
+
+                <button type="submit" class="w-full h-fit rounded-lg bg-gs-green-950 px-1 py-2 font-semibold font-outfit text-white">Inscription</button>
+
+                <a href="#" class="text-grey-950 font-outfit font-semibold text-sm text-center">
+                    Je suis une organisation
+                </a>
+                {{ form_end(registrationForm) }}
+
             </div>
         </div>
     </div>

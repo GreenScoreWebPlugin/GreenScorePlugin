@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Validator\ConfirmPassword;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -28,22 +29,26 @@ class RegistrationFormType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('email')
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'attr' => [
+                    'class' => 'w-full',
+                ],
+            ])
             ->add('agreeTerms', CheckboxType::class, [
+                'label' => 'En vous inscrivant sur GreenScore, vous acceptez nos conditions générales d’utilisation.',
+                'required' => true,
+                'error_bubbling' => false,
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
                         'message' => 'Vous devriez accepter nos conditions générales d\'utilisation',
                     ]),
                 ],
-                'attr' => [
-                    'class' => 'w-5 h-5 rounded-sm',
-                ]
             ])
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
+                'label' => 'Mot de passe',
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
@@ -54,6 +59,24 @@ class RegistrationFormType extends AbstractType
                         'minMessage' => 'Votre mot de passe de avoir au moins {{ limit }} caractères.',
                         'max' => 50,
                     ]),
+                ],
+            ])
+            ->add('passwordConfirmation', PasswordType::class, [
+                'mapped' => false,
+                'label' => 'Confirmation du mot de passe',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Merci de confirmer votre mot de passe.',
+                    ]),
+                    new ConfirmPassword(),
+                ],
+            ])
+            ->add('organisation', TextType::class, [
+                'label' => 'Vous souhaitez rejoindre une organisation ?',
+                'required' => false,
+                'error_bubbling' => false,
+                'attr' => [
+                    'placeholder' => 'Entrez le code que votre organisation vous a envoyé',
                 ],
             ])
         ;

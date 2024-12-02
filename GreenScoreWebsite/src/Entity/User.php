@@ -7,11 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,6 +20,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Veuillez renseigner une adresse e-mail.')]
+    #[Assert\Email(message: 'Veuillez entrer une adresse e-mail valide.')]
+    #[Assert\Unique(message: 'Un compte avec cette adresse e-mail existe déjà.')]
     private ?string $email = null;
 
     /**
@@ -32,12 +35,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Veuillez renseigner un mot de passe.')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez renseigner votre prénom.')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez renseigner votre nom.')]
     private ?string $lastName = null;
 
     #[ORM\Column(nullable: true)]
@@ -169,14 +175,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getOrganisationId(): ?Organisation
+    public function getOrganisation(): ?Organisation
     {
-        return $this->organisationId;
+        return $this->organisation;
     }
 
-    public function setOrganisationId(?Organisation $organisationId): static
+    public function setOrganisation(?Organisation $organisation): self
     {
-        $this->organisationId = $organisationId;
+        $this->organisation = $organisation;
 
         return $this;
     }
