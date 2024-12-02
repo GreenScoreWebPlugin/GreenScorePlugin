@@ -22,7 +22,6 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('dashboard-js', './assets/js/dashboard.js')
-    .addStyleEntry('dashboard-css', './assets/styles/dashboard.css')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = document.getElementById("co2Chart");
     if (ctx) {
         const dataByMonth = {
-            labels: ["Jan", "Fév", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"],
+            labels: ["Jan", "Fev", "Mars", "Avr", "Mai", "Juin", "Juil", "Aout", "Sept", "Oct", "Nov", "Dec"],
             datasets: [{
                 label: "Consommation (gCO2e)",
                 data: [10000, 20000, 15000, 25000, 12000, 30000, 18000, 12000, 15000, 29000, 20000, 18000],
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = {
             labels: ["YouTube", "Facebook", "Netflix", "Instagram", "TikTok"],
             datasets: [{
-                label: "Émissions (gCO2e)",
+                label: "Emissions (gCO2e)",
                 data: [800, 750, 700, 650, 600],
                 backgroundColor: ["#D4A3FF", "#A3D4FF", "#FFC3A3", "#FFA3A3", "#A3FFD4"],
                 borderRadius: 10,
@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             options: {
                 indexAxis: 'y',
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
                     tooltip: { enabled: false }
