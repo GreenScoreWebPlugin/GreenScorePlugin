@@ -8,19 +8,19 @@
   <!-- Top -->
   <div class="w-full text-center bg-blue-900 text-white py-4">
   {% if page == 'mon-organisation' %}
-    <h1 class="text-2xl font-bold">Bienvenue dans la section "Mon Organisation".</h1>
+    <h1 class="text-2xl font-bold">Mon Organisation</h1>
     {% elseif page == 'mes-donnees' %}
-    <h1 class="text-2xl font-bold">Bienvenue dans la section "Mes Donn�es".</h1>
+    <h1 class="text-2xl font-bold">Mes Données</h1>
     {% elseif page == 'site-web-surveille' %}
-    <h1 class="text-2xl font-bold">Bienvenue dans la section "Site Web Surveill�".</h1>
+    <h1 class="text-2xl font-bold">Dernier site web consulté</h1>
     {% endif %}
     <p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
   </div>
 
   <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6 p-8">
+  <div class="grid grid-cols-12 gap-6 mt-6 p-8">
     <!-- Widget 1: Carbon Average -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-4">
       <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone</h2>
       <div class="flex justify-between mt-4">
         <div class="text-center">
@@ -38,25 +38,29 @@
     </div>
 
     <!-- Widget 2: Chart -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-2">
-      <div class="flex justify-between items-center">
-        <h2 class="text-lg font-bold">Votre consommation (en gCO2e)</h2>
-        <select id="filter" class="border border-gray-300 rounded-lg px-2 py-1 text-sm">
-          <option value="mois">Mois</option>
-          <option value="semaine">Semaine</option>
-          <option value="jour">Jour</option>
-        </select>
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-4">
+      <div class="flex flex-col w-full gap-2">
+        <h2 class="text-lg font-bold w-full">Votre consommation (en gCO2e)</h2>
+        <div class="flex w-full justify-end">
+          <select id="filter" class="flex border border-gray-300 rounded-lg px-2 py-1 text-sm">
+            <option value="mois">Mois</option>
+            <option value="semaine">Semaine</option>
+            <option value="jour">Jour</option>
+          </select>
+        </div>
+        <div class="relative w-full h-auto">
+          <canvas class="w-full h-auto" id="co2Chart"></canvas>
+        </div>
       </div>
-      <canvas id="co2Chart" class="mt-4"></canvas>
     </div>
 
     <!-- Widget 3: Rocket -->
-    <div class="bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 flex items-center justify-center">
+    <div class="bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-4 flex items-center justify-center">
       <img src="rocket-image.png" alt="Rocket" class="h-24">
     </div>
 
     <!-- Widget 4: Equivalent 1 -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-3">
       <h3 class="text-lg font-bold text-center">Equivalent</h3>
       <div class="flex items-center justify-center mt-4">
         <img src="shower-icon.png" alt="Douches" class="h-16">
@@ -65,13 +69,13 @@
     </div>
 
     <!-- Widget 5: Total Consumption -->
-    <div class="bg-purple-600 text-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2 text-center">
+    <div class="bg-purple-600 text-white p-6 rounded-lg shadow-md col-span-6 text-center">
       <h2 class="text-xl font-bold">Total de votre consommation :</h2>
       <p class="text-4xl font-bold mt-4">65000 gCO2e</p>
     </div>
 
     <!-- Widget 6: Equivalent 2 -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-3">
       <h3 class="text-lg font-bold text-center">Equivalent</h3>
       <div class="flex items-center justify-center mt-4">
         <img src="shower-icon.png" alt="Douches" class="h-16">
@@ -80,7 +84,7 @@
     </div>
 
     <!-- Widget 7: Top Polluting Sites -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-2 flex flex-wrap min-h-[300px]">
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-6 flex flex-wrap min-h-[300px]">
       <!-- Section Canvas -->
       <div class="flex-col w-full h-auto">
         <h3 class="text-lg font-bold mb-4">Top 5 des sites les plus polluants</h3>
@@ -113,7 +117,7 @@
 
 
     <!-- Widget 8: Tips 1 -->
-    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1">
+    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-3">
       <h3 class="text-lg font-bold text-green-700">Des conseils ?</h3>
       <p class="text-sm mt-2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
@@ -122,10 +126,10 @@
     </div>
 
     <!-- Widget 9: Tips 2 -->
-    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1">
+    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-3">
       <h3 class="text-lg font-bold text-blue-700">Des conseils ?</h3>
       <p class="text-sm mt-2">
-        Activez le mode sombre pour r�duire l'�nergie consomm�e par votre �cran.
+        Activez le mode sombre pour réduire l'énergie consommée par votre écran.
       </p>
       <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
     </div>
