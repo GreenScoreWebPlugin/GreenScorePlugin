@@ -86,3 +86,30 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const circles = document.querySelectorAll("circle.text-green-600, circle.text-purple-600");
+    const values = [85, 85]; // Les pourcentages de remplissage
+
+    circles.forEach((circle, index) => {
+        const value = values[index];
+        const targetStrokeDasharray = value;
+        let currentStrokeDasharray = 0; // On commence à 0%
+
+        const animationDuration = 1000; // Durée totale de l'animation en ms
+        const intervalTime = 10; // Intervalle de mise à jour en ms
+        const increment = (targetStrokeDasharray / animationDuration) * intervalTime;
+
+        const interval = setInterval(() => {
+            if (currentStrokeDasharray >= targetStrokeDasharray) {
+                currentStrokeDasharray = targetStrokeDasharray;
+                clearInterval(interval); // On arrête l'animation quand on atteint la cible
+            }
+            circle.setAttribute("stroke-dasharray", `${currentStrokeDasharray} 100`);
+            currentStrokeDasharray += increment; // On incrémente progressivement
+        }, intervalTime);
+    });
+});
+
+  

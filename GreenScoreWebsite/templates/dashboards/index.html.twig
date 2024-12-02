@@ -19,19 +19,34 @@
 
   <!-- Main Content Grid -->
   <div class="grid grid-cols-12 gap-6 mt-6 p-8">
+
+
     <!-- Widget 1: Carbon Average -->
     <div class="bg-white p-6 rounded-lg shadow-md col-span-4">
-      <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone</h2>
-      <div class="flex justify-between mt-4">
-        <div class="text-center">
-          <p class="text-3xl font-bold text-green-600">320</p>
+      <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
+      <div class="flex justify-center gap-5">
+
+        <div class="flex flex-col items-center">
+          <div class="relative text-center">
+              <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+              </svg>
+              <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600">320</p>
+            </div>
           <p class="text-sm text-gray-500">Vous</p>
         </div>
-        <div class="text-center">
-          <p class="text-3xl font-bold text-purple-600">510</p>
+
+        <div class="flex flex-col items-center">
+          <div class="relative text-center">
+              <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+              </svg>
+              <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600">320</p>
+            </div>
           <p class="text-sm text-gray-500">Les autres utilisateurs</p>
         </div>
       </div>
+
       <p class="text-sm text-center text-green-700 font-medium mt-4">
         Bravo ! Votre empreinte carbone est plus basse que la moyenne !!
       </p>
@@ -60,13 +75,19 @@
     </div>
 
     <!-- Widget 4: Equivalent 1 -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-3">
-      <h3 class="text-lg font-bold text-center">Equivalent</h3>
-      <div class="flex items-center justify-center mt-4">
-        <img src="shower-icon.png" alt="Douches" class="h-16">
+    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-3">
+      <div class="flex justify-center gap-2">
+        <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+          <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+        </picture>
+        <h2 class="text-lg font-bold">Equivalent</h2>
       </div>
+      <picture class="w-24 h-24 flex items-center justify-center mt-4">
+        <img src="{{ asset('/images/shower-icon.png') }}" alt="Douches" class="rounded-full">
+      </picture>
       <p class="text-center mt-2 text-lg font-medium">20 douches</p>
     </div>
+    
 
     <!-- Widget 5: Total Consumption -->
     <div class="bg-purple-600 text-white p-6 rounded-lg shadow-md col-span-6 text-center">
@@ -75,11 +96,16 @@
     </div>
 
     <!-- Widget 6: Equivalent 2 -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-3">
-      <h3 class="text-lg font-bold text-center">Equivalent</h3>
-      <div class="flex items-center justify-center mt-4">
-        <img src="shower-icon.png" alt="Douches" class="h-16">
-      </div>
+    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-3">
+      <div class="flex justify-center gap-2">
+        <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+          <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+        </picture>
+        <h2 class="text-lg font-bold">Equivalent</h2>
+        </div>
+      <picture class="w-24 h-24 flex items-center justify-center mt-4">
+        <img src="{{ asset('/images/shower-icon.png') }}" alt="Douches" class="rounded-full">
+      </picture>
       <p class="text-center mt-2 text-lg font-medium">20 douches</p>
     </div>
 
@@ -117,22 +143,37 @@
 
 
     <!-- Widget 8: Tips 1 -->
-    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-3">
-      <h3 class="text-lg font-bold text-green-700">Des conseils ?</h3>
+    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-3 flex flex-col justify-between">
+      <div class="flex justify-start gap-2">
+          <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
+            <i class="fa-solid fa-circle-question" style="color: #dcfce7;"></i>
+          </div>
+          <h2 class="text-lg font-bold text-green-700">Des conseils ?</h2>
+      </div>
       <p class="text-sm mt-2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
       </p>
-      <button class="bg-green-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+      <div class="flex w-full justify-end">
+        <button class="bg-green-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+      </div>
     </div>
 
     <!-- Widget 9: Tips 2 -->
-    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-3">
-      <h3 class="text-lg font-bold text-blue-700">Des conseils ?</h3>
+    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-3 flex flex-col justify-between">
+      <div class="flex justify-start gap-2">
+          <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
+            <i class="fa-solid fa-circle-question" style="color: #dbeafe;"></i>
+          </div>
+          <h2 class="text-lg font-bold text-blue-700">Des conseils ?</h2>
+      </div>
       <p class="text-sm mt-2">
         Activez le mode sombre pour réduire l'énergie consommée par votre écran.
       </p>
-      <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+      <div class="flex w-full justify-end">
+        <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+      </div>
     </div>
+    
   </div>
 </div>
 
