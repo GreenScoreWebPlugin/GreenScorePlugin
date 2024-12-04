@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data: dataByMonth,
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { y: { beginAtZero: true } }
             }

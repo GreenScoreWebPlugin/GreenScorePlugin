@@ -18,11 +18,11 @@
   </div>
 
   <!-- Main Content Grid -->
-  <div class="grid grid-cols-12 gap-6 mt-6 p-8">
+  <div class="grid grid-cols-2 gap-6 mt-6 p-8 md:grid-cols-12">
 
 
     <!-- Widget 1: Carbon Average -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-4">
+    <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4 md:order-none">
       <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
       <div class="flex justify-center gap-5">
 
@@ -53,11 +53,11 @@
     </div>
 
     <!-- Widget 2: Chart -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-4">
-      <div class="flex flex-col w-full gap-2">
-        <h2 class="text-lg font-bold w-full">Votre consommation (en gCO2e)</h2>
-        <div class="flex w-full justify-end">
-          <select id="filter" class="flex border border-gray-300 rounded-lg px-2 py-1 text-sm">
+    <div class="bg-white flex flex-col p-6 rounded-lg shadow-md col-span-2 order-3 md:col-span-4 md:order-none">
+      <div class="flex flex-col w-full h-full gap-2 justify-between gap-2">
+        <div class="flex w-full">
+          <h2 class="text-lg font-bold w-full leading-4">Votre consommation </br><span class="text-sm font-normal">(en gCO2e)</span></h2>
+          <select id="filter" class="w-fit h-fit border border-gray-300 rounded-lg px-2 py-1 text-sm">
             <option value="mois">Mois</option>
             <option value="semaine">Semaine</option>
             <option value="jour">Jour</option>
@@ -70,12 +70,12 @@
     </div>
 
     <!-- Widget 3: Rocket -->
-    <div class="bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-4 flex items-center justify-center">
+    <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-2 md:col-span-4 flex items-center justify-center md:order-none">
       <img src="rocket-image.png" alt="Rocket" class="h-24">
     </div>
 
     <!-- Widget 4: Equivalent 1 -->
-    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-3">
+    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-5 md:col-span-3 md:order-none">
       <div class="flex justify-center gap-2">
         <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
           <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
@@ -90,13 +90,13 @@
     
 
     <!-- Widget 5: Total Consumption -->
-    <div class="bg-purple-600 text-white p-6 rounded-lg shadow-md col-span-6 text-center">
-      <h2 class="text-xl font-bold">Total de votre consommation :</h2>
-      <p class="text-4xl font-bold mt-4">65000 gCO2e</p>
+    <div class="bg-purple-600 grid grid-row-3 text-white p-6 rounded-lg shadow-md col-span-2 order-4 md:col-span-6 text-center md:order-none">
+      <h2 class="font-bold row-span-1 flex justify-start">Total de votre consommation :</h2>
+      <p class="text-6xl font-bold mt-4 row-span-2 flex justify-center mt-0">65000 gCO2e</p>
     </div>
 
     <!-- Widget 6: Equivalent 2 -->
-    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-3">
+    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-6 md:col-span-3 md:order-none">
       <div class="flex justify-center gap-2">
         <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
           <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
@@ -110,7 +110,7 @@
     </div>
 
     <!-- Widget 7: Top Polluting Sites -->
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-6 flex flex-wrap min-h-[300px]">
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-2 md:col-span-6 flex flex-wrap min-h-[300px] order-7 md:order-none">
       <!-- Section Canvas -->
       <div class="flex-col w-full h-auto">
         <h3 class="text-lg font-bold mb-4">Top 5 des sites les plus polluants</h3>
@@ -143,7 +143,7 @@
 
 
     <!-- Widget 8: Tips 1 -->
-    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-3 flex flex-col justify-between">
+    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1 md:col-span-3 flex flex-col justify-between order-8 md:order-none">
       <div class="flex justify-start gap-2">
           <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
             <i class="fa-solid fa-circle-question" style="color: #dcfce7;"></i>
@@ -159,7 +159,7 @@
     </div>
 
     <!-- Widget 9: Tips 2 -->
-    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-3 flex flex-col justify-between">
+    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1 md:col-span-3 flex flex-col justify-between order-9 md:order-none">
       <div class="flex justify-start gap-2">
           <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
             <i class="fa-solid fa-circle-question" style="color: #dbeafe;"></i>
@@ -173,7 +173,7 @@
         <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
       </div>
     </div>
-    
+
   </div>
 </div>
 
