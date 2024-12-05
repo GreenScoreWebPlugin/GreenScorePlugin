@@ -34,87 +34,61 @@
             </div>
         </header>-->
         <header class="flex w-full bg-white py-5">
-    <div class="flex w-full justify-between px-8">
-        <!-- Logo -->
-        <img src="{{ asset('/images/greenscore-logo.png') }}" alt="Logo">
+            <div class="flex w-full justify-between px-8">
+                <!-- Logo -->
+                <img src="{{ asset('/images/greenscore-logo.png') }}" alt="Logo">
 
-        <!-- Menu desktop -->
-        <div class="hidden xl:flex items-center gap-8">
-            <ul class="flex font-outfit font-medium text-grey-950 items-center gap-4 text-xl">
-                <li><a href="#">Informations</a></li>
-                <li><a href="mes-donnees">Mes données</a></li>
-                <li><a href="mon-organisation">Mon organisation</a></li>
-                <li><a href="dernier-site-web-consulte">Dernière page consultée</a></li>
-            </ul>
-            <!-- Icône du profil -->
-            <div class="relative">
-                <button id="profile-button" class="focus:outline-none">
-                    <svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0.5" y="1" width="33" height="33" rx="16.5" stroke="#030712" />
-                        <path d="M27 26.5C27 20.6665 23.3636 16.5001 17 16.5" stroke="#233430" />
-                        <path d="M7 26.5C7 20.6665 10.6364 16.5001 17 16.5" stroke="#233430" />
-                        <circle cx="17" cy="11.5" r="4.5" stroke="#233430" />
-                    </svg>
-                </button>
+                <!-- Menu desktop -->
+                <div class="hidden xl:flex items-center gap-8">
+                    <ul class="flex font-outfit font-medium text-grey-950 items-center gap-4 text-xl">
+                        <li><a href="#">Informations</a></li>
+                        <li><a href="mes-donnees">Mes données</a></li>
+                        <li><a href="mon-organisation">Mon organisation</a></li>
+                        <li><a href="dernier-site-web-consulte">Dernière page consultée</a></li>
+                    </ul>
+                    <!-- Icône du profil -->
+                    <div class="relative">
+                        <button id="profile-button" class="focus:outline-none">
+                            <svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="1" width="33" height="33" rx="16.5" stroke="#030712" />
+                                <path d="M27 26.5C27 20.6665 23.3636 16.5001 17 16.5" stroke="#233430" />
+                                <path d="M7 26.5C7 20.6665 10.6364 16.5001 17 16.5" stroke="#233430" />
+                                <circle cx="17" cy="11.5" r="4.5" stroke="#233430" />
+                            </svg>
+                        </button>
 
-                <!-- Menu déroulant du profil -->
-                <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
-                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
+                        <!-- Menu déroulant du profil -->
+                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu burger -->
+                <div class="xl:hidden flex items-center">
+                    <button id="burger-button" class="focus:outline-none">
+                        <!-- Icône menu burger -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </div>
 
-        <!-- Menu burger -->
-        <div class="xl:hidden flex items-center">
-            <button id="burger-button" class="focus:outline-none">
-                <!-- Icône menu burger -->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Menu déroulant pour mobile -->
-    <div id="mobile-menu" class="xl:hidden absolute top-20 left-0 w-full bg-white py-5">
-        <ul class="flex flex-col font-outfit font-medium text-grey-950 items-center gap-4 text-xl">
-            <li><a href="#">Informations</a></li>
-            <li><a href="mes-donnees">Mes données</a></li>
-            <li><a href="mon-organisation">Mon organisation</a></li>
-            <li><a href="dernier-site-web-consulte">Dernière page consultée</a></li>
-            <li><a href="#">Se connecter</a></li>
-        </ul>
-    </div>
-</header>
-
-<!-- Script pour gérer les menus -->
-<script>
-    // Burger Menu
-    const burgerButton = document.getElementById('burger-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    burgerButton.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-    });
-
-    // Profile Menu
-    const profileButton = document.getElementById('profile-button');
-    const profileMenu = document.getElementById('profile-menu');
-
-    profileButton.addEventListener('click', () => {
-        profileMenu.classList.toggle('hidden');
-    });
-
-    // Fermer le menu profil si on clique ailleurs
-    document.addEventListener('click', (event) => {
-        if (!profileButton.contains(event.target) && !profileMenu.contains(event.target)) {
-            profileMenu.classList.add('hidden');
-        }
-    });
-</script>
-
+            <!-- Menu déroulant pour mobile -->
+            <div id="mobile-menu" class="xl:hidden absolute top-20 left-0 w-full bg-white py-5">
+                <ul class="flex flex-col font-outfit font-medium text-grey-950 items-center gap-4 text-xl">
+                    <li><a href="#">Informations</a></li>
+                    <li><a href="mes-donnees">Mes données</a></li>
+                    <li><a href="mon-organisation">Mon organisation</a></li>
+                    <li><a href="dernier-site-web-consulte">Dernière page consultée</a></li>
+                    <li><a href="#">Se connecter</a></li>
+                </ul>
+            </div>
+        </header>
         {% block body %}{% endblock %}
+        <script src="{{ asset('build/dashboard.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </body>
 </html>
