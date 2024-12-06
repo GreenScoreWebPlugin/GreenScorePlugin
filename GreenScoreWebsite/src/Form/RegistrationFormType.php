@@ -14,6 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
 
 class RegistrationFormType extends AbstractType
 {
@@ -25,14 +26,32 @@ class RegistrationFormType extends AbstractType
                 'attr' => [
                     'class' => 'w-full',
                 ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un prénom.',
+                    ])
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'attr' => [
+                    'class' => 'w-full',
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un nom.',
+                    ])
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => [
                     'class' => 'w-full',
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un e-mail.',
+                    ])
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
@@ -42,7 +61,7 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'Vous devriez accepter nos conditions générales d\'utilisation',
+                        'message' => 'Vous devez accepter nos conditions générales d\'utilisation',
                     ]),
                 ],
             ])
