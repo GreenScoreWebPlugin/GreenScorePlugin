@@ -1,5 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Graphique consommation mensuelle
+document.addEventListener("turbo:load", () => {
+    // Code pour afficher les graphiques
+    initCharts();
+    initCircles();
+});
+
+function initCharts() {
     const ctx = document.getElementById("co2Chart");
     if (ctx) {
         const dataByMonth = {
@@ -22,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Gestion du filtre
         document.getElementById("filter")?.addEventListener("change", (event) => {
             const filter = event.target.value;
             let newData;
@@ -54,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Graphique pollution
     const pollutionCanvas = document.getElementById("pollutionChart");
     if (pollutionCanvas) {
         const data = {
@@ -86,31 +89,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-});
+}
 
-
-document.addEventListener("DOMContentLoaded", () => {
+function initCircles() {
     const circles = document.querySelectorAll("circle.text-green-600, circle.text-purple-600");
-    const values = [85, 85]; // Les pourcentages de remplissage
+    const values = [85, 85];
 
     circles.forEach((circle, index) => {
         const value = values[index];
         const targetStrokeDasharray = value;
-        let currentStrokeDasharray = 0; // On commence à 0%
+        let currentStrokeDasharray = 0;
 
-        const animationDuration = 1000; // Durée totale de l'animation en ms
-        const intervalTime = 10; // Intervalle de mise à jour en ms
+        const animationDuration = 1000;
+        const intervalTime = 10;
         const increment = (targetStrokeDasharray / animationDuration) * intervalTime;
 
         const interval = setInterval(() => {
             if (currentStrokeDasharray >= targetStrokeDasharray) {
                 currentStrokeDasharray = targetStrokeDasharray;
-                clearInterval(interval); // On arrête l'animation quand on atteint la cible
+                clearInterval(interval);
             }
             circle.setAttribute("stroke-dasharray", `${currentStrokeDasharray} 100`);
-            currentStrokeDasharray += increment; // On incrémente progressivement
+            currentStrokeDasharray += increment;
         }, intervalTime);
     });
-});
-
-  
+}

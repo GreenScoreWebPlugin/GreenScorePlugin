@@ -11,7 +11,7 @@
 {% block body %}
     <div class="flex items-center w-screen h-screen">
         <img src="{{ asset("/images/register-image1.png") }}" alt="GreenScore" class="hidden xl:flex w-1/2 h-full object-cover">
-        <div class="w-full xl:w-1/2 h-full px-[120px] py-24 flex items-center">
+        <div class="w-full xl:w-1/2 h-full px-6 md:px-[120px] py-24 flex items-center justify-center">
             <div class="flex flex-col gap-10">
                 <div class="flex gap-2 items-center">
                     <img src="{{ asset('/images/greenscore-logo.png') }}" alt="GreenScore Logo">
@@ -29,15 +29,21 @@
                     </div>
                 </div>
 
-                {{ form_start(registrationForm, { attr: { class: 'flex flex-col gap-4' } })}}
-                <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                {{ form_start(registrationForm, { attr: { class: 'flex flex-col gap-4', novalidate: 'novalidate' } }) }}
+                <div class="flex flex-col md:flex-row gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
                     <div class="w-full">
                         {{ form_label(registrationForm.firstName) }}
                         {{ form_widget(registrationForm.firstName, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
+                        {% for error in registrationForm.firstName.vars.errors %}
+                            <div class="text-red-700 text-sm">{{ error.message }}</div>
+                        {% endfor %}
                     </div>
                     <div class="w-full">
                         {{ form_label(registrationForm.lastName) }}
                         {{ form_widget(registrationForm.lastName, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
+                        {% for error in registrationForm.lastName.vars.errors %}
+                            <div class="text-red-700 text-sm">{{ error.message }}</div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -45,13 +51,13 @@
                     <div class="w-full">
                         {{ form_label(registrationForm.email) }}
                         {{ form_widget(registrationForm.email, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-                        {% for error in registrationForm.plainPassword.vars.errors %}
+                        {% for error in registrationForm.email.vars.errors %}
                             <div class="text-red-700 text-sm">{{ error.message }}</div>
                         {% endfor %}
                     </div>
                 </div>
 
-                <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                <div class="flex flex-col md:flex-row gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
                     <div class="w-full">
                         {{ form_label(registrationForm.plainPassword) }}
                         {{ form_widget(registrationForm.plainPassword, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
@@ -68,9 +74,11 @@
                     </div>
                 </div>
 
-                <div class="flex gap-2 items-center text-grey-700 font-semibold text-sm">
-                    {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'w-4 h-4 rounded text-grey-950 bg-gray-100 border-gray-700' } }) }}
-                    {{ form_label(registrationForm.agreeTerms) }}
+                <div class="flex flex-col gap-2 text-grey-700 font-semibold text-sm font-outfit">
+                    <div class="flex gap-2 items-start">
+                        {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'w-4 h-4 rounded text-grey-950 bg-gray-100 border-gray-700' } }) }}
+                        {{ form_label(registrationForm.agreeTerms) }}
+                    </div>
                     {% for error in registrationForm.agreeTerms.vars.errors %}
                         <div class="text-red-700 text-sm">{{ error.message }}</div>
                     {% endfor %}

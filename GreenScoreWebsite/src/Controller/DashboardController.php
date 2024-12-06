@@ -22,16 +22,16 @@ class DashboardController extends AbstractController
     {
         return $this->render('dashboards/index.html.twig', [
             'page' => 'mes-donnees',
-            'title' => 'Mes Données'
+            'title' => 'Mes DonnÃ©es'
         ]);
     }
 
-    #[Route('/site-web-surveille', name: 'app_site_web_surveille')]
+    #[Route('/dernier-site-web-consulte', name: 'app_dernier_site_web_consulte')]
     public function siteWebSurveille(): Response
     {
         return $this->render('dashboards/index.html.twig', [
-            'page' => 'site-web-surveille', 
-            'title' => 'Site Web Surveillé'
+            'page' => 'dernier-site-web-consulte', 
+            'title' => 'Dernier site web consultÃ©'
         ]);
     }
 }
