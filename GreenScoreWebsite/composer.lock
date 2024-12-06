@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3bd4db0b6608d08105fd8b05f0c602ec",
+    "content-hash": "f7e726700257e409a509f410a4b3dee6",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -6688,16 +6688,16 @@
         },
         {
             "name": "symfony/ux-autocomplete",
-            "version": "v2.21.0",
+            "version": "v2.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-autocomplete.git",
-                "reference": "357a4b8eef612b279568292a878e60b8b0992413"
+                "reference": "751271204eb309f918dd2ae9caaf3189618442ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-autocomplete/zipball/357a4b8eef612b279568292a878e60b8b0992413",
-                "reference": "357a4b8eef612b279568292a878e60b8b0992413",
+                "url": "https://api.github.com/repos/symfony/ux-autocomplete/zipball/751271204eb309f918dd2ae9caaf3189618442ec",
+                "reference": "751271204eb309f918dd2ae9caaf3189618442ec",
                 "shasum": ""
             },
             "require": {
@@ -6733,8 +6733,8 @@
             "type": "symfony-bundle",
             "extra": {
                 "thanks": {
-                    "name": "symfony/ux",
-                    "url": "https://github.com/symfony/ux"
+                    "url": "https://github.com/symfony/ux",
+                    "name": "symfony/ux"
                 }
             },
             "autoload": {
@@ -6758,7 +6758,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-autocomplete/tree/v2.21.0"
+                "source": "https://github.com/symfony/ux-autocomplete/tree/v2.22.0"
             },
             "funding": [
                 {
@@ -6774,7 +6774,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-21T19:02:15+00:00"
+            "time": "2024-11-28T07:45:46+00:00"
         },
         {
             "name": "symfony/ux-turbo",
