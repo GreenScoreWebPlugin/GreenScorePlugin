@@ -48,6 +48,7 @@
                     </ul>
                     <!-- Icône du profil -->
                     <div class="relative">
+                    {% if app.user %}
                         <button id="profile-button" class="focus:outline-none">
                             <svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="0.5" y="1" width="33" height="33" rx="16.5" stroke="#030712" />
@@ -56,12 +57,21 @@
                                 <circle cx="17" cy="11.5" r="4.5" stroke="#233430" />
                             </svg>
                         </button>
-
                         <!-- Menu déroulant du profil -->
                         <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
                             <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
                             <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
                         </div>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" id="profile-button" class="focus:outline-none">
+                            <svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="1" width="33" height="33" rx="16.5" stroke="#030712" />
+                                <path d="M27 26.5C27 20.6665 23.3636 16.5001 17 16.5" stroke="#233430" />
+                                <path d="M7 26.5C7 20.6665 10.6364 16.5001 17 16.5" stroke="#233430" />
+                                <circle cx="17" cy="11.5" r="4.5" stroke="#233430" />
+                            </svg>
+                        </a>
+                    {% endif %}
                     </div>
                 </div>
 
@@ -88,7 +98,7 @@
             </div>
         </header>
         {% block body %}{% endblock %}
-        <script src="{{ asset('build/dashboard.js') }}"></script>
+        <script src="{{ asset('build/base.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </body>
 </html>
