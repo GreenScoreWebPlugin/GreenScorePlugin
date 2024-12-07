@@ -60,7 +60,7 @@
                         <!-- Menu déroulant du profil -->
                         <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
                             <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
-                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
+                            <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
                         </div>
                     {% else %}
                         <a href="{{ path('app_login') }}" id="profile-button" class="focus:outline-none">
