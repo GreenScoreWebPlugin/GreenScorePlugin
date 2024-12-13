@@ -1,0 +1,35 @@
+{% block title %}
+    <title>
+        GreenScore - Inscription
+    </title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="flex items-center w-screen h-screen">
+        <img src="{{ asset("/images/register-image1.png") }}" alt="GreenScore" class="hidden xl:flex w-1/2 h-full object-cover">
+        <div class="w-full xl:w-1/2 h-full px-6 md:px-[120px] py-24 flex items-center justify-center">
+            <div class="flex flex-col gap-10">
+                <div class="flex gap-2 items-center">
+                    <img src="{{ asset('/images/greenscore-logo.png') }}" alt="GreenScore Logo">
+                    <h1 class="text-3xl font-outfit font-extrabold text-gs-green-950">GreenScore</h1>
+                </div>
+                <div class="flex flex-col gap-1 font-outfit">
+                    <h2 class="text-2xl font-extrabold text-grey-950">Invitez des membres !</h2>
+                    <p class="text-grey-500 text-sm">Envoyez ce code aux membres de votre organisation. Ils peuvent le saisir dans la section : mon compte - mon organisation - rejoindre une organisation</p>
+                </div>
+                <div class="flex rounded-2xl border border-grey-100 items-center w-full">
+                    <div class="border-r border-grey-100 w-full items-center justify-center py-4">
+                        <p class="text-grey-950 text-center text-3xl font-outfit font-semibold ">{{ code }}</p>
+                    </div>
+                    <div class="px-4 py-4 flex flex-col items-center justify-center">
+                        <img src="{{ asset('/images/clipboard.svg') }}" alt="Copier le texte">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -23,6 +23,7 @@ class RegistrationOrganisationFormType extends AbstractType
         $builder
             ->add('organisationName', TextType::class, [
                 'label' => 'Nom de l\'organisation',
+                'mapped' => false,
                 'attr' => [
                     'class' => 'w-full',
                 ],
@@ -31,6 +32,13 @@ class RegistrationOrganisationFormType extends AbstractType
                         'message' => 'Veuillez entrer le nom de votre organisation.',
                     ])
                 ],
+            ])
+            ->add('siret', TextType::class, [
+                'label' => 'Numéro SIRET (optionnel)',
+                'mapped' => false,
+                'attr' => [
+                    'class' => 'w-full',
+                ]
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -77,14 +85,6 @@ class RegistrationOrganisationFormType extends AbstractType
                         'message' => 'Merci de confirmer votre mot de passe.',
                     ]),
                     new ConfirmPassword(),
-                ],
-            ])
-            ->add('organisation', TextType::class, [
-                'label' => 'Vous souhaitez rejoindre une organisation ?',
-                'required' => false,
-                'error_bubbling' => false,
-                'attr' => [
-                    'placeholder' => 'Entrez le code que votre organisation vous a envoyé',
                 ],
             ])
         ;
