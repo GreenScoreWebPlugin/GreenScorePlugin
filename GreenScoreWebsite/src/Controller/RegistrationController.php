@@ -68,7 +68,9 @@ class RegistrationController extends AbstractController
             $organisation->setOrganisationName($form->get('organisationName')->getData());
             $organisation->setOrganisationCode($organisation->generateOrganisationCode());
             if ($form->get('siret')->getData()) {
-                $organisation->setSiret($form->get('siret')->getData());
+                //Enlever les espaces
+                $siret = str_replace(' ', '', $form->get('siret')->getData());
+                $organisation->setSiret($siret);
             }
 
             $organisation->setCity('France');

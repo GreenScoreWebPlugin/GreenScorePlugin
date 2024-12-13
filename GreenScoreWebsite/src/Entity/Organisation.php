@@ -6,8 +6,11 @@ use App\Repository\OrganisationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: OrganisationRepository::class)]
+#[UniqueEntity(fields: ['siret'], message: 'Ce numéro SIRET est déjà utilisé.')]
 class Organisation
 {
     #[ORM\Id]

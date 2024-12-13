@@ -23,13 +23,20 @@
                 </div>
                 <div class="flex rounded-2xl border border-grey-100 items-center w-full">
                     <div class="border-r border-grey-100 w-full items-center justify-center py-4">
-                        <p class="text-grey-950 text-center text-3xl font-outfit font-semibold ">{{ code }}</p>
+                        <p id="code-text" class="text-grey-950 text-center text-3xl font-outfit font-semibold tracking-widest">{{ code }}</p>
                     </div>
-                    <div class="px-4 py-4 flex flex-col items-center justify-center">
-                        <img src="{{ asset('/images/clipboard.svg') }}" alt="Copier le texte">
+                    <div class="px-4 py-4 flex flex-col items-center justify-center relative">
+                        <img src="{{ asset('/images/clipboard.svg') }}" alt="Copier le texte" id="copy-button" class="scale-105 cursor-pointer transition-transform duration-200 hover:scale-110"/>
+                        <i class="fa-solid fa-check text-gs-green-950 absolute text-2xl animate-pulse invisible" id="check-icon"></i>
                     </div>
                 </div>
+
+                <a href="{{ path('app_home') }}" class="w-full h-fit rounded-lg bg-gs-green-950 px-1 py-2 font-semibold font-outfit text-center text-white">Terminer</a>
+
             </div>
         </div>
     </div>
+
+    <script src="{{ asset('build/clipboard_copy.js') }}"></script>
+    <script src="https://kit.fontawesome.com/713704b44c.js" crossorigin="anonymous"></script>
 {% endblock %}
