@@ -2,6 +2,7 @@ document.addEventListener("turbo:load", () => {
     // Code pour afficher les graphiques
     initCharts();
     initCircles();
+    iniAanimateCounter();
 });
 
 function initCharts() {
@@ -112,5 +113,19 @@ function initCircles() {
             circle.setAttribute("stroke-dasharray", `${currentStrokeDasharray} 100`);
             currentStrokeDasharray += increment;
         }, intervalTime);
+    });
+}
+
+function iniAanimateCounter(){
+    document.querySelectorAll('.animate-counter').forEach(counter => {
+    const value = parseInt(counter.getAttribute('data-value'));
+    let count = 0;
+    const updateCount = () => {
+        count += Math.ceil(value / 100);
+        if (count > value) count = value;
+        counter.textContent = count;
+        if (count < value) requestAnimationFrame(updateCount);
+    };
+    requestAnimationFrame(updateCount);
     });
 }
