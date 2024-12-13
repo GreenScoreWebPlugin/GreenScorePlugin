@@ -238,3 +238,42 @@ function monitorDynamicUrlChanges(tabId) {
 browser.tabs.onCreated.addListener((tab) => {
   monitorDynamicUrlChanges(tab.id);
 });
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'getCountryAndUrl') {
+      // Récupérer l'URL et le pays
+      const handleResponse = (tabUrl) => {
+          fetchCountry()
+              .then(({ country }) => {
+                  sendResponse({ country, url: extractDomain(tabUrl) });
+              })
+              .catch((error) => {
+                  console.error('Erreur lors de la récupération du pays :', error);
+                  sendResponse({ country: 'Unknown', url: extractDomain(tabUrl) });
+              });
+      };
+
+      // Cas 1 : l'onglet est fourni par le message
+      if (sender.tab && sender.tab.url) {
+          handleResponse(sender.tab.url);
+          return true; // Indique une réponse asynchrone
+      }
+
+      // Cas 2 : Pas d'onglet dans sender, chercher l'onglet actif
+      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+          if (tabs.length > 0 && tabs[0].url) {
+              handleResponse(tabs[0].url);
+          } else {
+              sendResponse({ country: 'Unknown', url: 'Unknown' });
+          }
+      }).catch((error) => {
+          console.error('Erreur lors de la récupération de l’onglet actif :', error);
+          sendResponse({ country: 'Unknown', url: 'Unknown' });
+      });
+
+      return true; // Indique une réponse asynchrone
+  }
+});
+
+
+

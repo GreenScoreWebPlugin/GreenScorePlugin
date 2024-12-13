@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Popup</title>
-
     <script src="https://kit.fontawesome.com/5fbdf29340.js" crossorigin="anonymous"></script>
     <link href="./popup.css" rel="stylesheet">
+    <script src="popup.js"></script>
 </head>
 
 <body class="w-[440px] pb-4">
@@ -20,12 +20,12 @@
 
     <div class="flex flex-row font-outfit w-full items-center justify-center p-2">
         <p class="text-grey-400 text-sm">Site actuel :&nbsp</p>
-        <p class="text-grey-400 text-sm font-bold">*site.fr*</p>
+        <p id="site-url" class="text-grey-400 text-sm font-bold">*site.fr*</p>
     </div>
 
     <div class="flex flex-col gap-6 px-4">
         <div class="flex flex-col items-center justify-center gap-2 w-full">
-            <h2 class="text-xl w-2/3 text-center font-extrabold font-outfit text-grey-950">Dans votre pays (*Pays*), cette page consomme</h2>
+            <h2 id="site-country" class="text-xl w-2/3 text-center font-extrabold font-outfit text-grey-950">Dans votre pays (*Pays*), cette page consomme</h2>
             <div class="flex flex-col justify-center items-center">
                 <div class="flex items-baseline font-outfit text-[#BD2525]">
                     <span class="text-5xl font-extrabold">602&nbsp;</span>
