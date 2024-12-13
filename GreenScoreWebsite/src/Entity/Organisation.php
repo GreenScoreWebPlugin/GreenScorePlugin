@@ -21,13 +21,7 @@ class Organisation
     #[ORM\Column(length: 20)]
     private ?string $organisationCode = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
     #[ORM\Column(length: 14,nullable: true)]
@@ -38,6 +32,9 @@ class Organisation
      */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organisationId')]
     private Collection $users;
+
+    #[ORM\OneToOne(mappedBy: 'isAdminOf', cascade: ['persist', 'remove'])]
+    private ?User $organisationAdmin = null;
 
     public function __construct()
     {
@@ -69,30 +66,6 @@ class Organisation
     public function setOrganisationCode(string $organisationCode): static
     {
         $this->organisationCode = $organisationCode;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
 
         return $this;
     }
@@ -149,5 +122,40 @@ class Organisation
         }
 
         return $this;
+    }
+
+    public function getOrganisationAdmin(): ?User
+    {
+        return $this->organisationAdmin;
+    }
+
+    public function setOrganisationAdmin(?User $organisationAdmin): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($organisationAdmin === null && $this->organisationAdmin !== null) {
+            $this->organisationAdmin->setIsAdminOf(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($organisationAdmin !== null && $organisationAdmin->getIsAdminOf() !== $this) {
+            $organisationAdmin->setIsAdminOf($this);
+        }
+
+        $this->organisationAdmin = $organisationAdmin;
+
+        return $this;
+    }
+
+    public function generateOrganisationCode(): String
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $code = '';
+        $length = 8;
+
+        for ($i = 0; $i < $length; $i++) {
+            $code .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+
+        return $code;
     }
 }

@@ -22,8 +22,10 @@ module.exports = {
 
         'grey-950': '#030712',
         'grey-700': '#424E62',
+        'grey-500': '#667991',
         'grey-400': '#8595AB',
         'grey-200': '#D5DBE2',
+        'grey-100': '#ECECEC'
       }
     },
   },

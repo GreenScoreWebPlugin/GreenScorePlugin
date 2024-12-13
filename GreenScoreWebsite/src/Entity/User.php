@@ -35,10 +35,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
     #[ORM\Column(nullable: true)]
@@ -46,6 +46,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Organisation $organisation = null;
+
+    #[ORM\OneToOne(inversedBy: 'organisationAdmin', cascade: ['persist', 'remove'])]
+    private ?Organisation $isAdminOf = null;
 
     public function getId(): ?int
     {
@@ -178,6 +181,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setOrganisation(?Organisation $organisation): self
     {
         $this->organisation = $organisation;
+
+        return $this;
+    }
+
+    public function getIsAdminOf(): ?Organisation
+    {
+        return $this->isAdminOf;
+    }
+
+    public function setIsAdminOf(?Organisation $isAdminOf): static
+    {
+        $this->isAdminOf = $isAdminOf;
 
         return $this;
     }
