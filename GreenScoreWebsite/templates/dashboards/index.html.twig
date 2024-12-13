@@ -51,9 +51,8 @@
         Bravo ! Votre empreinte carbone est plus basse que la moyenne !!
       </p>
     </div>
-    {% endif %}
 
-    {% if page == 'mon-organisation' %}
+    {% elseif page == 'mon-organisation' %}
     <!-- Widget 1: Carbon Average -->
     <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
       <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
@@ -67,15 +66,28 @@
             </div>
         </div>
         <div class="flex flex-col justify-center">
-        <div class="flex justify-center gap-2">
-          <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
-            <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
-          </picture>
-          <h2 class="text-lg font-bold">Equivalent</h2>
+          <div class="flex justify-center gap-2">
+            <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+              <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+            </picture>
+            <h2 class="text-lg font-bold">Equivalent</h2>
+          </div>
+          <p class="text-center mt-2 text-lg font-medium">20 douches</p>
         </div>
-        <p class="text-center mt-2 text-lg font-medium">20 douches</p>
       </div>
+    </div>
+    
+    {% else %}
+    <!-- Widget 1: Carbon Average -->
+    <div class="bg-white flex flex-col justify-evenly gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
+      <div class="flex justify-center">
+        <a href="https://bff.ecoindex.fr/redirect/?url=https://example.com" target="_blank">
+            <img src="https://bff.ecoindex.fr/badge/?theme=dark&url=https://example.com" alt="Ecoindex Badge" />
+        </a>
       </div>
+      <p class="text-sm mt-2">
+        La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP
+      </p> 
     </div>
     {% endif %}
 
@@ -93,6 +105,28 @@
         </div>
         <div class="relative w-full h-auto">
           <canvas class="w-full h-auto" id="co2Chart" data-turbo-permanent></canvas>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <!-- Widget 2: Chart  -->
+    <div class="bg-white flex flex-col gap-6 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
+      <div class="flex items-center gap-4">
+        {% if flagUrl %}
+          <img src="{{ flagUrl }}" alt="Drapeau de {{ country }}" class="w-10 h-10 rounded-full object-cover">
+        {% else %}
+          <div class="w-10 h-10 rounded-full bg-red-300"></div>
+        {% endif %}
+        <h2 class="text-lg font-bold">Vous faites votre recherche depuis ce pays : {{ country }}</h2>
+      </div>
+      <div class="flex justify-center items-center gap-4">
+        <picture class="w-64 h-auto flex items-center justify-center mt-4">
+          <img src="{{ asset('/images/empreinte_carbone.png') }}" alt="Empreinte Carbone">
+        </picture>
+        <div class="flex flex-col justify-center items-center">
+          <p class="text-3xl font-bold text-lime-600">65</p>
+          <p class="text-xl font-bold">gCO2eq/kWh</p>
+          <p class="text-sm text-center pt-5">Votre empreinte carbonne dépend aussi de l’intensité carbone du pays</p>
         </div>
       </div>
     </div>
