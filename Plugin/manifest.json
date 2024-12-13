@@ -1,13 +1,23 @@
 {
     "manifest_version": 2,
-    "name": "Network Data Analyzer",
+    "name": "Web Analyzer",
     "version": "1.0",
-    "permissions": ["activeTab", "<all_urls>", "devtools"],
-    "devtools_page": "devtools.html",
-    "browser_action": {
-        "default_popup": "./src/popup.html"
-    },
+    "description": "Analyse réseau pour Firefox",
+    "permissions": [
+      "<all_urls>",
+      "webRequest",
+      "webRequestBlocking",
+      "webNavigation",
+      "tabs",
+      "http://127.0.0.1/*"
+    ],
     "background": {
-        "scripts": ["background.js"]
+      "scripts": ["src/background.js"],
+      "persistent": false
+    },
+    "browser_action": {
+      "default_popup": "popup.html",
+      "default_title": "Analyser la page"
     }
-}
+  }
+  
