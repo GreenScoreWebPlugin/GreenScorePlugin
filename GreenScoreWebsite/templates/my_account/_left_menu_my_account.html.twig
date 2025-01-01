@@ -1,0 +1,36 @@
+{% set userSvgBorderColor = 'black' %}
+<a href="{{ path('app_my_account') }}">
+    <div class="flex items-center gap-x-2 px-8 py-4 {% if showMyOrga == false %}bg-gs-green-950 text-white {% set userSvgBorderColor = 'white' %}{% endif %}">
+        <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12.5" cy="12" r="11.5" stroke="{{ userSvgBorderColor }}"/>
+            <circle cx="12.5" cy="9" r="2.5" stroke="{{ userSvgBorderColor }}"/>
+            <path d="M18.5 18C18.5 14.4999 16.3182 12.0001 12.5 12" stroke="{{ userSvgBorderColor }}"/>
+            <path d="M6.5 18C6.5 14.4999 8.68182 12.0001 12.5 12" stroke="{{ userSvgBorderColor }}"/>
+        </svg>
+        <p class="text-base">Mon compte</p>
+    </div>
+</a>
+<a href="{{ path('app_my_account_show_organisation') }}">
+    <div class="flex items-center gap-x-2 px-8 py-4 {% if showMyOrga %}bg-gs-green-950 text-white {% set svgBorderColor = 'white' %}{% endif %}">
+    <svg width="23" height="26" viewBox="0 0 23 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="path-1-inside-1_180_1116" fill="white">
+            <path d="M14.7969 6.59302H20.8549C21.9595 6.59302 22.8549 7.48845 22.8549 8.59302V23.6393C22.8549 24.7438 21.9595 25.6393 20.8549 25.6393H14.7969V6.59302Z"/>
+        </mask>
+        <path d="M14.7969 6.59302H20.8549C21.9595 6.59302 22.8549 7.48845 22.8549 8.59302V23.6393C22.8549 24.7438 21.9595 25.6393 20.8549 25.6393H14.7969V6.59302Z" fill="white"/>
+        <path d="M14.7969 5.59302H20.8549C22.5118 5.59302 23.8549 6.93616 23.8549 8.59302H21.8549C21.8549 8.04073 21.4072 7.59302 20.8549 7.59302H14.7969V5.59302ZM23.8549 23.6393C23.8549 25.2961 22.5118 26.6393 20.8549 26.6393H14.7969V24.6393H20.8549C21.4072 24.6393 21.8549 24.1915 21.8549 23.6393H23.8549ZM14.7969 25.6393V6.59302V25.6393ZM20.8549 5.59302C22.5118 5.59302 23.8549 6.93616 23.8549 8.59302V23.6393C23.8549 25.2961 22.5118 26.6393 20.8549 26.6393V24.6393C21.4072 24.6393 21.8549 24.1915 21.8549 23.6393V8.59302C21.8549 8.04073 21.4072 7.59302 20.8549 7.59302V5.59302Z" fill="black" mask="url(#path-1-inside-1_180_1116)"/>
+        <path d="M0.645508 2C0.645508 1.17157 1.31708 0.5 2.14551 0.5H13.529C14.3574 0.5 15.029 1.17157 15.029 2V25.1392H2.14551C1.31708 25.1392 0.645508 24.4676 0.645508 23.6392V2Z" fill="white" stroke="black"/>
+        <rect x="3.57617" y="20.2788" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="3.57617" y="14.4185" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="3.57617" y="8.55811" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="3.57617" y="2.69775" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="9.43652" y="20.2788" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="9.43652" y="14.4185" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="9.43652" y="8.55811" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="17.4941" y="8.55811" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="17.4941" y="14.4185" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="17.4941" y="20.2788" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+        <rect x="9.43652" y="2.69775" width="2.66274" height="2.66274" rx="0.5" fill="white" stroke="black"/>
+    </svg>
+    <p class="text-base">Mon organisation</p>
+    </div>
+</a>
