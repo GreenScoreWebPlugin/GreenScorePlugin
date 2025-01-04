@@ -61,11 +61,17 @@ function initCharts() {
 
     const pollutionCanvas = document.getElementById("pollutionChart");
     if (pollutionCanvas) {
+        fetch('/api/top-sites')
+    .then(response => response.json())
+    .then(top5Sites => {
+        const labels = top5Sites.map(site => site[0]);
+        const dataValues = top5Sites.map(site => site[1]);
+
         const data = {
-            labels: ["YouTube", "Facebook", "Netflix", "Instagram", "TikTok"],
+            labels: labels,
             datasets: [{
                 label: "Emissions (gCO2e)",
-                data: [800, 750, 700, 650, 600],
+                data: dataValues,
                 backgroundColor: ["#D4A3FF", "#A3D4FF", "#FFC3A3", "#FFA3A3", "#A3FFD4"],
                 borderRadius: 10,
                 barThickness: 20
@@ -89,6 +95,9 @@ function initCharts() {
                 }
             }
         });
+    })
+    .catch(error => console.error('Erreur lors de la récupération des données :', error));
+
     }
 }
 
