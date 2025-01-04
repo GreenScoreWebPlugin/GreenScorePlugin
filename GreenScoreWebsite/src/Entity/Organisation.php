@@ -33,7 +33,7 @@ class Organisation
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organisationId')]
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organisation')]
     private Collection $users;
 
     #[ORM\OneToOne(mappedBy: 'isAdminOf', cascade: ['persist', 'remove'])]
