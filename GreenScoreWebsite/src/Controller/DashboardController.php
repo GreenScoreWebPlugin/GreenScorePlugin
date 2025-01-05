@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\MonitoredWebsite;
+use App\Repository\MonitoredWebsiteRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,7 +22,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
-    public function monOrganisation(): Response
+    public function monOrganisation(EntityManagerInterface $entityManager, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
         $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
         $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
@@ -33,6 +38,14 @@ class DashboardController extends AbstractController
             ["Instagram", 650],
             ["Tik Tok", 600]
         ];
+
+        $website = new MonitoredWebsite();
+        $website->setUrlDomain('luciedubos.fr');
+        
+        $entityManager->persist($website);
+        $entityManager->flush();
+
+        //dd($monitoredWebsiteRepository->findAll());
 
         return $this->render('dashboards/index.html.twig', [
             'page' => 'mon-organisation',

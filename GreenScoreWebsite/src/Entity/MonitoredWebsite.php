@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MonitoredWebsiteRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,8 +42,13 @@ class MonitoredWebsite
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $creationDate = null;
+
+    function __construct()
+    {
+        $this->setCreationDate(new DateTime());
+    }
 
     public function getId(): ?int
     {
@@ -162,7 +168,7 @@ class MonitoredWebsite
         return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTimeInterface $creationDate): static
+    public function setCreationDate(?\DateTimeInterface $creationDate): static
     {
         $this->creationDate = $creationDate;
 
