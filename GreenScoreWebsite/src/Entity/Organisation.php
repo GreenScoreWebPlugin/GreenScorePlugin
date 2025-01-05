@@ -109,7 +109,7 @@ class Organisation
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setOrganisationId($this);
+            $user->setOrganisation($this);
         }
 
         return $this;
@@ -119,8 +119,8 @@ class Organisation
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getOrganisationId() === $this) {
-                $user->setOrganisationId(null);
+            if ($user->getOrganisation() === $this) {
+                $user->setOrganisation(null);
             }
         }
 
