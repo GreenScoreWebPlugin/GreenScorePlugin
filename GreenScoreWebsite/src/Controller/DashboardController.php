@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\MonitoredWebsite;
 use App\Repository\MonitoredWebsiteRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -39,13 +40,23 @@ class DashboardController extends AbstractController
             ["Tik Tok", 600]
         ];
 
-        $website = new MonitoredWebsite();
-        $website->setUrlDomain('luciedubos.fr');
+        // Création d'une instance d'une entité
+        // $website = new MonitoredWebsite(); 
+        // $website->setUrlDomain('luciedubos.fr');
         
-        $entityManager->persist($website);
-        $entityManager->flush();
+        // Avec persist, on dit qu'elle sera sauvegardée en BD
+        // $entityManager->persist($website);
 
-        //dd($monitoredWebsiteRepository->findAll());
+        // Avec flush, on sauvegarde les modifications en cours sur toutes les entités persistées
+        // $entityManager->flush();
+
+        // Avec le Repository, on recupère toutes les instances de l'entité stockées en base
+        // $monitoredwebsites = $monitoredWebsiteRepository->findAll()); 
+
+        // On récupère tous ceux dont user est égal au user $user et dont l'urlDomain est luceidubos.fr, triés par urlFull décroissant
+        //$monitoredwebsites = $monitoredWebsiteRepository->findBy(['user' => $user, 'urlDomain' => 'luciedubos.fr'], ['urlFull' => 'desc']); 
+
+        // Find est l'équivalent de WHERE et ORDER BY
 
         return $this->render('dashboards/index.html.twig', [
             'page' => 'mon-organisation',

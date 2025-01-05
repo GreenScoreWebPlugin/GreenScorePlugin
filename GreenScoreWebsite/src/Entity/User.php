@@ -162,6 +162,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // TODO: vérifier si mobile est utilisé car pas d'attribut mobile trouvé
+
     public function getMobile(): ?string
     {
         return $this->mobile;
