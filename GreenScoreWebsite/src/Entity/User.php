@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -49,6 +51,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(inversedBy: 'organisationAdmin', cascade: ['persist', 'remove'])]
     private ?Organisation $isAdminOf = null;
+
+    /**
+     * @var Collection<int, MonitoredWebsite>
+     */
+    #[ORM\OneToMany(targetEntity: MonitoredWebsite::class, mappedBy: 'user')]
+    private Collection $monitoredWebsites;
+
+    public function __construct()
+    {
+        $this->monitoredWebsites = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -193,6 +206,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsAdminOf(?Organisation $isAdminOf): static
     {
         $this->isAdminOf = $isAdminOf;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MonitoredWebsite>
+     */
+    public function getMonitoredWebsites(): Collection
+    {
+        return $this->monitoredWebsites;
+    }
+
+    public function addMonitoredWebsite(MonitoredWebsite $monitoredWebsite): static
+    {
+        if (!$this->monitoredWebsites->contains($monitoredWebsite)) {
+            $this->monitoredWebsites->add($monitoredWebsite);
+            $monitoredWebsite->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMonitoredWebsite(MonitoredWebsite $monitoredWebsite): static
+    {
+        if ($this->monitoredWebsites->removeElement($monitoredWebsite)) {
+            // set the owning side to null (unless already changed)
+            if ($monitoredWebsite->getUser() === $this) {
+                $monitoredWebsite->setUser(null);
+            }
+        }
 
         return $this;
     }
