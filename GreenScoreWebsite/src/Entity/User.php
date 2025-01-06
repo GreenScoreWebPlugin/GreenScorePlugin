@@ -162,20 +162,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // TODO: vérifier si mobile est utilisé car pas d'attribut mobile trouvé
-
-    public function getMobile(): ?string
-    {
-        return $this->mobile;
-    }
-
-    public function setMobile(?string $mobile): static
-    {
-        $this->mobile = $mobile;
-
-        return $this;
-    }
-
     public function getTotalCarbonFootprint(): ?float
     {
         return $this->totalCarbonFootprint;

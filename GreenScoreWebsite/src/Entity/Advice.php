@@ -13,6 +13,9 @@ class Advice
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+    
+    #[ORM\Column(type: 'boolean')]
+    private bool $isDev = false;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $advice = null;
@@ -20,6 +23,18 @@ class Advice
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIsDev(): bool
+    {
+        return $this->isDev;
+    }
+
+    public function setIsDev(bool $isDev): self
+    {
+        $this->isDev = $isDev;
+
+        return $this;
     }
 
     public function getAdvice(): ?string

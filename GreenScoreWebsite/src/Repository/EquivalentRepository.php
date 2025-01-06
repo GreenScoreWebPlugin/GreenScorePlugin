@@ -16,6 +16,32 @@ class EquivalentRepository extends ServiceEntityRepository
         parent::__construct($registry, Equivalent::class);
     }
 
+    // Recupere deux equivalents aleatoires
+    public function findTwoRandomEquivalents(): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->select('e.id');
+
+        $ids = array_column($qb->getQuery()->getArrayResult(), 'id');
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        $randomIds = array_rand($ids, min(2, count($ids)));
+
+        if (!is_array($randomIds)) {
+            $randomIds = [$randomIds];
+        }
+
+        return $this->createQueryBuilder('e')
+            ->where('e.id IN (:ids)')
+            ->setParameter('ids', array_intersect_key($ids, array_flip($randomIds)))
+            ->getQuery()
+            ->getResult();
+    }
+
+
     //    /**
     //     * @return Equivalent[] Returns an array of Equivalent objects
     //     */

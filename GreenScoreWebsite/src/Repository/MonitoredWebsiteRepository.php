@@ -15,6 +15,18 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MonitoredWebsite::class);
     }
+    
+    // Recupere un la derniere entree ajoutee en fonction de userId
+    public function findLastAddedByUser(int $userId): ?MonitoredWebsite
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('m.id', 'DESC') 
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     //    /**
     //     * @return MonitoredWebsite[] Returns an array of MonitoredWebsite objects

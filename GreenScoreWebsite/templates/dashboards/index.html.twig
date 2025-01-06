@@ -75,8 +75,8 @@
     <!-- Widget 1: EcoIndex -->
     <div class="bg-white flex flex-col justify-evenly gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
       <div class="flex justify-center">
-        <a href="https://bff.ecoindex.fr/redirect/?url={{ url }}" target="_blank">
-            <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url }}" alt="Ecoindex Badge" loading="lazy"/>
+        <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}" target="_blank">
+            <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url_full }}" alt="Ecoindex Badge" loading="lazy"/>
         </a>
       </div>
       <p class="text-sm mt-2">
@@ -140,9 +140,9 @@
         <h2 class="text-lg font-bold">Equivalent</h2>
       </div>
       <picture class="w-24 h-24 flex items-center justify-center mt-4">
-        <img src="{{ asset('/images/shower-icon.png') }}" alt="Douches" class="rounded-full" loading="lazy">
+        <img src="{{ asset('/images/' ~ equivalent1.icon ) }}" alt="{{equivalent1.name}}" class="rounded-full" loading="lazy">
       </picture>
-      <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent1}}">0</span> douches</p>
+      <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent1.value}}">0</span> {{equivalent1.name}}</p>
     </div>
     
     <!-- Widget 5: Total Consumption -->
@@ -152,17 +152,17 @@
     </div>
 
     <!-- Widget 6: Equivalent 2 -->
-    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-6 md:col-span-3 md:order-6">
+    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 md:col-span-3 md:order-4">
       <div class="flex justify-center gap-2">
         <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
           <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
         </picture>
         <h2 class="text-lg font-bold">Equivalent</h2>
-        </div>
+      </div>
       <picture class="w-24 h-24 flex items-center justify-center mt-4">
-        <img src="{{ asset('/images/shower-icon.png') }}" alt="Douches" class="rounded-full" loading="lazy">
+        <img src="{{ asset('/images/' ~ equivalent2.icon) }}" alt="{{equivalent2.name}}" class="rounded-full" loading="lazy">
       </picture>
-      <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent2}}">0</span> douches</p>
+      <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent2.value}}">0</span> {{equivalent1.name}}</p>
     </div>
 
     {% if page != 'dernier-site-web-consulte' %}

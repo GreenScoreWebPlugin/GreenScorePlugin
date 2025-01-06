@@ -5,12 +5,15 @@ namespace App\Controller;
 use App\Entity\MonitoredWebsite;
 use App\Repository\MonitoredWebsiteRepository;
 use App\Repository\UserRepository;
+use App\Repository\AdviceRepository;
+use App\Repository\EquivalentRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class DashboardController extends AbstractController
@@ -54,7 +57,7 @@ class DashboardController extends AbstractController
         // $monitoredwebsites = $monitoredWebsiteRepository->findAll()); 
 
         // On récupère tous ceux dont user est égal au user $user et dont l'urlDomain est luceidubos.fr, triés par urlFull décroissant
-        //$monitoredwebsites = $monitoredWebsiteRepository->findBy(['user' => $user, 'urlDomain' => 'luciedubos.fr'], ['urlFull' => 'desc']); 
+        // $monitoredwebsites = $monitoredWebsiteRepository->findBy(['user' => $user, 'urlDomain' => 'luciedubos.fr'], ['urlFull' => 'desc']); 
 
         // Find est l'équivalent de WHERE et ORDER BY
 
@@ -76,6 +79,7 @@ class DashboardController extends AbstractController
     #[Route('/mes-donnees', name: 'app_mes_donnees')]
     public function mesDonnees(): Response
     {
+        
         $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
         $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
         $totalConsu = 65000;
@@ -110,39 +114,105 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route('/dernier-site-web-consulte', name: 'app_dernier_site_web_consulte')]
-    public function siteWebSurveille(): Response
+    #[Route('/dernier-site-web-consulte', name: 'app_dernier_site_web_consulte', defaults: ['userId' => 1])]
+    public function siteWebSurveille(?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
     {
-        $countryName = 'Japan'; // Le pays que vous voulez afficher
+        // $user = $this->getUser();
+
+        // Recuperation du dernier site web consulte
+        $lastMonitoredWebsite = $monitoredWebsiteRepository->findLastAddedByUser($userId);
+
+        // Variables affichees
         $flagUrl = null;
+        $country = null;
+        $url_domain = null;
+        $url_full = null;
         $error = null;
+        $carbonIntensity = null;
+        $equivalent1 = null;
+        $equivalent2 = null;
+        $advice = null;
+        $adviceDev = null;
+        $totalConsu = null;
+        $pageSize = null;
+        $loadingTime = null;
+        $queriesQuantity = null;
 
-        try {
-            $response = $this->httpClient->request('GET', 'https://restcountries.com/v3.1/name/' . strtolower($countryName));
-            $data = $response->toArray();
+        if ($lastMonitoredWebsite) {
+            // Website
+            $url_full = $lastMonitoredWebsite->getUrlFull();
+            $url_domain = $lastMonitoredWebsite->getUrlDomain();
 
-            // Récupère le lien du drapeau
-            $flagUrl = $data[0]['flags']['svg'] ?? null;
-        } catch (\Exception $e) {
-            $error = 'Impossible de récupérer les informations pour ce pays.';
+            // Country Flag Carbon Intensity
+            $country = $lastMonitoredWebsite->getCountry();
+            // TODO : Recuperer l'intensite carbone du pays
+            $carbonIntensity = 64;
+            try {
+                $response = $this->httpClient->request('GET', 'https://restcountries.com/v3.1/name/' . strtolower($country));
+                $data = $response->toArray();
+                $flagUrl = $data[0]['flags']['svg'] ?? null;
+            } catch (\Exception $e) {
+                $error = 'Impossible de récupérer les informations pour ce pays.';
+            }
+
+            // Advices : Recuperer deux conseils aleatoire
+            $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+            if ($adviceEntity) {
+                $advice = $adviceEntity->getAdvice();
+            }
+            $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+            if ($adviceDevEntity) {
+                $adviceDev = $adviceDevEntity->getAdvice();
+            }
+
+            // Total Consumption
+            try {
+                $user = $userRepository->find($userId);
+        
+                if (!$user) {
+                    throw new \Exception('Utilisateur non trouvé');
+                }
+
+                $totalConsu = $user->getTotalCarbonFootprint();
+            } catch (\Exception $e) {
+                $totalConsu = null;
+            }
+
+            if ($totalConsu) {
+                // Equivalents : Recuperer deux equivalents aleatoires
+                $equivalents = $equivalentRepository->findTwoRandomEquivalents();
+
+                $equivalent1 = null;
+                $equivalent2 = null;
+
+                if (count($equivalents) === 2) {
+                    $equivalent1 = [
+                        'name' => $equivalents[0]->getName(),
+                        'value' => $totalConsu / $equivalents[0]->getCarbonKgCo2(),
+                        'icon' => $equivalents[0]->getIconThumbnail(),
+                    ];
+                    $equivalent2 = [
+                        'name' => $equivalents[1]->getName(),
+                        'value' => $totalConsu / $equivalents[1]->getCarbonKgCo2(),
+                        'icon' => $equivalents[1]->getIconThumbnail(),
+                    ];
+                }
+            }
+
+
+
+            // Page in numbers
+            $pageSize = $lastMonitoredWebsite->getResources();
+            $loadingTime = $lastMonitoredWebsite->getLoadingTime();
+            $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity();           
+
         }
-
-        $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-        $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-        $totalConsu = 65000;
-        $equivalent1 = 20;
-        $equivalent2 = 20;
-        $carbonIntensity = 64;
-        $pageSize = 230;
-        $loadingTime = 230;
-        $queriesQuantity = 230;
-        $url = "https://example.com";
 
         return $this->render('dashboards/index.html.twig', [
             'page' => 'dernier-site-web-consulte',
-            'title' => 'Dernier site web consulté',
-            'description' => 'bla bla bla',
-            'country' => $countryName,
+            'title' => 'Dernier site web consulté : ' . $url_domain,
+            'description' => 'Voici une analyse détaillée de votre dernière page consultée : ' . $url_full,
+            'country' => $country,
             'flagUrl' => $flagUrl,
             'error' => $error,
             'totalConsu' => $totalConsu,
@@ -154,7 +224,7 @@ class DashboardController extends AbstractController
             'pageSize' => $pageSize,
             'loadingTime' => $loadingTime,
             'queriesQuantity' => $queriesQuantity,
-            'url' => $url,
+            'url_full' => $url_full,
         ]);
     }
 
