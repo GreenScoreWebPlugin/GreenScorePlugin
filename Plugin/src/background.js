@@ -291,6 +291,13 @@ browser.webNavigation.onCompleted.addListener((details) => {
   }
 });
 
+browser.webNavigation.onBeforeNavigate.addListener((details) => {
+  const tabData = tabNetworkData.get(details.tabId);
+  if (tabData && tabData.currentUrl) {
+    processAndSendData(details.tabId, tabData, true);
+  }
+});
+
 // Handle tab removal - send final data before removing
 browser.tabs.onRemoved.addListener(async (tabId) => {
   const tabData = tabNetworkData.get(tabId);

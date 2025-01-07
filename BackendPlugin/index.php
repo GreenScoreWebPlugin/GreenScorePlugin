@@ -36,6 +36,7 @@ function logError($message, $data = null) {
     file_put_contents(ERROR_LOG_FILE, json_encode($existingErrors, JSON_PRETTY_PRINT));
 }
 
+
 // Validate and parse input data
 try {
     $inputData = file_get_contents("php://input");
