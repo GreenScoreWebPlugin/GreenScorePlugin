@@ -59,41 +59,41 @@ try {
 
     // Database connection parameters
     $dbConfig = [
-        'host' => 'localhost',
-        'dbname' => 'test',
-        'username' => 'root',
-        'password' => ''
+        'host' => 'mysql-greenscoreweb.alwaysdata.net',
+        'dbname' => 'greenscoreweb_database',
+        'username' => '387850',
+        'password' => 'Greenscore64600'
     ];
 
     // Establish database connection with port
     $pdo = new PDO(
-        "mysql:host={$dbConfig['host']};dbname={$dbConfig['dbname']};charset=utf8", 
+        "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['dbname']};charset=utf8", 
         $dbConfig['username'], 
         $dbConfig['password']
     );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Prepare data for insertion
+    
     $insertData = [
-        'id_utilisateur' => 54321, // Static user ID
-        'nombre_requetes' => $data['totalRequests'],
-        'temps_chargement' => $data['loadTime'],
-        'donnees_transferes' => $data['totalTransferredSize'],
-        'ressources' => $data['totalResourceSize'],
-        'empreinte_carbone' => $data['totalResourceSize'] * 0.000001, // Simplified carbon footprint calculation
-        'pays' => 'France',
-        'url_complet' => $data['url'],
-        'url_domaine' => $data['domain']
+        'user_id' => 54321,
+        'queries_quantity' => $data['totalRequests'],
+        'loading_time' => $data['loadTime'],
+        'data_transferred' => $data['totalTransferredSize'],
+        'resources' => $data['totalResourceSize'],
+        'carbon_footprint' => $data['totalResourceSize'] * 0.000001 + $data['carbonIntensity'],
+        'country' => $data['country'],
+        'url_full' => $data['url'],
+        'url_domain' => $data['domain'],
     ];
 
     // Prepare and execute insert statement
     $sqlInsert = "
-        INSERT INTO SitesWebSurveille 
-        (url_domaine, id_utilisateur, nombre_requetes, transfer_donnees, ressources, 
-         temps_chargement, empreinte_carbone, url_complet, pays)
+        INSERT INTO monitored_website 
+        (url_domain, user_id, queries_quantity, data_transferred, resources, 
+         loading_time, carbon_footprint, url_full, country)
         VALUES 
-        (:url_domaine, :id_utilisateur, :nombre_requetes, :donnees_transferes, :ressources, 
-         :temps_chargement, :empreinte_carbone, :url_complet, :pays)
+        (:url_domain, :user_id, :queries_quantity, :data_transferred, :resources, 
+         :loading_time, :carbon_footprint, :url_full, :country)
     ";
     
     $stmt = $pdo->prepare($sqlInsert);
