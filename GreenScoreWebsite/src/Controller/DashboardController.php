@@ -122,6 +122,9 @@ class DashboardController extends AbstractController
     public function siteWebSurveille(?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
     {
         // $user = $this->getUser();
+        // if ($user)
+        //     $userId = $user->getId();
+        // dd($userId);
 
         // Recuperation du dernier site web consulte
         $lastMonitoredWebsite = $monitoredWebsiteRepository->findLastAddedByUser($userId);
@@ -149,14 +152,31 @@ class DashboardController extends AbstractController
 
             // Country Flag Carbon Intensity
             $country = $lastMonitoredWebsite->getCountry();
-            // TODO : Recuperer l'intensite carbone du pays
             $carbonIntensity = 64;
             try {
                 $response = $this->httpClient->request('GET', 'https://restcountries.com/v3.1/name/' . strtolower($country));
                 $data = $response->toArray();
                 $flagUrl = $data[0]['flags']['svg'] ?? null;
+                $contryCode = $data[0]['cca2'] ?? null;
             } catch (\Exception $e) {
                 $error = 'Impossible de récupérer les informations pour ce pays.';
+            }
+            if($contryCode){
+                $apiToken = 'R1oPkUx8UdRnx';
+                try {
+                    $response = $this->httpClient->request('GET', 'https://api.electricitymap.org/v3/carbon-intensity/latest', [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $apiToken,
+                        ],
+                        'query' => [
+                            'zone' => $contryCode,
+                        ],
+                    ]);
+                    $data = $response->toArray();
+                    $carbonIntensity = $data['carbonIntensity'] ?? null;
+                } catch (\Exception $e) {
+                    $error = 'Impossible de récupérer l intensité carbone pour ce pays.';
+                }
             }
 
             // Advices : Recuperer deux conseils aleatoire
@@ -261,17 +281,16 @@ class DashboardController extends AbstractController
         }
     }
 
+    // #[Route('/example', name: 'example')]
+    // public function example(Request $request): Response
+    // {
+    //     $lulu = $request->get('lulu');
+    //     $toto = $request->get('toto');
 
-    #[Route('/example', name: 'example')]
-    public function example(Request $request): Response
-    {
-        $lulu = $request->get('lulu');
-        $toto = $request->get('toto');
+    //     if (isset($lulu, $toto)) {
+    //         print($lulu . ' ' . $toto);
+    //     }
 
-        if (isset($lulu, $toto)) {
-            print($lulu . ' ' . $toto);
-        }
-
-        return new Response();
-    }
+    //     return new Response();
+    // }
 }
