@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <title>Popup</title>
@@ -25,10 +24,12 @@
 
     <div class="flex flex-col gap-6 px-4">
         <div class="flex flex-col items-center justify-center gap-2 w-full">
-            <h2 id="site-country" class="text-xl w-2/3 text-center font-extrabold font-outfit text-grey-950">Dans votre pays (*Pays*), cette page consomme</h2>
+            <h2 id="site-country" class="text-xl w-2/3 text-center font-extrabold font-outfit text-grey-950">
+                Dans votre pays (*Pays*), cette page consomme
+            </h2>
             <div class="flex flex-col justify-center items-center">
-                <div class="flex items-baseline font-outfit text-[#BD2525]">
-                    <span class="text-5xl font-extrabold">602&nbsp;</span>
+                <div id="gCO2e-container" class="flex items-baseline font-outfit text-[#BD2525]">
+                    <span id="gCO2e-value" class="text-5xl font-extrabold">602&nbsp;</span>
                     <div class="flex font-medium gap-0 items-baseline">
                         <span class="text-base">gC0</span>
                         <span class="text-xs">2</span>
@@ -46,21 +47,24 @@
         <div class="flex flex-col font-outfit gap-2">
             <p class="text-sm font-light">Cela correspond à :</p>
             <div class="flex gap-3 items-center justify-center">
-                <div class="flex flex-col p-2 w-[120px] h-[120px] bg-[#FFB7B7] text-[#BD2525] gap-2 border border-[#BD2525] rounded-[4px]">
+                <!-- Carte 1 -->
+                <div class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]">
                     <div class="flex flex-col gap-[6px] w-full h-full">
                         <img src="../assets/images/account.svg" class="w-5 h-5 object-cover">
                         <p class="text-xl font-extrabold">0.95</p>
                     </div>
                     <p class="text-xs">marathon des films Harry Potter</p>
                 </div>
-                <div class="flex flex-col p-2 w-[120px] h-[120px] bg-[#FFB7B7] text-[#BD2525] gap-2 border border-[#BD2525] rounded-[4px]">
+                <!-- Carte 2 -->
+                <div class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]">
                     <div class="flex flex-col gap-[6px]">
                         <img src="../assets/images/account.svg" class="w-5 h-5 object-cover">
                         <p class="text-xl font-extrabold">1.5</p>
                     </div>
                     <p class="text-xs">repas végétarien</p>
                 </div>
-                <div class="flex flex-col p-2 w-[120px] h-[120px] bg-[#FFB7B7] text-[#BD2525] gap-2 border border-[#BD2525] rounded-[4px]">
+                <!-- Carte 3 -->
+                <div class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]">
                     <div class="flex flex-col gap-[6px]">
                         <img src="../assets/images/account.svg" class="w-5 h-5 object-cover">
                         <p class="text-xl font-extrabold">19</p>
@@ -81,5 +85,4 @@
         </div>
     </div>
 </body>
-
 </html>

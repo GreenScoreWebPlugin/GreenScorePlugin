@@ -1,5 +1,6 @@
 // Track network data per tab
 const tabNetworkData = new Map();
+const lastSentData = new Map();
 
 // API details
 const token = 'R1oPkUx8UdRnx';
@@ -16,8 +17,10 @@ function getTabData(tabId) {
       startTime: null,
       endTime: null,
       currentUrl: null,
-      country: null, // Full country name
-      countryCode: null, // Reduced country code for API
+      country: null,
+      countryCode: null,
+      lastDataSent: null,
+      isProcessing: false // Flag pour éviter les envois simultanés
     });
   }
   return tabNetworkData.get(tabId);
@@ -42,8 +45,8 @@ async function getLatestCarbonIntensity(countryCode) {
     console.log(`Intensité carbone pour la zone ${countryCode}: ${data.carbonIntensity} gCO₂/kWh`);
     return data.carbonIntensity;
   } catch (error) {
-    console.error('Erreur lors de la récupération de l’intensité carbone:', error);
-    return -1; // Retourne -1 en cas d'erreur
+    console.error("Erreur lors de la récupération de l'intensité carbone:", error);
+    return -1;
   }
 }
 
@@ -75,6 +78,7 @@ function resetTabData(tabId) {
   tabData.loadTime = 0;
   tabData.startTime = null;
   tabData.endTime = null;
+  tabData.isProcessing = false;
 }
 
 // Extract domain from URL
@@ -87,45 +91,144 @@ function extractDomain(url) {
   }
 }
 
-// Handle URL change and send data before updating the URL
+// Function to check if data has changed significantly
+function hasSignificantChanges(oldData, newData) {
+  if (!oldData) return true;
+  
+  // Check if enough time has passed (5 seconds minimum)
+  if (newData.lastDataSent && (Date.now() - newData.lastDataSent < 5000)) {
+    return false;
+  }
+
+  // Check if metrics have changed significantly
+  const transferredSizeChange = Math.abs(newData.totalTransferredSize - oldData.totalTransferredSize);
+  const requestsChange = newData.totalRequests - oldData.totalRequests;
+  
+  return transferredSizeChange > 1000 || requestsChange > 0;
+}
+
+// Process and send data
+async function processAndSendData(tabId, tabData, isFinal = false) {
+  if (tabData.isProcessing || (tabData.totalRequests === 0 && !isFinal)) return;
+  
+  tabData.isProcessing = true;
+  
+  try {
+    const domain = extractDomain(tabData.currentUrl);
+    const carbonIntensity = tabData.countryCode
+      ? await getLatestCarbonIntensity(tabData.countryCode)
+      : -1;
+
+    const dataToSend = {
+      tabId,
+      domain,
+      totalTransferredSize: tabData.totalTransferredSize,
+      totalResourceSize: tabData.totalResourceSize,
+      totalRequests: tabData.totalRequests,
+      loadTime: tabData.endTime - tabData.startTime,
+      url: tabData.currentUrl,
+      country: tabData.country,
+      carbonIntensity,
+      isFinal
+    };
+
+    // Update last sent timestamp
+    tabData.lastDataSent = Date.now();
+    
+    // Save last sent data
+    lastSentData.set(domain, {
+      totalTransferredSize: tabData.totalTransferredSize,
+      totalRequests: tabData.totalRequests,
+      lastDataSent: tabData.lastDataSent
+    });
+
+    await sendDataToServer(dataToSend);
+  } finally {
+    tabData.isProcessing = false;
+  }
+}
+
+// Handle URL change and send data
 async function handleUrlChange(tabId, newUrl) {
   const tabData = getTabData(tabId);
+  
+  if (newUrl === tabData.currentUrl) {
+    const domain = extractDomain(newUrl);
+    const currentData = {
+      totalTransferredSize: tabData.totalTransferredSize,
+      totalRequests: tabData.totalRequests,
+      lastDataSent: tabData.lastDataSent
+    };
 
-  if (newUrl !== tabData.currentUrl) {
-    console.log(`URL change detected for tab ${tabId}:`, newUrl);
+    const lastSent = lastSentData.get(domain);
 
-    // Send data if requests exist
-    if (tabData.totalRequests > 0 && tabData.startTime && tabData.endTime) {
-      // Get carbon intensity if countryCode is available
-      const carbonIntensity = tabData.countryCode
-        ? await getLatestCarbonIntensity(tabData.countryCode)
-        : -1;
+    if (hasSignificantChanges(lastSent, currentData)) {
+      await processAndSendData(tabId, tabData);
+    }
+    return;
+  }
 
-      const data = {
-        tabId,
-        domain: extractDomain(tabData.currentUrl), // Send data for the previous URL
-        totalTransferredSize: tabData.totalTransferredSize,
-        totalResourceSize: tabData.totalResourceSize,
-        totalRequests: tabData.totalRequests,
-        loadTime: tabData.endTime - tabData.startTime,
-        url: tabData.currentUrl,
-        country: tabData.country, // Full country name
-        carbonIntensity, // Intensity data from API
-      };
+  // Si l'URL est différente, envoyer les données de l'ancienne URL
+  if (tabData.currentUrl) {
+    await processAndSendData(tabId, tabData);
+  }
 
-      await sendDataToServer(data);
+  // Mettre à jour l'URL et réinitialiser les données
+  tabData.currentUrl = newUrl;
+  resetTabData(tabId);
+}
+
+// Fetch country based on geolocation
+async function fetchCountry() {
+  try {
+    const response = await fetch('https://ipwhois.app/json/');
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
     }
 
-    // Update current URL and reset data
-    tabData.currentUrl = newUrl;
-    resetTabData(tabId);
+    const data = await response.json();
+    if (data.success === false) {
+      throw new Error(`API error: ${data.message}`);
+    }
+
+    return { country: data.country, countryCode: data.country_code };
+  } catch (error) {
+    console.error('Erreur lors de la récupération du pays:', error);
+    return { country: 'Unknown', countryCode: null };
   }
+}
+
+// Monitor dynamic URL changes
+function monitorDynamicUrlChanges(tabId) {
+  let lastCheckedUrl = null;
+  
+  function checkUrlChange() {
+    browser.tabs.get(tabId, (tab) => {
+      if (browser.runtime.lastError) return;
+
+      const newUrl = tab.url;
+      if (newUrl !== lastCheckedUrl) {
+        lastCheckedUrl = newUrl;
+        fetchCountry().then(({ country, countryCode }) => {
+          const tabData = getTabData(tabId);
+          tabData.country = country;
+          tabData.countryCode = countryCode;
+          handleUrlChange(tabId, newUrl);
+        });
+      }
+    });
+  }
+
+  const intervalId = setInterval(checkUrlChange, 500);
+  return () => clearInterval(intervalId);
 }
 
 // Network request tracking
 browser.webRequest.onCompleted.addListener(
   (details) => {
     const tabId = details.tabId;
+    if (tabId < 0) return; // Ignorer les requêtes qui ne sont pas associées à un onglet
+
     const tabData = getTabData(tabId);
 
     if (
@@ -180,100 +283,80 @@ browser.webRequest.onCompleted.addListener(
   ["responseHeaders"]
 );
 
-// Detect URL changes
+// Event listeners
 browser.webNavigation.onCompleted.addListener((details) => {
   if (details.frameId === 0) {
     handleUrlChange(details.tabId, details.url);
   }
 });
 
-// Clean up tab data on tab removal
-browser.tabs.onRemoved.addListener((tabId) => {
+// Handle tab removal - send final data before removing
+browser.tabs.onRemoved.addListener(async (tabId) => {
+  const tabData = tabNetworkData.get(tabId);
+  if (tabData && tabData.currentUrl) {
+    await processAndSendData(tabId, tabData, true);
+  }
   tabNetworkData.delete(tabId);
 });
-
-// Fetch the country based on geolocation using ipwhois.io
-async function fetchCountry() {
-  try {
-    const response = await fetch('https://ipwhois.app/json/');
-    if (!response.ok) {
-      throw new Error(`API responded with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    if (data.success === false) {
-      throw new Error(`API error: ${data.message}`);
-    }
-
-    return { country: data.country, countryCode: data.country_code };
-  } catch (error) {
-    console.error('Erreur lors de la récupération du pays:', error);
-    return { country: 'Unknown', countryCode: null };
-  }
-}
-
-// Periodic monitoring for dynamic URL changes
-function monitorDynamicUrlChanges(tabId) {
-  function checkUrlChange() {
-    browser.tabs.get(tabId, (tab) => {
-      if (browser.runtime.lastError) return;
-
-      const tabData = getTabData(tabId);
-      const newUrl = tab.url;
-
-      if (newUrl !== tabData.currentUrl) {
-        fetchCountry().then(({ country, countryCode }) => {
-          tabData.country = country;
-          tabData.countryCode = countryCode;
-          handleUrlChange(tabId, newUrl);
-        });
-      }
-    });
-  }
-
-  const intervalId = setInterval(checkUrlChange, 500);
-  return () => clearInterval(intervalId);
-}
 
 browser.tabs.onCreated.addListener((tab) => {
   monitorDynamicUrlChanges(tab.id);
 });
 
+// [Tout le code précédent reste identique jusqu'au gestionnaire de message]
+
+// Message handling
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'getCountryAndUrl') {
-      // Récupérer l'URL et le pays
-      const handleResponse = (tabUrl) => {
-          fetchCountry()
-              .then(({ country }) => {
-                  sendResponse({ country, url: extractDomain(tabUrl) });
-              })
-              .catch((error) => {
-                  console.error('Erreur lors de la récupération du pays :', error);
-                  sendResponse({ country: 'Unknown', url: extractDomain(tabUrl) });
-              });
-      };
+    const handleResponse = (tabUrl) => {
+      fetchCountry()
+        .then(({ country }) => {
+          sendResponse({ country, url: extractDomain(tabUrl) });
+        })
+        .catch((error) => {
+          console.error('Erreur lors de la récupération du pays :', error);
+          sendResponse({ country: 'Unknown', url: extractDomain(tabUrl) });
+        });
+    };
 
-      // Cas 1 : l'onglet est fourni par le message
-      if (sender.tab && sender.tab.url) {
-          handleResponse(sender.tab.url);
-          return true; // Indique une réponse asynchrone
+    if (sender.tab && sender.tab.url) {
+      handleResponse(sender.tab.url);
+      return true;
+    }
+
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      if (tabs.length > 0 && tabs[0].url) {
+        handleResponse(tabs[0].url);
+      } else {
+        sendResponse({ country: 'Unknown', url: 'Unknown' });
       }
+    }).catch((error) => {
+      console.error("Erreur lors de la récupération de l'onglet actif :", error);
+      sendResponse({ country: 'Unknown', url: 'Unknown' });
+    });
 
-      // Cas 2 : Pas d'onglet dans sender, chercher l'onglet actif
-      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-          if (tabs.length > 0 && tabs[0].url) {
-              handleResponse(tabs[0].url);
-          } else {
-              sendResponse({ country: 'Unknown', url: 'Unknown' });
-          }
-      }).catch((error) => {
-          console.error('Erreur lors de la récupération de l’onglet actif :', error);
-          sendResponse({ country: 'Unknown', url: 'Unknown' });
-      });
+    return true;
+  }
 
-      return true; // Indique une réponse asynchrone
+  // Nouveau gestionnaire pour gCO2e
+  if (message.type === 'getgCO2e') {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      if (tabs.length > 0) {
+        const tabData = getTabData(tabs[0].id);
+        
+        // Calcul du gCO2e basé sur les données collectées
+        let gCO2e = 0;
+        if (tabData.totalTransferredSize > 0) {
+          // Conversion des octets en gCO2e (exemple de calcul - à ajuster selon vos besoins)
+          const kbTransferred = tabData.totalTransferredSize / 1024;
+          gCO2e = Math.round(kbTransferred * 0.2); // 0.2 est un facteur exemple
+        }
+
+        sendResponse({ gCO2e: gCO2e });
+      } else {
+        sendResponse({ gCO2e: 0 });
+      }
+    });
+    return true;
   }
 });
-
-
-
