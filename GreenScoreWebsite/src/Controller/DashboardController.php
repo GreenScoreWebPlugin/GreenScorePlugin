@@ -2,18 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\MonitoredWebsite;
 use App\Repository\MonitoredWebsiteRepository;
 use App\Repository\UserRepository;
 use App\Repository\AdviceRepository;
 use App\Repository\EquivalentRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class DashboardController extends AbstractController
@@ -240,5 +237,18 @@ class DashboardController extends AbstractController
         ];
 
         return $this->json($top5Sites);
+    }
+
+    #[Route('/example', name: 'example')]
+    public function example(Request $request): Response
+    {
+        $lulu = $request->get('lulu');
+        $toto = $request->get('toto');
+
+        if (isset($lulu, $toto)) {
+            print($lulu . ' ' . $toto);
+        }
+
+        return new Response();
     }
 }
