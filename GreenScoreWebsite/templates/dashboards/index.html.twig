@@ -168,7 +168,7 @@
       </div>
         {% if equivalent1.icon is not null %}
         <picture class="w-24 h-24 flex items-center justify-center mt-4">
-          <img src="{{ asset('/images/' ~ equivalent1.icon) }}" alt="{{equivalent1.name}}" class="rounded-full" loading="lazy">
+          <img src="{{ asset('/images/equivalents/' ~ equivalent1.icon) }}" alt="{{equivalent1.name}}" class="rounded-full" loading="lazy">
         </picture>
         {% endif %}
       <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent1.value}}">0</span> {{equivalent1.name}}</p>
@@ -198,7 +198,7 @@
       </div>
         {% if equivalent2.icon is not null %}
         <picture class="w-24 h-24 flex items-center justify-center mt-4">
-          <img src="{{ asset('/images/' ~ equivalent2.icon) }}" alt="{{equivalent2.name}}" class="rounded-full" loading="lazy">
+          <img src="{{ asset('/images/equivalents/' ~ equivalent2.icon) }}" alt="{{equivalent2.name}}" class="rounded-full" loading="lazy">
         </picture>
         {% endif %}
       <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent2.value}}">0</span> {{equivalent2.name}}</p>
