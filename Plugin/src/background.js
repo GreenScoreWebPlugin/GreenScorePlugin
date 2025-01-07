@@ -234,7 +234,8 @@ browser.webRequest.onCompleted.addListener(
     if (
       details.url.startsWith("http") &&
       details.statusCode >= 200 &&
-      details.statusCode < 300
+      details.statusCode < 300 &&
+      details.url !="about:newtab"
     ) {
       tabData.totalRequests++;
 
@@ -303,8 +304,6 @@ browser.tabs.onCreated.addListener((tab) => {
   monitorDynamicUrlChanges(tab.id);
 });
 
-// [Tout le code précédent reste identique jusqu'au gestionnaire de message]
-
 // Message handling
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'getCountryAndUrl') {
@@ -338,18 +337,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
-  // Nouveau gestionnaire pour gCO2e
   if (message.type === 'getgCO2e') {
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       if (tabs.length > 0) {
         const tabData = getTabData(tabs[0].id);
         
-        // Calcul du gCO2e basé sur les données collectées
         let gCO2e = 0;
         if (tabData.totalTransferredSize > 0) {
-          // Conversion des octets en gCO2e (exemple de calcul - à ajuster selon vos besoins)
           const kbTransferred = tabData.totalTransferredSize / 1024;
-          gCO2e = Math.round(kbTransferred * 0.2); // 0.2 est un facteur exemple
+          gCO2e = Math.round(kbTransferred * 0.2);
         }
 
         sendResponse({ gCO2e: gCO2e });

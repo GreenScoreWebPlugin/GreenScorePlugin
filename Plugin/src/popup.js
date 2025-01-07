@@ -2,23 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function getColorClass(gCO2e) {
         const value = Number(gCO2e);
         
-        if (value <= 75) {
+        if (value <= 200) {
             return {
-                text: 'text-[#4CAF50]',
-                bg: 'bg-[#4CAF50]',
-                border: 'border-[#4CAF50]'
+                text: 'text-[#617D3B]',
+                bg: 'bg-[#ECFDF2]',
+                border: 'border-[#6D874B]'
             };
-        } else if (value <= 150) {
+        } else if (value <= 400) {
             return {
-                text: 'text-[#FFC107]',
-                bg: 'bg-[#FFC107]',
-                border: 'border-[#FFC107]'
+                text: 'text-[#EAC13A]',
+                bg: 'bg-[#FFF1C5]',
+                border: 'border-[#EAC13A]'
             };
-        } else if (value <= 225) {
+        } else if (value <= 600) {
             return {
-                text: 'text-[#FF9800]',
-                bg: 'bg-[#FF9800]',
-                border: 'border-[#FF9800]'
+                text: 'text-[#E98035]',
+                bg: 'bg-[#F9D2B6]',
+                border: 'border-[#E98035]'
             };
         } else {
             return {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const comparisonCards = document.querySelectorAll('.comparison-card');
         comparisonCards.forEach(card => {
-            card.className = `comparison-card flex flex-col p-2 w-[120px] h-[120px] ${colorClasses.bg} text-red-500 gap-2 border ${colorClasses.border} rounded-[4px]`;
+            card.className = `comparison-card flex flex-col p-2 w-[120px] h-[120px] ${colorClasses.bg} ${colorClasses.text} gap-2 border ${colorClasses.border} rounded-[4px]`;
             console.log(card);
         });
     }
