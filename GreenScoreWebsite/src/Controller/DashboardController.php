@@ -118,41 +118,81 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route('/dernier-site-web-consulte', name: 'app_dernier_site_web_consulte', defaults: ['userId' => 1])]
-    public function siteWebSurveille(?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
+    #[Route('/derniere-page-web-consultee', name: 'app_derniere_page_web_consultee')]
+    public function siteWebSurveille(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
     {
-        // $user = $this->getUser();
-        // if ($user)
-        //     $userId = $user->getId();
         // dd($userId);
+        // dump($lulu);
+        // dump($toto);
+        $showDatas = false;
+        $noDatas = false;
+        $user = $this->getUser();
 
-        // Recuperation du dernier site web consulte
-        $lastMonitoredWebsite = $monitoredWebsiteRepository->findLastAddedByUser($userId);
+        if ($user){
+            $userId = $user->getId();
+            $country = null;
 
-        // Variables affichees
-        $flagUrl = null;
-        $country = null;
-        $url_domain = null;
-        $url_full = null;
-        $error = null;
-        $carbonIntensity = null;
-        $equivalent1 = null;
-        $equivalent2 = null;
-        $advice = null;
-        $adviceDev = null;
-        $totalConsu = null;
-        $pageSize = null;
-        $loadingTime = null;
-        $queriesQuantity = null;
+            // Recuperation du dernier site web consulte
+            $lastMonitoredWebsite = $monitoredWebsiteRepository->findLastAddedByUser($userId);
+            if ($lastMonitoredWebsite) {
+                // Website
+                $url_full = $lastMonitoredWebsite->getUrlFull();
+                $url_domain = $lastMonitoredWebsite->getUrlDomain();
 
-        if ($lastMonitoredWebsite) {
-            // Website
-            $url_full = $lastMonitoredWebsite->getUrlFull();
-            $url_domain = $lastMonitoredWebsite->getUrlDomain();
+                // Country
+                $country = $lastMonitoredWebsite->getCountry();
 
-            // Country Flag Carbon Intensity
-            $country = $lastMonitoredWebsite->getCountry();
-            $carbonIntensity = 64;
+                // Page in numbers
+                $pageSize = $lastMonitoredWebsite->getResources();
+                $loadingTime = $lastMonitoredWebsite->getLoadingTime();
+                $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity(); 
+
+                // Total Consumption
+                try {
+                    $user = $userRepository->find($userId);
+            
+                    if (!$user) {
+                        throw new \Exception('Utilisateur non trouvé');
+                    }
+
+                    $totalConsu = $user->getTotalCarbonFootprint();
+                } catch (\Exception $e) {
+                    $totalConsu = null;
+                }
+                $showDatas = true;
+            } else {
+                $showDatas = false;
+                $noDatas = true;
+            }
+            
+        }
+        else if($request->query->has('url_full'))
+        {
+            // dump($request->get('country'));
+            // dump($request->get('url_domain'));
+            // dump($request->get('url_full'));
+            // dump($request->get('totalConsu'));
+            // dump($request->get('pageSize'));
+            // dump($request->get('loadingTime'));
+            // dump($request->get('queriesQuantity'));
+            
+            $country = is_string($request->get('country')) ? $request->get('country') : null;
+            $url_domain = is_string($request->get('url_domain')) ? $request->get('url_domain') : null;
+            $url_full = is_string($request->get('url_full')) ? $request->get('url_full') : null;
+            $totalConsu = is_numeric($request->get('totalConsu')) ? (float)$request->get('totalConsu') : null;
+            $pageSize = is_numeric($request->get('pageSize')) ? (float)$request->get('pageSize') : null;
+            $loadingTime = is_numeric($request->get('loadingTime')) ? (float)$request->get('loadingTime') : null;
+            $queriesQuantity = is_numeric($request->get('queriesQuantity')) ? (int)$request->get('queriesQuantity') : null;
+
+            $showDatas = true;
+        }else{
+            $showDatas = false;
+        }
+        
+        if ($showDatas) {
+            $contryCode = null;
+
+            // Flag Carbon Intensity
             try {
                 $response = $this->httpClient->request('GET', 'https://restcountries.com/v3.1/name/' . strtolower($country));
                 $data = $response->toArray();
@@ -189,19 +229,6 @@ class DashboardController extends AbstractController
                 $adviceDev = $adviceDevEntity->getAdvice();
             }
 
-            // Total Consumption
-            try {
-                $user = $userRepository->find($userId);
-        
-                if (!$user) {
-                    throw new \Exception('Utilisateur non trouvé');
-                }
-
-                $totalConsu = $user->getTotalCarbonFootprint();
-            } catch (\Exception $e) {
-                $totalConsu = null;
-            }
-
             // Equivalents : Recuperer deux equivalents aleatoires
             if ($totalConsu) {
                 try {
@@ -216,31 +243,32 @@ class DashboardController extends AbstractController
             }
             
 
-            // Page in numbers
-            $pageSize = $lastMonitoredWebsite->getResources();
-            $loadingTime = $lastMonitoredWebsite->getLoadingTime();
-            $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity();           
+                      
 
         }
-
-        return $this->render('dashboards/index.html.twig', [
-            'page' => 'dernier-site-web-consulte',
-            'title' => 'Dernier site web consulté : ' . $url_domain,
-            'description' => 'Voici une analyse détaillée de votre dernière page consultée : ' . $url_full,
-            'country' => $country,
-            'flagUrl' => $flagUrl,
-            'error' => $error,
-            'totalConsu' => $totalConsu,
-            'advice' => $advice,
-            'adviceDev' => $adviceDev,
-            'equivalent1' => $equivalent1,
-            'equivalent2' => $equivalent2,
-            'carbonIntensity' => $carbonIntensity,
-            'pageSize' => $pageSize,
-            'loadingTime' => $loadingTime,
-            'queriesQuantity' => $queriesQuantity,
-            'url_full' => $url_full,
-        ]);
+        
+        if($showDatas || $userId)
+            return $this->render('dashboards/index.html.twig', [
+                'page' => 'derniere-page-web-consultee',
+                'title' => 'Dernière page web consultée : ' . ($url_domain ?? ''),
+                'description' => 'Voici une analyse détaillée de votre dernière page consultée : ' . ($url_full ?? ''),
+                'country' => $country ?? null,
+                'flagUrl' => $flagUrl ?? null,
+                'error' => $error ?? null,
+                'totalConsu' => $totalConsu ?? null,
+                'advice' => $advice ?? null,
+                'adviceDev' => $adviceDev ?? null,
+                'equivalent1' => $equivalent1 ?? null,
+                'equivalent2' => $equivalent2 ?? null,
+                'carbonIntensity' => $carbonIntensity ?? null,
+                'pageSize' => $pageSize ?? null,
+                'loadingTime' => $loadingTime ?? null,
+                'queriesQuantity' => $queriesQuantity ?? null,
+                'url_full' => $url_full ?? null,
+                'noDatas' => $noDatas ?? null
+            ]);
+        else
+            return $this->redirectToRoute('app_login');
     }
 
     // #[Route('/api/top-sites', name: 'api_top_sites')]
