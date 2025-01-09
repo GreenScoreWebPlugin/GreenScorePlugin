@@ -362,4 +362,34 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
     return true;
   }
+
+  if (message.type === 'getFullDetails') {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+        if (tabs.length === 0) {
+            sendResponse({ error: "Aucun onglet actif trouvé." });
+            return;
+        }
+
+        const activeTab = tabs[0];
+        const tabId = activeTab.id;
+        const tabData = getTabData(tabId);
+
+        sendResponse({
+            country: tabData.country || "Unknown",
+            countryCode: tabData.countryCode || "Unknown",
+            urlDomain: extractDomain(tabData.currentUrl || activeTab.url),
+            urlFull: tabData.currentUrl || activeTab.url,
+            totalTransferredSize: tabData.totalTransferredSize || 0,
+            totalRequests: tabData.totalRequests || 0,
+            totalResourceSize: tabData.totalResourceSize || 0,
+            loadTime: tabData.endTime - tabData.startTime || 0,
+        });
+    }).catch((error) => {
+        console.error("Erreur lors de la récupération de l'onglet actif :", error);
+        sendResponse({ error: error.message });
+    });
+
+    return true;
+}
+  
 });
