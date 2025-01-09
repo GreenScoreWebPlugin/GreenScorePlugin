@@ -3,7 +3,15 @@
 {% block title %}{{title}} | GreenScore{% endblock %}
 
 {% block body %}
-
+{% set data = {
+  'A': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
+  'B': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
+  'C': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
+  'D': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
+  'E': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
+  'F': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
+  'G': { 'src': '/images/eco-index/rocket.png', 'alt': '' }
+} %}
 <div class="w-full bg-gradient-to-b from-green-100 to-green-50 min-h-screen">
   {% if not noDatas %}
   <!-- Top -->
@@ -155,7 +163,13 @@
 
     <!-- Widget 3: Rocket -->
     <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 md:order-3 md:col-span-4 flex items-center justify-center ">
-      <img src="rocket-image.png" alt="Rocket" class="h-24" loading="lazy">
+      {% if lettreEcoIndex and data[lettreEcoIndex] is defined %}
+        <img src="{{ asset(data[lettreEcoIndex].src) }}"
+             alt="{{ data[lettreEcoIndex].alt }}"
+             class="h-44" loading="lazy">
+      {% else %}
+        <p>Nous n'avons pas réussi à afficher le widget</p>
+      {% endif %}
     </div>
 
     <!-- Widget 4: Equivalent 1 -->

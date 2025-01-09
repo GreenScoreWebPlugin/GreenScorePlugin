@@ -241,9 +241,18 @@ class DashboardController extends AbstractController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
             }
-            
 
-                      
+            // Widget en fonction de l'eco index
+            try {
+                $urlSvgEcoIndex = 'https://bff.ecoindex.fr/badge/?theme=dark&url=' . $url_full;
+                $svgContent = file_get_contents($urlSvgEcoIndex);
+
+                if (preg_match('/<tspan[^>]*>([A-G])<\/tspan>/', $svgContent, $matches)) {
+                    $lettreEcoIndex = $matches[1];
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Erreur lors de la récupération du badge EcoIndex : ' . $e->getMessage());
+            }
 
         }
         
@@ -265,7 +274,8 @@ class DashboardController extends AbstractController
                 'loadingTime' => $loadingTime ?? null,
                 'queriesQuantity' => $queriesQuantity ?? null,
                 'url_full' => $url_full ?? null,
-                'noDatas' => $noDatas ?? null
+                'noDatas' => $noDatas ?? null,
+                'lettreEcoIndex' => $lettreEcoIndex ?? null,
             ]);
         else
             return $this->redirectToRoute('app_login');
