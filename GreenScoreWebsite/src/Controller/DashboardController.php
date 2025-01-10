@@ -272,7 +272,7 @@ class DashboardController extends AbstractController
                 'country' => $country ?? null,
                 'flagUrl' => $flagUrl ?? null,
                 'error' => $error ?? null,
-                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
+                'totalConsu' => $totalConsu ?? null,
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
                 'equivalent1' => $equivalent1 ?? null,
@@ -327,30 +327,4 @@ class DashboardController extends AbstractController
             return new JsonResponse(['error' => 'An error occurred'], 500);
         }
     }
-
-    public function formatConsumption(?float $totalConsu): string
-    {
-        if ($totalConsu === null) {
-            return 'N/A';
-        }
-
-        if ($totalConsu >= 1_000_000) {
-            $value = $totalConsu / 1_000_000;
-            $unit = 'TCO2e'; // Tonne métrique
-        } elseif ($totalConsu >= 1_000) {
-            $value = $totalConsu / 1_000;
-            $unit = 'kgCO2e'; // Kilogramme
-        } else {
-            $value = $totalConsu;
-            $unit = 'gCO2e'; // Gramme
-        }
-
-        // Ajout de décimales uniquement pour les petites valeurs (<10)
-        $formattedValue = $value < 10
-            ? number_format($value, 2, '.', ' ') // 2 décimales pour les petites valeurs
-            : number_format($value, 0, '.', ' '); // Pas de décimales pour les autres
-
-        return $formattedValue . ' ' . $unit;
-    }
-
 }
