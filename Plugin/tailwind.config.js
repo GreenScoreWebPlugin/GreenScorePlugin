@@ -16,6 +16,8 @@ module.exports = {
         "grey-950": "#030712",
 
         "gs-green-950": "#233430"
+
+
       },
       fontFamily: {
           outfit: ["Outfit", "sans-serif"],
