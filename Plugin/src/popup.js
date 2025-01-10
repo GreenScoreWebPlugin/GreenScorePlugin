@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } = fullDetailsResponse;
 
         const detailsUrl = new URL(
-          "http://127.0.0.1:8000/derniere-page-web-consultee"
+          "http://localhost:8000/derniere-page-web-consultee"
         );
         detailsUrl.searchParams.append("country", country || "unknown");
         detailsUrl.searchParams.append("url_domain", urlDomain || "unknown");
