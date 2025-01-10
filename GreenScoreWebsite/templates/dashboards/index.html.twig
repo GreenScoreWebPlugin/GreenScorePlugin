@@ -7,26 +7,24 @@
 <div class="w-full bg-green-bg min-h-screen">
   {% if not noDatas %}
   <!-- Top -->
-  <div class="w-full text-center px-4 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
+  <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
       <h1 class="text-4xl font-bold">{{title}}</h1>
-      <div class="flex flex-col lg:flex-row text-grey-700">
-          <p class="text-base w-fit">
-              {{description}}
-              <p class="text-base ml-1 w-52 truncate">{{link}}</p>
-          </p>
-      </div>
+      <p class="text-base w-fit">
+          {{description}} <span class="text-base ml-1 w-52 truncate">{{link}}</span>
+      </p>
   </div>
 
+
   <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 md:grid-cols-12">
+  <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
 
       <!-- Widget 1 -->
       {% if page == 'mes-donnees' %}
 
           <!-- Carbon Average -->
-          <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
+          <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4">
               {% if averageFootprint is null and averageFootprint is null %}
-                  pas de données
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
               {% else %}
                   <h2 class="text-lg font-bold text-center font-outfit">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
                   {% if averageFootprint is not null and averageFootprint is not null %}
@@ -67,7 +65,7 @@
       {% elseif page == 'mon-organisation' %}
 
           <!-- Carbon Average -->
-          <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
+          <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4">
               {% if averageFootprint is not null %}
                   <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
                   <div class="flex justify-center gap-5 flex-1 items-center">
@@ -90,29 +88,29 @@
                               <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage}}">0</span> douches</p>
                           </div>
                       {% else %}
-                          pas de données
+                          <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
                       {% endif %}
                   </div>
               {% else %}
-                  pas de données
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
               {% endif %}
           </div>
 
       {% else %}
 
           <!-- EcoIndex -->
-          <div class="bg-white flex flex-col justify-evenly gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
+          <div class="bg-white flex flex-col justify-evenly gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4">
               {% if url_full is not null %}
                   <div class="flex justify-center w-full items-center">
                       <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}" target="_blank" class="flex w-full items-center justify-center">
-                          <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url_full }}" alt="Ecoindex Badge" loading="lazy" class="w-48 h-auto"/>
+                          <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url_full }}" alt="Ecoindex Badge" loading="lazy" class="w-44 h-auto"/>
                       </a>
                   </div>
                   <p class="text-sm mt-2">
                       La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP
                   </p>
               {% else %}
-                  pas de données
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
               {% endif %}
           </div>
 
@@ -123,7 +121,7 @@
       {% if page != 'derniere-page-web-consultee' %}
 
           <!-- Chart -->
-          <div class="bg-white flex flex-col p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 md:col-span-4 md:order-2">
+          <div class="bg-white flex flex-col p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 lg:col-span-4 lg:order-2">
               <div class="flex flex-col w-full h-full justify-between gap-2">
                   <div class="flex w-full">
                       <h2 class="text-lg font-bold w-full leading-4">Votre consommation </br><span class="text-sm font-normal">(en gCO2e)</span></h2>
@@ -142,7 +140,7 @@
       {% else %}
 
           <!-- Carbon Intensity  -->
-          <div class="bg-white flex flex-col gap-4 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 md:col-span-4 md:order-2">
+          <div class="bg-white flex flex-col gap-4 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 lg:col-span-4 lg:order-2">
               {% if country is not null and carbonIntensity is not null %}
                   <div class="flex items-center gap-4">
                       {% if flagUrl %}
@@ -163,7 +161,7 @@
                       </div>
                   </div>
               {% else %}
-                  pas de données
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
               {% endif %}
           </div>
 
@@ -171,13 +169,13 @@
 
 
       <!-- Widget 3: Rocket -->
-      <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 md:order-3 md:col-span-4 items-center justify-center ">
+      <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 items-center justify-center ">
           <img src="rocket-image.png" alt="Rocket" class="h-24" loading="lazy">
       </div>
 
 
       <!-- Widget 4: Equivalent 1 -->
-      <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 md:col-span-3 md:order-4">
+      <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-4">
           {% if equivalent1 is not null and equivalent1.name is not null and equivalent1.value is not null %}
               <div class="flex justify-center gap-2">
                   <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
@@ -192,24 +190,24 @@
               {% endif %}
               <p class="text-center mt-2 text-lg font-medium font-outfit"><span class="animate-counter" data-value="{{equivalent1.value}}">0</span> {{equivalent1.name}}</p>
           {% else %}
-              pas de données
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
           {% endif %}
       </div>
 
 
       <!-- Widget 5: Total Consumption -->
-      <div class="bg-purple-600 min-h-[250px] grid grid-row-3 text-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-5 sm:order-4 md:col-span-6 text-center md:order-5">
+      <div class="bg-purple-600 min-h-[250px] grid grid-row-3 text-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-5 sm:order-4 lg:col-span-6 text-center lg:order-5">
           <h2 class="font-bold font-outfit row-span-1 flex justify-start">Total de votre consommation :</h2>
           {% if totalConsu is not null %}
               <p class="text-6xl font-extrabold font-outfit mt-4 row-span-2 flex justify-center"><span class="animate-counter" data-value="{{totalConsu}}">0</span>&nbsp;gCO2e</p>
           {% else %}
-              pas de données
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
           {% endif %}
       </div>
 
 
       <!-- Widget 6: Equivalent 2 -->
-      <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 md:col-span-3 md:order-6 font-outfit">
+      <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-6 font-outfit">
           {% if equivalent2 is not null and equivalent2.name is not null and equivalent2.value is not null %}
               <div class="flex justify-center gap-2">
                   <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
@@ -224,7 +222,7 @@
               {% endif %}
               <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent2.value}}">0</span> {{equivalent2.name}}</p>
           {% else %}
-              pas de données
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
           {% endif %}
       </div>
 
@@ -232,7 +230,7 @@
       {% if page != 'derniere-page-web-consultee'%}
 
           <!-- Top Polluting Sites -->
-          <div class="bg-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 md:col-span-6 flex flex-wrap min-h-[300px] order-7 md:order-7">
+          <div class="bg-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 lg:col-span-6 flex flex-wrap min-h-[300px] order-7 lg:order-7">
               {% if top5Sites is not null %}
                   <div class="flex flex-col w-full h-auto">
                       <h2 class="text-lg font-bold mb-4">Top 5 des sites les plus polluants</h2>
@@ -240,7 +238,7 @@
                           <div class="relative w-full h-auto sm:w-3/4 md:w-full lg:w-3/4">
                               <canvas class="w-full h-auto" id="pollutionChart" data-turbo-permanent></canvas>
                           </div>
-                          <div class="flex w-full sm:w-1/4 md:w-full lg:w-1/4 flex-wrap gap-2 justify-center sm:flex-col md:flex-row lg:flex-col">
+                          <div class="flex w-full sm:w-1/4 md:w-full lg:w-1/4 flex-wrap gap-2 justify-center sm:flex-col lg:flex-col">
                             {% for index, site in top5Sites %}
                                 <div class="bg-{{ ['purple', 'blue', 'orange', 'red', 'green'][index] }}-300 p-1 text-center text-sm font-bold rounded-lg h-8 w-[90px] sm:w-full md:w-[90px] lg:w-full flex items-center justify-center">
                                     <span class="animate-counter" data-value="{{ site[1] }}">0</span> gCO2e
@@ -250,17 +248,17 @@
                       </div>
                   </div>
               {% else %}
-                  pas de données
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
               {% endif %}
           </div>
 
       {% else %}
 
-          <div class="bg-white grid grid-row-3 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 md:col-span-6 flex flex-col flex-wrap min-h-[300px] order-7 md:order-7">
+          <div class="bg-white grid grid-row-3 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 lg:col-span-6 flex flex-col flex-wrap min-h-[300px] order-7 lg:order-7">
               <h2 class="text-lg font-bold mb-4 row-span-1">La page en chiffres</h2>
               <div class="flex flex-row flex-wrap justify-center w-full h-auto row-span-2 gap-3">
                   {% if pageSize is null and loadingTime is null and queriesQuantity is null %}
-                      pas de données
+                      <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
                   {% else %}
                       {% if pageSize is not null %}
                       <div class="flex flex-col items-center">
@@ -303,7 +301,7 @@
 
 
       <!-- Widget 8: Tips 1 -->
-      <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1 md:col-span-3 flex flex-col justify-between order-8 md:order-8">
+      <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-8 lg:order-8">
           {% if advice is not null %}
               <div class="flex justify-start gap-2">
                   <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
@@ -318,12 +316,12 @@
                   <button class="bg-green-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
               </div>
           {% else %}
-              pas de données
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
           {% endif %}
       </div>
 
       <!-- Widget 9: Tips 2 -->
-      <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1 md:col-span-3 flex flex-col justify-between order-9 md:order-9">
+      <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-9 lg:order-9">
           {% if adviceDev is not null %}
               <div class="flex justify-start gap-2">
                   <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
@@ -338,13 +336,15 @@
                   <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
               </div>
           {% else %}
-              pas de données
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
           {% endif %}
       </div>
-      
+
     </div>
     {% else %}
-        Vous n'avez pas encore analysé de pages web avec notre plugin
+        <div class="w-full h-screen flex items-center justify-center">
+            <p class="text-2xl text-gray-600 font-medium">Vous n'avez pas encore analysé de pages web avec notre plugin</p>
+        </div>
     {% endif %}
 </div>
 

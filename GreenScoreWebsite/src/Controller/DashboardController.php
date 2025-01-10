@@ -252,7 +252,7 @@ class DashboardController extends AbstractController
                 'country' => $country ?? null,
                 'flagUrl' => $flagUrl ?? null,
                 'error' => $error ?? null,
-                'totalConsu' => $this->formatConsumption($totalConsu) ?? null,
+                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
                 'equivalent1' => $equivalent1 ?? null,
