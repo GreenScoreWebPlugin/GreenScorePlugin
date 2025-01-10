@@ -17,9 +17,6 @@ class Equivalent
     private ?string $name = null;
 
     #[ORM\Column]
-    private ?float $carbonKgCo2 = null;
-
-    #[ORM\Column]
     private ?float $equivalent = null;
 
     #[ORM\Column(length: 255)]
@@ -38,18 +35,6 @@ class Equivalent
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCarbonKgCo2(): ?float
-    {
-        return $this->carbonKgCo2;
-    }
-
-    public function setCarbonKgCo2(float $carbonKgCo2): static
-    {
-        $this->carbonKgCo2 = $carbonKgCo2;
 
         return $this;
     }

@@ -1,13 +1,22 @@
 {
     "manifest_version": 2,
-    "name": "Network Data Analyzer",
+    "name": "GreenScore",
     "version": "1.0",
-    "permissions": ["activeTab", "<all_urls>", "devtools"],
-    "devtools_page": "devtools.html",
-    "browser_action": {
-        "default_popup": "./src/popup.html"
-    },
+    "description": "GreenScore est un plugin et une plateforme web qui mesure l'empreinte carbone d'un site par utilisateur et organisation. Il offre des tableaux de bord personnels et d'organisation, des analyses ponctuelles, et un classement des sites les plus énergivores pour sensibiliser et encourager des pratiques numériques durables.",
+    "permissions": [
+        "<all_urls>",
+        "webRequest",
+        "webRequestBlocking",
+        "webNavigation",
+        "tabs",
+        "http://127.0.0.1/*"
+    ],
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["src/background.js"],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_popup": "src/popup.html",
+        "default_title": "Analyser la page"
     }
 }

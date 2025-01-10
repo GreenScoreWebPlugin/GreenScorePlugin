@@ -6,8 +6,11 @@ use App\Repository\OrganisationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: OrganisationRepository::class)]
+#[UniqueEntity(fields: ['siret'], message: 'Ce numéro SIRET est déjà utilisé.')]
 class Organisation
 {
     #[ORM\Id]
@@ -30,7 +33,7 @@ class Organisation
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organisationId')]
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organisation')]
     private Collection $users;
 
     #[ORM\OneToOne(mappedBy: 'isAdminOf', cascade: ['persist', 'remove'])]
@@ -106,7 +109,7 @@ class Organisation
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setOrganisationId($this);
+            $user->setOrganisation($this);
         }
 
         return $this;
@@ -116,8 +119,8 @@ class Organisation
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getOrganisationId() === $this) {
-                $user->setOrganisationId(null);
+            if ($user->getOrganisation() === $this) {
+                $user->setOrganisation(null);
             }
         }
 
