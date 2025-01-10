@@ -12,156 +12,175 @@
   'F': { 'src': '/images/eco-index/rocket.png', 'alt': '' },
   'G': { 'src': '/images/eco-index/rocket.png', 'alt': '' }
 } %}
-<div class="w-full bg-gradient-to-b from-green-100 to-green-50 min-h-screen">
+<div class="w-full bg-green-bg min-h-screen">
   {% if not noDatas %}
   <!-- Top -->
-  <div class="w-full text-center py-8">
-    <h1 class="text-4xl font-bold">{{title}}</h1>
-    <p class="text-base">{{description}}</p>
+  <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
+      <h1 class="text-4xl font-bold">{{title}}</h1>
+      <p class="text-base w-fit">
+          {{ description }}
+          <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
+              {{ link }}
+          </span>
+      </p>
+
   </div>
 
+
   <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 gap-6 mt-6 p-8 sm:grid-cols-2 md:grid-cols-12">
+  <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
 
-    {% if page == 'mes-donnees' %}
-    <!-- Widget 1: Carbon Average -->
-    <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
-      {% if averageFootprint is null and averageFootprint is null %}
-      pas de données
-        {% else %}
-        <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
-          {% if averageFootprint is not null and averageFootprint is not null %}
-          <div class="flex justify-center gap-5">
-            {% if myAverageFootprint is not null %}
-            <div class="flex flex-col items-center">
-              <div class="relative text-center">
-                  <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-                  </svg>
-                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{myAverageFootprint}}">0</p>
-                </div>
-              <p class="text-sm text-gray-500">Vous</p>
-            </div>
-            {% endif %}
-            {% if averageFootprint is not null %}
-            <div class="flex flex-col items-center">
-              <div class="relative text-center">
-                  <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-                  </svg>
-                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{averageFootprint}}">0</p>
-                </div>
-              <p class="text-sm text-gray-500">Les autres utilisateurs</p>
-            </div>
+      <!-- Widget 1 -->
+      {% if page == 'mes-donnees' %}
+
+          <!-- Carbon Average -->
+          <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4">
+              {% if averageFootprint is null and averageFootprint is null %}
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+              {% else %}
+                  <h2 class="text-lg font-bold text-center font-outfit">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
+                  {% if averageFootprint is not null and averageFootprint is not null %}
+                      <div class="flex justify-center gap-5">
+                        {% if myAverageFootprint is not null %}
+                            <div class="flex flex-col items-center">
+                                <div class="relative text-center">
+                                    <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
+                                        <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                    </svg>
+                                    <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{myAverageFootprint}}">0</p>
+                                </div>
+                                <p class="text-sm text-gray-500">Vous</p>
+                            </div>
+                        {% endif %}
+                        {% if averageFootprint is not null %}
+                            <div class="flex flex-col items-center">
+                                <div class="relative text-center">
+                                    <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
+                                        <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                    </svg>
+                                    <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{averageFootprint}}">0</p>
+                                </div>
+                                <p class="text-sm text-gray-500">Les autres utilisateurs</p>
+                            </div>
+                        {% endif %}
+                      </div>
+
+                      {% if myAverageFootprint is not null and averageFootprint is not null and messageAverageFootprint is not null %}
+                          <p class="text-sm text-center text-green-700 font-medium mt-4">
+                              {{messageAverageFootprint}}
+                          </p>
+                      {% endif %}
+                  {% endif %}
+              {% endif %}
           </div>
-          {% endif %}
 
-          {% if myAverageFootprint is not null and averageFootprint is not null and messageAverageFootprint is not null %}
-          <p class="text-sm text-center text-green-700 font-medium mt-4">
-            {{messageAverageFootprint}}
-          </p>
-          {% endif %}
-        {% endif %}
-      {% endif %}
-    </div>
+      {% elseif page == 'mon-organisation' %}
 
-    {% elseif page == 'mon-organisation' %}
-    <!-- Widget 1: Carbon Average -->
-    <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
-      {% if averageFootprint is not null %}
-      <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
-      <div class="flex justify-center gap-5 flex-1 items-center">
-        <div class="flex flex-col items-center">
-          <div class="relative text-center">
-              <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-              </svg>
-              <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{averageFootprint}}">0</p>
-            </div>
-        </div>
-        {% if equivalentAverage is not null %}
-        <div class="flex flex-col justify-center">
-          <div class="flex justify-center gap-2">
-            <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
-              <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
-            </picture>
-            <h2 class="text-lg font-bold">Equivalent</h2>
+          <!-- Carbon Average -->
+          <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4">
+              {% if averageFootprint is not null %}
+                  <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
+                  <div class="flex justify-center gap-5 flex-1 items-center">
+                      <div class="flex flex-col items-center">
+                          <div class="relative text-center">
+                              <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
+                                  <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                              </svg>
+                              <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{averageFootprint}}">0</p>
+                          </div>
+                      </div>
+                      {% if equivalentAverage is not null %}
+                          <div class="flex flex-col justify-center">
+                              <div class="flex justify-center gap-2">
+                                  <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+                                      <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+                                  </picture>
+                                  <h2 class="text-lg font-bold">Equivalent</h2>
+                              </div>
+                              <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage}}">0</span> douches</p>
+                          </div>
+                      {% else %}
+                          <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+                      {% endif %}
+                  </div>
+              {% else %}
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+              {% endif %}
           </div>
-          <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage}}">0</span> douches</p>
-        </div>
-        {% else %}
-        pas de données
-        {% endif %}
-      </div>
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-    
-    {% else %}
-    <!-- Widget 1: EcoIndex -->
-    <div class="bg-white flex flex-col justify-evenly gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 md:col-span-4">
-      {% if url_full is not null %}
-      <div class="flex justify-center">
-        <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}" target="_blank">
-            <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url_full }}" alt="Ecoindex Badge" loading="lazy"/>
-        </a>
-      </div>
-      <p class="text-sm mt-2">
-        La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP
-      </p> 
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-    {% endif %}
 
-    {% if page != 'derniere-page-web-consultee' %}
-    <!-- Widget 2: Chart -->
-    <div class="bg-white flex flex-col p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 md:col-span-4 md:order-2">
-      <div class="flex flex-col w-full h-full gap-2 justify-between gap-2">
-        <div class="flex w-full">
-          <h2 class="text-lg font-bold w-full leading-4">Votre consommation </br><span class="text-sm font-normal">(en gCO2e)</span></h2>
-          <select id="filter" class="w-fit h-fit border border-gray-300 rounded-lg px-2 py-1 text-sm">
-            <option value="mois">Mois</option>
-            <option value="semaine">Semaine</option>
-            <option value="jour">Jour</option>
-          </select>
-        </div>
-        <div class="relative w-full h-auto">
-          <canvas class="w-full h-auto" id="co2Chart" data-turbo-permanent></canvas>
-        </div>
-      </div>
-    </div>
-    {% else %}
-    <!-- Widget 2: Carbon Intensity  -->
-    <div class="bg-white flex flex-col gap-6 p-6 rounded-lg shadow-md col-span-1 col-span-1 sm:col-span-2 order-2 sm:order-3 md:col-span-4 md:order-2">
-      {% if country is not null and carbonIntensity is not null %}
-      <div class="flex items-center gap-4">
-        {% if flagUrl %}
-          <img src="{{ flagUrl }}" alt="Drapeau de {{ country }}" class="w-10 h-10 rounded-full object-cover border" loading="lazy">
-        {% else %}
-          <div class="w-10 h-10 rounded-full bg-red-300"></div>
-        {% endif %}
-        <h2 class="text-lg font-bold">Vous faites votre recherche depuis ce pays : {{ country }}</h2>
-      </div>
-      <div class="flex justify-center flex-wrap items-center gap-4">
-        <picture class="flex items-center justify-center mt-4 flex-1">
-          <img src="{{ asset('/images/empreinte_carbone.png') }}" class="w-32 h-auto min-w-[100px]" alt="Empreinte Carbone" loading="lazy">
-        </picture>
-        <div class="flex flex-col justify-center items-center flex-1">
-          <p class="text-6xl font-bold text-lime-600 animate-counter" data-value="{{carbonIntensity}}">0</p>
-          <p class="text-xl font-bold">gCO2eq/kWh</p>
-          <p class="text-sm text-center pt-5">Votre empreinte carbonne dépend aussi de l’intensité carbone du pays</p>
-        </div>
-      </div>
       {% else %}
-      pas de données
-      {% endif %}
-    </div>
-    {% endif %}
 
-    <!-- Widget 3: Rocket -->
+          <!-- EcoIndex -->
+          <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4">
+              <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
+              {% if url_full is not null %}
+                  <div class="flex justify-center w-full items-center">
+                      <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}" target="_blank" class="flex w-full items-center justify-center">
+                          <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url_full }}" alt="Ecoindex Badge" loading="lazy" class="w-44 h-auto"/>
+                      </a>
+                  </div>
+                  <p class="text-sm mt-2">
+                      La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP
+                  </p>
+              {% else %}
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+              {% endif %}
+          </div>
+
+      {% endif %}
+
+
+      <!-- Widget 2 -->
+      {% if page != 'derniere-page-web-consultee' %}
+
+          <!-- Chart -->
+          <div class="bg-white flex flex-col p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 lg:col-span-4 lg:order-2">
+              <div class="flex flex-col w-full h-full justify-between gap-2">
+                  <div class="flex w-full">
+                      <h2 class="text-lg font-bold w-full leading-4">Votre consommation </br><span class="text-sm font-normal">(en gCO2e)</span></h2>
+                      <select id="filter" class="w-fit h-fit border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                          <option value="mois">Mois</option>
+                          <option value="semaine">Semaine</option>
+                          <option value="jour">Jour</option>
+                      </select>
+                  </div>
+                  <div class="relative w-full h-auto">
+                      <canvas class="w-full h-auto" id="co2Chart" data-turbo-permanent></canvas>
+                  </div>
+              </div>
+          </div>
+
+      {% else %}
+
+          <!-- Carbon Intensity  -->
+          <div class="bg-white flex flex-col gap-4 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 lg:col-span-4 lg:order-2">
+              {% if country is not null and carbonIntensity is not null %}
+                  <div class="flex items-center gap-4">
+                      {% if flagUrl %}
+                          <img src="{{ flagUrl }}" alt="Drapeau de {{ country }}" class="w-10 h-10 rounded-full object-cover border" loading="lazy">
+                      {% else %}
+                          <div class="w-10 h-10 rounded-full bg-red-300"></div>
+                      {% endif %}
+                      <h2 class="text-lg font-bold font-outfit text-grey-950">Vous faites votre recherche depuis la {{ country }}</h2>
+                  </div>
+                  <div class="flex justify-center flex-wrap items-center gap-4">
+                      <picture class="flex items-center justify-center mt-4 flex-1">
+                          <img src="{{ asset('/images/empreinte_carbone.png') }}" class="w-32 h-auto min-w-[100px]" alt="Empreinte Carbone" loading="lazy">
+                      </picture>
+                      <div class="flex flex-col justify-center items-center flex-1 font-outfit">
+                          <p class="text-6xl font-bold text-lime-600 animate-counter" data-value="{{carbonIntensity}}">0</p>
+                          <p class="text-xl font-bold">gCO2eq/kWh</p>
+                          <p class="text-sm text-center pt-5">Votre empreinte carbonne dépend aussi de l’intensité carbone du pays</p>
+                      </div>
+                  </div>
+              {% else %}
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+              {% endif %}
+          </div>
+
+      {% endif %}
+
+    <!-- Widget 3: Badge Environnemental Impact -->
     <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 md:order-3 md:col-span-4 flex items-center justify-center ">
       {% if lettreEcoIndex and data[lettreEcoIndex] is defined %}
         <img src="{{ asset(data[lettreEcoIndex].src) }}"
@@ -172,174 +191,180 @@
       {% endif %}
     </div>
 
-    <!-- Widget 4: Equivalent 1 -->
-    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 md:col-span-3 md:order-4">
-      {% if equivalent1 is not null and equivalent1.name is not null and equivalent1.value is not null %}
-      <div class="flex justify-center gap-2">
-        <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
-          <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
-        </picture>
-        <h2 class="text-lg font-bold">Equivalent</h2>
-      </div>
-        {% if equivalent1.icon is not null %}
-        <picture class="w-24 h-24 flex items-center justify-center mt-4">
-          <img src="{{ asset('/images/equivalents/' ~ equivalent1.icon) }}" alt="{{equivalent1.name}}" class="rounded-full" loading="lazy">
-        </picture>
-        {% endif %}
-      <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent1.value}}">0</span> {{equivalent1.name}}</p>
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-    
-    <!-- Widget 5: Total Consumption -->
-    <div class="bg-purple-600 min-h-[250px] grid grid-row-3 text-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-5 sm:order-4 md:col-span-6 text-center md:order-5">
-      <h2 class="font-bold row-span-1 flex justify-start">Total de votre consommation :</h2>
-      {% if totalConsu is not null %}
-      <p class="text-6xl font-bold mt-4 row-span-2 flex justify-center mt-0"><span class="animate-counter" data-value="{{totalConsu}}">0</span>&nbsp;gCO2e</p>
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-
-    <!-- Widget 6: Equivalent 2 -->
-    <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 md:col-span-3 md:order-6">
-      {% if equivalent2 is not null and equivalent2.name is not null and equivalent2.value is not null %}
-      <div class="flex justify-center gap-2">
-        <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
-          <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
-        </picture>
-        <h2 class="text-lg font-bold">Equivalent</h2>
-      </div>
-        {% if equivalent2.icon is not null %}
-        <picture class="w-24 h-24 flex items-center justify-center mt-4">
-          <img src="{{ asset('/images/equivalents/' ~ equivalent2.icon) }}" alt="{{equivalent2.name}}" class="rounded-full" loading="lazy">
-        </picture>
-        {% endif %}
-      <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent2.value}}">0</span> {{equivalent2.name}}</p>
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-
-    {% if page != 'derniere-page-web-consultee'%}
-      <!-- Widget 7: Top Polluting Sites -->
-      <div class="bg-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 md:col-span-6 flex flex-wrap min-h-[300px] order-7 md:order-7">
-        {% if top5Sites is not null %}
-        <!-- Section Canvas -->
-        <div class="flex flex-col w-full h-auto">
-          <h2 class="text-lg font-bold mb-4">Top 5 des sites les plus polluants</h2>
-          <div class="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4">
-            <!-- Canvas -->
-            <div class="relative w-full h-auto sm:w-3/4 md:w-full lg:w-3/4">
-              <canvas class="w-full h-auto" id="pollutionChart" data-turbo-permanent></canvas>
-            </div>
-            <!-- Encadrés -->
-            <div class="flex w-full sm:w-1/4 md:w-full lg:w-1/4 flex-wrap gap-2 justify-center sm:flex-col md:flex-row lg:flex-col">
-              {% for index, site in top5Sites %}
-                  <div class="bg-{{ ['purple', 'blue', 'orange', 'red', 'green'][index] }}-300 p-1 text-center text-sm font-bold rounded-lg h-8 w-[90px] sm:w-full md:w-[90px] lg:w-full flex items-center justify-center">
-                      <span class="animate-counter" data-value="{{ site[1] }}">0</span> gCO2e
-                  </div>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-        {% else %}
-        pas de données
-        {% endif %}
-      </div>
-    {% else %}
-      <div class="bg-white grid grid-row-3 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 md:col-span-6 flex flex-col flex-wrap min-h-[300px] order-7 md:order-7">
-        <h2 class="text-lg font-bold mb-4 row-span-1">La page en chiffres</h2>
-        <div class="flex flex-row flex-wrap justify-center w-full h-auto row-span-2 gap-3">
-        {% if pageSize is null and loadingTime is null and queriesQuantity is null %}
-        pas de données
-        {% else %}
-            {% if pageSize is not null %}
-            <div class="flex flex-col items-center">
-              <div class="relative text-center">
-                <svg class="w-24 h-24 rotate-[-90deg]" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-                </svg>
-                <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{pageSize}}">0</span>o</p>
+      <!-- Widget 4: Equivalent 1 -->
+      <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-4">
+          {% if equivalent1 is not null and equivalent1.name is not null and equivalent1.value is not null %}
+              <div class="flex justify-center gap-2">
+                  <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+                      <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+                  </picture>
+                  <h2 class="text-lg font-bold font-outfit">Equivalent</h2>
               </div>
-              <p class="text-sm text-gray-500">Taille</p>
-            </div>
-            {% endif %}
-            {% if loadingTime is not null %}
-            <div class="flex flex-col items-center">
-              <div class="relative text-center">
-                <svg class="w-24 h-24 rotate-[-90deg]" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-                </svg>
-                <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{loadingTime}}">0</span> s</p>
-              </div>
-              <p class="text-sm text-gray-500">Temps de chargement</p>
-            </div>
-            {% endif %}
-            {% if queriesQuantity is not null %}
-            <div class="flex flex-col items-center">
-              <div class="relative text-center">
-                <svg class="w-24 h-24 rotate-[-90deg]" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-                </svg>
-                <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{queriesQuantity}}">0</span></p>
-              </div>
-              <p class="text-sm text-gray-500">Nombre de requêtes</p>
-            </div>
-            {% endif %}
+              {% if equivalent1.icon is not null %}
+                  <picture class="w-24 h-24 flex items-center justify-center mt-4">
+                      <img src="{{ images_url ~ 'equivalents/' ~ equivalent1.icon }}" alt="{{equivalent1.name}}" class="rounded-full" loading="lazy">
+                  </picture>
+              {% endif %}
+              <p class="text-center mt-2 text-lg font-medium font-outfit"><span class="animate-counter" data-value="{{equivalent1.value}}">0</span> {{equivalent1.name}}</p>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
           {% endif %}
+      </div>
+
+
+      <!-- Widget 5: Total Consumption -->
+      <div class="bg-purple-600 min-h-[250px] grid grid-row-3 text-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-5 sm:order-4 lg:col-span-6 text-center lg:order-5">
+          <h2 class="font-bold font-outfit row-span-1 flex justify-start">Total de votre consommation :</h2>
+          {% if totalConsu is not null %}
+              <p class="text-6xl font-extrabold font-outfit mt-4 row-span-2 flex justify-center"><span class="animate-counter" data-value="{{totalConsu}}">0</span>&nbsp;gCO2e</p>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+          {% endif %}
+      </div>
+
+
+      <!-- Widget 6: Equivalent 2 -->
+      <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-6 font-outfit">
+          {% if equivalent2 is not null and equivalent2.name is not null and equivalent2.value is not null %}
+              <div class="flex justify-center gap-2">
+                  <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+                      <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+                  </picture>
+                  <h2 class="text-lg font-bold font-outfit">Equivalent</h2>
+              </div>
+              {% if equivalent2.icon is not null %}
+                  <picture class="w-24 h-24 flex items-center justify-center mt-4">
+                    <img src="{{ images_url ~ 'equivalents/' ~ equivalent2.icon }}" alt="{{equivalent2.name}}" class="rounded-full" loading="lazy">
+                  </picture>
+              {% endif %}
+              <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalent2.value}}">0</span> {{equivalent2.name}}</p>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+          {% endif %}
+      </div>
+
+      <!-- Widget 7 -->
+      {% if page != 'derniere-page-web-consultee'%}
+
+          <!-- Top Polluting Sites -->
+          <div class="bg-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 lg:col-span-6 flex flex-wrap min-h-[300px] order-7 lg:order-7">
+              {% if top5Sites is not null %}
+                  <div class="flex flex-col w-full h-auto">
+                      <h2 class="text-lg font-bold mb-4">Top 5 des sites les plus polluants</h2>
+                      <div class="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4">
+                          <div class="relative w-full h-auto sm:w-3/4 md:w-full lg:w-3/4">
+                              <canvas class="w-full h-auto" id="pollutionChart" data-turbo-permanent></canvas>
+                          </div>
+                          <div class="flex w-full sm:w-1/4 md:w-full lg:w-1/4 flex-wrap gap-2 justify-center sm:flex-col lg:flex-col">
+                            {% for index, site in top5Sites %}
+                                <div class="bg-{{ ['purple', 'blue', 'orange', 'red', 'green'][index] }}-300 p-1 text-center text-sm font-bold rounded-lg h-8 w-[90px] sm:w-full md:w-[90px] lg:w-full flex items-center justify-center">
+                                    <span class="animate-counter" data-value="{{ site[1] }}">0</span> gCO2e
+                                </div>
+                            {% endfor %}
+                          </div>
+                      </div>
+                  </div>
+              {% else %}
+                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+              {% endif %}
+          </div>
+
+      {% else %}
+
+          <!-- Page in numbers -->
+          <div class="bg-white grid grid-row-3 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 lg:col-span-6 flex flex-col flex-wrap min-h-[300px] order-7 lg:order-7">
+              <h2 class="text-lg font-bold mb-4 row-span-1">La page en chiffres</h2>
+              <div class="flex flex-row flex-wrap justify-center w-full h-fit row-span-2 gap-3">
+                  {% if pageSize is null and loadingTime is null and queriesQuantity is null %}
+                      <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+                  {% else %}
+                      {% if pageSize is not null %}
+                          <div class="flex flex-col flex-1 h-fit items-center">
+                              <div class="relative text-center">
+                                  <svg class="w-28 h-28 rotate-[-90deg]" viewBox="0 0 36 36">
+                                      <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                  </svg>
+                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{pageSize}}">0</span>o</p>
+                              </div>
+                              <p class="text-sm text-gray-500">Taille</p>
+                          </div>
+                      {% endif %}
+                      {% if loadingTime is not null %}
+                          <div class="flex flex-col flex-1 h-fit items-center">
+                              <div class="relative text-center">
+                                  <svg class="w-28 h-28 rotate-[-90deg]" viewBox="0 0 36 36">
+                                      <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                  </svg>
+                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{loadingTime}}">0</span> s</p>
+                              </div>
+                              <p class="text-sm text-gray-500">Temps de chargement</p>
+                          </div>
+                      {% endif %}
+                      {% if queriesQuantity is not null %}
+                          <div class="flex flex-col flex-1 h-fit items-center">
+                              <div class="relative text-center">
+                                  <svg class="w-28 h-28 rotate-[-90deg]" viewBox="0 0 36 36">
+                                      <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                  </svg>
+                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{queriesQuantity}}">0</span></p>
+                              </div>
+                              <p class="text-sm text-gray-500">Nombre de requêtes</p>
+                          </div>
+                      {% endif %}
+                  {% endif %}
+              </div>
+          </div>
+
+      {% endif %}
+
+
+      <!-- Widget 8: Tips 1 -->
+      <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-8 lg:order-8">
+          {% if advice is not null %}
+              <div class="flex justify-start gap-2">
+                  <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
+                      <i class="fa-solid fa-circle-question" style="color: #dcfce7;"></i>
+                  </div>
+                  <h2 class="text-lg font-bold text-green-700">Des conseils&nbsp;?</h2>
+              </div>
+              <p class="text-sm mt-2">
+                  {{advice}}
+              </p>
+              <div class="flex w-full justify-end">
+                  <button class="bg-green-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+              </div>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+          {% endif %}
+      </div>
+
+      <!-- Widget 9: Tips 2 -->
+      <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-9 lg:order-9">
+          {% if adviceDev is not null %}
+              <div class="flex justify-start gap-2">
+                  <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
+                      <i class="fa-solid fa-circle-question" style="color: #dbeafe;"></i>
+                  </div>
+                  <h2 class="text-lg font-bold text-blue-700">Des conseils&nbsp;?</h2>
+              </div>
+              <p class="text-sm mt-2">
+                  {{adviceDev}}
+              </p>
+              <div class="flex w-full justify-end">
+                  <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+              </div>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+          {% endif %}
+      </div>
+
+    </div>
+    {% else %}
+        <div class="w-full h-screen flex items-center justify-center">
+            <p class="text-2xl text-gray-600 font-medium">Vous n'avez pas encore analysé de pages web avec notre plugin</p>
         </div>
-      </div>
     {% endif %}
-
-    <!-- Widget 8: Tips 1 -->
-    <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1 md:col-span-3 flex flex-col justify-between order-8 md:order-8">
-      {% if advice is not null %}
-      <div class="flex justify-start gap-2">
-          <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
-            <i class="fa-solid fa-circle-question" style="color: #dcfce7;"></i>
-          </div>
-          <h2 class="text-lg font-bold text-green-700">Des conseils&nbsp;?</h2>
-      </div>
-      <p class="text-sm mt-2">
-        {{advice}}
-      </p>
-      <div class="flex w-full justify-end">
-        <button class="bg-green-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
-      </div>
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-
-    <!-- Widget 9: Tips 2 -->
-    <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1 md:col-span-3 flex flex-col justify-between order-9 md:order-9">
-      {% if adviceDev is not null %}
-      <div class="flex justify-start gap-2">
-          <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
-            <i class="fa-solid fa-circle-question" style="color: #dbeafe;"></i>
-          </div>
-          <h2 class="text-lg font-bold text-blue-700">Des conseils&nbsp;?</h2>
-      </div>
-      <p class="text-sm mt-2">
-        {{adviceDev}}
-      </p>
-      <div class="flex w-full justify-end">
-        <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
-      </div>
-      {% else %}
-      pas de données
-      {% endif %}
-    </div>
-  </div>
-  
-  {% else %}
-  Vous n'avez pas encore analysé de pages web avec notre plugin
-  {% endif %}
 </div>
-
-
 
 <script src="{{ asset('build/dashboard.js') }}"></script>
 {% endblock %}

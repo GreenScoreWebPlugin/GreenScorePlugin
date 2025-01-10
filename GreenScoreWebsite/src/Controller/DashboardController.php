@@ -259,12 +259,13 @@ class DashboardController extends AbstractController
         if($showDatas || $userId)
             return $this->render('dashboards/index.html.twig', [
                 'page' => 'derniere-page-web-consultee',
-                'title' => 'Dernière page web consultée : ' . ($url_domain ?? ''),
-                'description' => 'Voici une analyse détaillée de votre dernière page consultée : ' . ($url_full ?? ''),
+                'title' => 'Dernière page web consultée',
+                'link' => $url_full ?? null,
+                'description' => 'Voici une analyse détaillée de votre dernière page consultée : ',
                 'country' => $country ?? null,
                 'flagUrl' => $flagUrl ?? null,
                 'error' => $error ?? null,
-                'totalConsu' => $totalConsu ?? null,
+                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
                 'equivalent1' => $equivalent1 ?? null,
@@ -319,16 +320,29 @@ class DashboardController extends AbstractController
         }
     }
 
-    // #[Route('/example', name: 'example')]
-    // public function example(Request $request): Response
-    // {
-    //     $lulu = $request->get('lulu');
-    //     $toto = $request->get('toto');
+    public function formatConsumption(?float $totalConsu): string
+    {
+        if ($totalConsu === null) {
+            return 'N/A';
+        }
 
-    //     if (isset($lulu, $toto)) {
-    //         print($lulu . ' ' . $toto);
-    //     }
+        if ($totalConsu >= 1_000_000) {
+            $value = $totalConsu / 1_000_000;
+            $unit = 'TCO2e'; // Tonne métrique
+        } elseif ($totalConsu >= 1_000) {
+            $value = $totalConsu / 1_000;
+            $unit = 'kgCO2e'; // Kilogramme
+        } else {
+            $value = $totalConsu;
+            $unit = 'gCO2e'; // Gramme
+        }
 
-    //     return new Response();
-    // }
+        // Ajout de décimales uniquement pour les petites valeurs (<10)
+        $formattedValue = $value < 10
+            ? number_format($value, 2, '.', ' ') // 2 décimales pour les petites valeurs
+            : number_format($value, 0, '.', ' '); // Pas de décimales pour les autres
+
+        return $formattedValue . ' ' . $unit;
+    }
+
 }

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}GreenScore - Accueil{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         <script src="https://kit.fontawesome.com/713704b44c.js" crossorigin="anonymous"></script>
         {% block stylesheets %}
@@ -14,25 +13,6 @@
         {% endblock %}
     </head>
     <body>
-        <!--<header class="flex w-full bg-gray-500 py-5">
-            <div class="flex w-full justify-between px-8">
-                <img width="55px" height="auto" src="{{ asset('/images/greenscore-logo.png') }}">
-                <div class="flex items-center gap-8 hidden md:flex">
-                    <ul class = "flex font-outfit font-medium text-grey-950 items-center gap-4 text-xl">
-                        <li><a href="#">Informations</a></li>
-                        <li><a href="#">Mes données</a></li>
-                        <li><a href="#">Mon organisation</a></li>
-                        <li><a href="#">Dernière page consultée</a></li>
-                    </ul>
-                    <svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0.5" y="1" width="33" height="33" rx="16.5" stroke="#030712"/>
-                        <path d="M27 26.5C27 20.6665 23.3636 16.5001 17 16.5" stroke="#233430"/>
-                        <path d="M7 26.5C7 20.6665 10.6364 16.5001 17 16.5" stroke="#233430"/>
-                        <circle cx="17" cy="11.5" r="4.5" stroke="#233430"/>
-                    </svg>
-                </div>
-            </div>
-        </header>-->
         <header class="flex w-full bg-white py-5">
             <div class="flex w-full justify-between px-8">
                 <!-- Logo -->
@@ -87,7 +67,7 @@
             </div>
 
             <!-- Menu déroulant pour mobile -->
-            <div id="mobile-menu" class="xl:hidden absolute top-20 left-0 w-full bg-white py-5">
+            <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white py-5">
                 <ul class="flex flex-col font-outfit font-medium text-grey-950 items-center gap-4 text-lg">
                     <li><a href="#">Informations</a></li>
                     <li><a href="mes-donnees">Mes données</a></li>
