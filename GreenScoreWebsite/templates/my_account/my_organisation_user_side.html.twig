@@ -3,36 +3,9 @@
 {% block title %}GreenScore - Mon organisation{% endblock %}
 
 {% block body %}
-    <script>
-        // Get modal elements
-        document.addEventListener('DOMContentLoaded', function () {
-            const modal = document.getElementById('myModal');
-
-            // Délégation pour ouvrir la modal
-            document.body.addEventListener('click', function (event) {
-                if (event.target && event.target.id === 'openModal') {
-                    modal.classList.remove('hidden');
-                }
-            });
-
-            // Délégation pour fermer la modal
-            document.body.addEventListener('click', function (event) {
-                if (event.target && event.target.id === 'closeModal') {
-                    modal.classList.add('hidden');
-                }
-            });
-
-            // Optional: Fermer la modal en cliquant à l'extérieur
-            window.addEventListener('click', function (event) {
-                if (event.target === modal) {
-                    modal.classList.add('hidden');
-                }
-            });
-        });
-    </script>
     {{ include('my_account/_message.html.twig') }}
 
-    <div class="px-52 flex flex-col">
+    <div data-controller="my-account" class="px-52 flex flex-col">
         <div class="px-16 py-8 flex items-center gap-x-4">
             <img class="w-[54px] h-auto" src="{{ asset('images/salutation.png') }}" alt="Salutation">
             <h1 class="text-2xl font-bold">Bonjour {{ user.firstName }}!</h1>
@@ -56,16 +29,18 @@
                     </div>
                 </div>
                 <div class="flex gap-x-4">
-                    <button type="submit" class="w-full h-fit rounded-lg bg-red-600 px-1 py-2 font-semibold font-outfit text-white">Quitter</button>
-                    <button id="openModal" type="submit" class="w-full h-fit rounded-lg bg-blue-600 px-1 py-2 font-semibold font-outfit text-white">Changer d'organisation</button>
+                    <button data-action="click->my-account#openModal" type="button" class="w-full h-fit rounded-lg bg-red-600 px-1 py-2 font-semibold font-outfit text-white">Quitter</button>
+                    <button data-action="click->my-account#openModal" type="button" class="w-full h-fit rounded-lg bg-blue-600 px-1 py-2 font-semibold font-outfit text-white">Changer d'organisation</button>
 
-                    <!-- Modal -->
-                    <div id="myModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-                        <div class="bg-white rounded-lg w-1/3 p-6">
-                            <h2 class="text-2xl font-bold mb-4">Modal Title</h2>
-                            <p>This is a simple modal with Tailwind CSS.</p>
-                            <div class="mt-6 flex justify-end">
-                                <button id="closeModal" class="bg-red-500 text-white px-4 py-2 rounded-md">Close</button>
+                    <div data-controller="my_account">
+                        <!-- Modal -->
+                        <div data-my-account-target="modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden p-2.5 max-h-28 max-w-[344px]">
+                            <div class="flex flex-col bg-white rounded-lg gap-y-2.5 p-2.5">
+                                <p class="text-base font-semibold">Êtes vous sur de vouloir quitter l’organisation “{{ organisation.organisationName }}” ?</p>
+                                <div class="flex gap-2.5">
+                                    <button data-action="click->my-account#closeModal" class="bg-red-900 font-semibold font-outfit text-white px-4 py-2 rounded-md">Annuler</button>
+                                    <button data-action="click->my-account#leaveOrga" class="bg-gs-green-950 font-semibold font-outfit text-white px-4 py-2 rounded-md">Oui quitter</button>
+                                </div>
                             </div>
                         </div>
                     </div>

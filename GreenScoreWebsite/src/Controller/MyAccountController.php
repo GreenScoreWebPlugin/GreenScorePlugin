@@ -11,7 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 class MyAccountController extends AbstractController
 {
     #[Route('/mon-compte', name: 'app_my_account')]
@@ -22,11 +24,6 @@ class MyAccountController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
-
-        if (!$user) {
-            // Redirigez l'utilisateur vers la page de login
-            return $this->redirectToRoute('login');
-        }
 
         $form = $this->createForm(MyAccountFormType::class, $user);
         $form->handleRequest($request);
@@ -58,11 +55,6 @@ class MyAccountController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
-
-        if (!$user) {
-            // Redirigez l'utilisateur vers la page de login
-            return $this->redirectToRoute('login');
-        }
 
         return $this->render('my_account/my_organisation_user_side.html.twig', [
             'user' => $user,
