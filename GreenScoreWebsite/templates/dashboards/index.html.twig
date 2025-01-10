@@ -10,8 +10,12 @@
   <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
       <h1 class="text-4xl font-bold">{{title}}</h1>
       <p class="text-base w-fit">
-          {{description}} <span class="text-base ml-1 w-52 truncate">{{link}}</span>
+          {{ description }}
+          <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
+              {{ link }}
+          </span>
       </p>
+
   </div>
 
 
@@ -169,9 +173,9 @@
       {% endif %}
 
 
-      <!-- Widget 3: Rocket -->
+      <!-- Widget 3: Badge Environnemental Impact -->
       <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 items-center justify-center ">
-          <img src="rocket-image.png" alt="Rocket" class="h-24" loading="lazy">
+          
       </div>
 
 
