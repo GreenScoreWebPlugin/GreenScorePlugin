@@ -1,4 +1,40 @@
-document.addEventListener("DOMContentLoaded", () => {
+let gCO2eValue;
+
+async function updateEquivalents() {
+  try {
+    console.log("Envoi de la requête à background.js...");
+    const response = await browser.runtime.sendMessage({
+      type: "getEquivalent",
+      count: 3, // Nombre d'équivalents à récupérer
+    });
+    console.log("Réponse reçue :", response);
+
+    if (response && response.success && response.equivalents) {
+      const cards = document.querySelectorAll(".comparison-card");
+      response.equivalents.forEach((equivalent, index) => {
+        if (cards[index]) {
+          const card = cards[index];
+          const img = card.querySelector("img");
+          const valueElement = card.querySelector("p.text-xl");
+          const description = card.querySelector("p.text-xs");
+
+          img.src = equivalent.image || "../assets/images/default.svg";
+          valueElement.textContent = equivalent.value;
+          description.textContent = equivalent.name;
+        }
+      });
+    } else {
+      console.error(
+        "Erreur dans la réponse reçue :",
+        response ? response.error : "Réponse indéfinie"
+      );
+    }
+  } catch (error) {
+    console.error("Erreur dans updateEquivalents :", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   function getColorClass(gCO2e) {
     const value = Number(gCO2e);
 
@@ -43,8 +79,76 @@ document.addEventListener("DOMContentLoaded", () => {
     const comparisonCards = document.querySelectorAll(".comparison-card");
     comparisonCards.forEach((card) => {
       card.className = `comparison-card flex flex-col p-2 w-[120px] h-[120px] ${colorClasses.bg} ${colorClasses.text} gap-2 border ${colorClasses.border} rounded-[4px]`;
-      console.log(card);
     });
+  }
+
+  // Vérification du statut de connexion
+  try {
+    const userData = await browser.runtime.sendMessage({
+      type: "checkLoginStatus",
+    });
+    const loginSection = document.querySelector(
+      ".flex.font-outfit.text-sm.justify-center"
+    );
+    const detailsButton = document.getElementById("details-button");
+
+    if (loginSection) {
+      if (userData.isLoggedIn) {
+        loginSection.innerHTML =
+          '<span class="text-sm text-grey-950">Vous êtes connecté</span>';
+      } else {
+        loginSection.innerHTML = `
+          <span class="text-sm text-grey-950">Vous souhaitez enregistrer ce résultat ?&nbsp;</span>
+          <a href="http://127.0.0.1:8000/login" class="text-[#6D874B] font-bold underline">Se connecter</a>
+        `;
+      }
+    }
+
+    // Mise à jour des couleurs en fonction de gCO2e
+    try {
+      const response = await browser.runtime.sendMessage({ type: "getgCO2e" });
+      if (response && typeof response.gCO2e === "number") {
+        updateColors(response.gCO2e);
+        gCO2eValue = response.gCO2e;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération du gCO2e:", error);
+    }
+
+    // Gestion du bouton "Plus de détails"
+    if (detailsButton) {
+      detailsButton.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // Récupérer les détails actuels
+        const response = await browser.runtime.sendMessage({
+          type: "getFullDetails",
+        });
+
+        let url = "http://127.0.0.1:8000/derniere-page-web-consultee";
+
+        if (!userData.isLoggedIn) {
+          // Construction des paramètres d'URL si non connecté
+          const params = new URLSearchParams({
+            country: response.country || "",
+            url_full: response.urlFull || "",
+            totalConsu: gCO2eValue || 0,
+            pageSize: response.totalResourceSize || 0,
+            loadingTime: response.loadTime || 0,
+            queriesQuantity: response.totalRequests || 0,
+          });
+          url += "?" + params.toString();
+        }
+
+        // Ouvrir l'URL dans un nouvel onglet
+        window.open(url, "_blank");
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Erreur lors de la vérification de l'état de connexion:",
+      error
+    );
   }
 
   browser.runtime
@@ -69,65 +173,10 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
-  browser.runtime
-    .sendMessage({ type: "getgCO2e" })
-    .then((response) => {
-      if (response && typeof response.gCO2e === "number") {
-        updateColors(response.gCO2e);
-      } else {
-        console.error("Valeur gCO2e invalide:", response);
-      }
-    })
-    .catch((error) => {
-      console.error("Erreur lors de la récupération du gCO2e :", error);
-    });
-
-  const detailsButton = document.getElementById("details-button");
-  detailsButton.addEventListener("click", async (event) => {
-    event.preventDefault();
-
     try {
-      const fullDetailsResponse = await browser.runtime.sendMessage({
-        type: "getFullDetails",
-      });
-      console.log(fullDetailsResponse);
-
-      if (fullDetailsResponse) {
-        const {
-          country,
-          urlDomain,
-          urlFull,
-          totalTransferredSize,
-          totalResourceSize,
-          totalRequests,
-          loadTime,
-        } = fullDetailsResponse;
-
-        const detailsUrl = new URL(
-          "http://localhost:8000/derniere-page-web-consultee"
-        );
-        detailsUrl.searchParams.append("country", country || "unknown");
-        detailsUrl.searchParams.append("url_domain", urlDomain || "unknown");
-        detailsUrl.searchParams.append("url_full", urlFull || "unknown");
-        detailsUrl.searchParams.append("totalConsu", totalTransferredSize || 0);
-        detailsUrl.searchParams.append("pageSize", totalResourceSize || 0);
-        detailsUrl.searchParams.append("loadingTime", loadTime || 0);
-        detailsUrl.searchParams.append("queriesQuantity", totalRequests || 0);
-
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-        if (tabs.length > 0) {
-          await browser.tabs.update(tabs[0].id, { url: detailsUrl.toString() });
-        } else {
-          console.error("Aucun onglet actif trouvé.");
-        }
-      } else {
-        console.error("Les données nécessaires sont manquantes.");
-      }
+      await updateEquivalents();
     } catch (error) {
-      console.error("Erreur lors de la récupération des détails :", error);
+      console.error("Erreur lors de la mise à jour des équivalents :", error);
     }
-  });
+    
 });

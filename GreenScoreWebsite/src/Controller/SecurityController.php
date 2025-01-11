@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -29,4 +30,21 @@ class SecurityController extends AbstractController
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
+
+    #[Route('/api/user-info', name: 'api_user_info', methods: ['GET'])] // Il faudra revoir où mettre cette requête API.
+    public function getUserInfo(): JsonResponse
+    {
+        // Vérifie si l'utilisateur est connecté
+        $user = $this->getUser();
+        
+        if (!$user) {
+            return new JsonResponse(null, JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        // Retourne les informations de l'utilisateur
+        return new JsonResponse([
+            'id' => $user->getId(),
+        ]);
+    }
+
 }
