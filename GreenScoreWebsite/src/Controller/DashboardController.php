@@ -32,51 +32,36 @@ class DashboardController extends AbstractController
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
     public function monOrganisation(EntityManagerInterface $entityManager, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
-        $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-        $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-        $totalConsu = 65000;
-        $averageFootprint = 320;
-        $equivalent1 = 20;
-        $equivalent2 = 20;
-        $equivalentAverage = 20;
-        $top5Sites = [
-            ["Youtube", 800],
-            ["Facebook", 750],
-            ["Netflix", 700],
-            ["Instagram", 650],
-            ["Tik Tok", 600]
-        ];
+    //     S6 : dashboard donnees utilisateur et organisation
 
-        // Création d'une instance d'une entité
-        // $website = new MonitoredWebsite(); 
-        // $website->setUrlDomain('luciedubos.fr');
-        
-        // Avec persist, on dit qu'elle sera sauvegardée en BD
-        // $entityManager->persist($website);
-
-        // Avec flush, on sauvegarde les modifications en cours sur toutes les entités persistées
-        // $entityManager->flush();
-
-        // Avec le Repository, on recupère toutes les instances de l'entité stockées en base
-        // $monitoredwebsites = $monitoredWebsiteRepository->findAll()); 
-
-        // On récupère tous ceux dont user est égal au user $user et dont l'urlDomain est luceidubos.fr, triés par urlFull décroissant
-        // $monitoredwebsites = $monitoredWebsiteRepository->findBy(['user' => $user, 'urlDomain' => 'luciedubos.fr'], ['urlFull' => 'desc']); 
-
-        // Find est l'équivalent de WHERE et ORDER BY
+    //     $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
+    //     $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
+    //     $totalConsu = 65000;
+    //     $averageFootprint = 320;
+    //     $equivalent1 = 20;
+    //     $equivalent2 = 20;
+    //     $equivalentAverage = 20;
+    //     $top5Sites = [
+    //         ["Youtube", 800],
+    //         ["Facebook", 750],
+    //         ["Netflix", 700],
+    //         ["Instagram", 650],
+    //         ["Tik Tok", 600]
+    //     ];
 
         return $this->render('dashboards/index.html.twig', [
             'page' => 'mon-organisation',
             'title' => 'Mon Organisation',
-            'description' => 'bla bla bla',
-            'totalConsu' => $totalConsu,
-            'advice' => $advice,
-            'adviceDev' => $adviceDev,
-            'averageFootprint' => $averageFootprint,
-            'equivalent1' => $equivalent1,
-            'equivalent2' => $equivalent2,
-            'equivalentAverage' => $equivalentAverage,
-            'top5Sites' => $top5Sites,
+            // 'description' => 'bla bla bla',
+            // 'totalConsu' => $totalConsu,
+            // 'advice' => $advice,
+            // 'adviceDev' => $adviceDev,
+            // 'averageFootprint' => $averageFootprint,
+            // 'equivalent1' => $equivalent1,
+            // 'equivalent2' => $equivalent2,
+            // 'equivalentAverage' => $equivalentAverage,
+            // 'top5Sites' => $top5Sites,
+            'noDatas' => true,
         ]);
     }
 
@@ -84,37 +69,40 @@ class DashboardController extends AbstractController
     public function mesDonnees(): Response
     {
         
-        $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-        $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-        $totalConsu = 65000;
-        $myAverageFootprint = 320;
-        $messageAverageFootprint = "Bravo ! Votre empreinte carbone est plus basse que la moyenne !!";
-        $averageFootprint = 320;
-        $equivalent1 = 20;
-        $equivalent2 = 20;
-        $equivalent2 = 20;
-        $equivalent2 = 20;
-        $top5Sites = [
-            ["Youtube", 800],
-            ["Facebook", 750],
-            ["Netflix", 700],
-            ["Instagram", 650],
-            ["Tik Tok", 600]
-        ];
+    //     S6 : dashboard donnees utilisateur et organisation
+
+    //     $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
+    //     $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
+    //     $totalConsu = 65000;
+    //     $myAverageFootprint = 320;
+    //     $messageAverageFootprint = "Bravo ! Votre empreinte carbone est plus basse que la moyenne !!";
+    //     $averageFootprint = 320;
+    //     $equivalent1 = 20;
+    //     $equivalent2 = 20;
+    //     $equivalent2 = 20;
+    //     $equivalent2 = 20;
+    //     $top5Sites = [
+    //         ["Youtube", 800],
+    //         ["Facebook", 750],
+    //         ["Netflix", 700],
+    //         ["Instagram", 650],
+    //         ["Tik Tok", 600]
+    //     ];
 
         return $this->render('dashboards/index.html.twig', [
             'page' => 'mes-donnees',
             'title' => 'Mes Données',
-            'description' => 'bla bla bla',
-            'totalConsu' => $totalConsu,
-            'advice' => $advice,
-            'adviceDev' => $adviceDev,
-            'averageFootprint' => $averageFootprint,
-            'equivalent1' => $equivalent1,
-            'equivalent2' => $equivalent2,
-            'myAverageFootprint' => $myAverageFootprint,
-            'messageAverageFootprint' => $messageAverageFootprint,
-            'top5Sites' => $top5Sites,
+            // 'description' => 'bla bla bla',
+            // 'totalConsu' => $totalConsu,
+            // 'advice' => $advice,
+            // 'adviceDev' => $adviceDev,
+            // 'averageFootprint' => $averageFootprint,
+            // 'equivalent1' => $equivalent1,
+            // 'equivalent2' => $equivalent2,
+            // 'myAverageFootprint' => $myAverageFootprint,
+            // 'messageAverageFootprint' => $messageAverageFootprint,
+            // 'top5Sites' => $top5Sites,
+            'noDatas' => true,
         ]);
     }
 
@@ -122,8 +110,8 @@ class DashboardController extends AbstractController
     public function siteWebSurveille(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
     {
         // dd($userId);
-        // dump($lulu);
         // dump($toto);
+
         $showDatas = false;
         $noDatas = false;
         $user = $this->getUser();
