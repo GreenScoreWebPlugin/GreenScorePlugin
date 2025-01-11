@@ -1,4 +1,38 @@
-let gCO2eValue
+let gCO2eValue;
+
+async function updateEquivalents() {
+  try {
+    console.log("Envoi de la requête à background.js...");
+    const response = await browser.runtime.sendMessage({
+      type: "getEquivalent",
+      count: 3, // Nombre d'équivalents à récupérer
+    });
+    console.log("Réponse reçue :", response);
+
+    if (response && response.success && response.equivalents) {
+      const cards = document.querySelectorAll(".comparison-card");
+      response.equivalents.forEach((equivalent, index) => {
+        if (cards[index]) {
+          const card = cards[index];
+          const img = card.querySelector("img");
+          const valueElement = card.querySelector("p.text-xl");
+          const description = card.querySelector("p.text-xs");
+
+          img.src = equivalent.image || "../assets/images/default.svg";
+          valueElement.textContent = equivalent.value;
+          description.textContent = equivalent.name;
+        }
+      });
+    } else {
+      console.error(
+        "Erreur dans la réponse reçue :",
+        response ? response.error : "Réponse indéfinie"
+      );
+    }
+  } catch (error) {
+    console.error("Erreur dans updateEquivalents :", error);
+  }
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   function getColorClass(gCO2e) {
@@ -75,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const response = await browser.runtime.sendMessage({ type: "getgCO2e" });
       if (response && typeof response.gCO2e === "number") {
         updateColors(response.gCO2e);
-        gCO2eValue = response.gCO2e
+        gCO2eValue = response.gCO2e;
       }
     } catch (error) {
       console.error("Erreur lors de la récupération du gCO2e:", error);
@@ -138,4 +172,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         error
       );
     });
+
+    try {
+      await updateEquivalents();
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour des équivalents :", error);
+    }
+    
 });

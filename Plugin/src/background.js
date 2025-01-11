@@ -172,6 +172,7 @@ const SEND_COOLDOWN = 1000; // 1 seconde minimum entre les envois
 async function processAndSendData(tabId, tabData, isFinal = false) {
   const now = Date.now();
   if (sendInProgress || (!isFinal && now - lastSendTime < SEND_COOLDOWN)) {
+    console.log("Skipping data send: cooldown in effect or send in progress.");
     return;
   }
 
@@ -180,6 +181,7 @@ async function processAndSendData(tabId, tabData, isFinal = false) {
   try {
     // Récupère les données utilisateur
     const { isLoggedIn, userId } = await getUserData();
+    console.log(isLoggedIn, userId);
     if (!isLoggedIn || !userId) {
       return; // Abandonne si l'utilisateur n'est pas connecté
     }
@@ -190,13 +192,16 @@ async function processAndSendData(tabId, tabData, isFinal = false) {
       ? await getLatestCarbonIntensity(tabData.countryCode)
       : -1;
 
+    const emissionsData = calculateCarbonEmissions(tabData);
+
     const dataToSend = {
       tabId,
       domain,
       totalTransferredSize: tabData.totalTransferredSize,
       totalResourceSize: tabData.totalResourceSize,
       totalRequests: tabData.totalRequests,
-      loadTime: tabData.endTime - tabData.startTime,
+      totalEmissions: emissionsData.totalEmissions,
+      loadTime: (tabData.endTime - tabData.startTime) / 1000,
       url: tabData.currentUrl,
       country: tabData.country,
       userId: userId,
@@ -221,27 +226,29 @@ async function handleUrlChange(tabId, newUrl, isFinal = false) {
   const tabData = getTabData(tabId);
   const lastProcessedUrl = lastProcessedUrls.get(tabId);
 
-  // Évite de traiter plusieurs fois la même URL
+  // Éviter de traiter plusieurs fois la même URL
   if (!isFinal && newUrl === lastProcessedUrl) {
     return;
   }
 
-  // Met à jour l'URL traitée
+  // Met à jour l'URL traitée pour éviter les répétitions
   lastProcessedUrls.set(tabId, newUrl);
 
-  // Si une URL précédente existe, envoie les données finales
-  if (tabData.currentUrl) {
-    await processAndSendData(tabId, tabData, true);
-  }
+  tabData.currentUrl = newUrl;
 
-  // Prépare les données pour la nouvelle URL
-  if (!isFinal) {
-    tabData.currentUrl = newUrl;
-    resetTabData(tabId);
+  try {
     const { country, countryCode } = await fetchCountry();
     tabData.country = country;
     tabData.countryCode = countryCode;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des données de géolocalisation :",
+      error
+    );
+    tabData.country = "Unknown";
+    tabData.countryCode = null;
   }
+  await processAndSendData(tabId, tabData, true);
 }
 
 let listenersInitialized = false;
@@ -250,32 +257,35 @@ function initializeListeners() {
   if (listenersInitialized) return;
   listenersInitialized = true;
 
-  const { isLoggedIn, userId } = getUserData();
-  console.log(isLoggedIn);
-  if (isLoggedIn && userId) {
-    // Détecte les changements d'URL classiques
-    browser.webNavigation.onCompleted.addListener((details) => {
-      if (details.frameId === 0) {
-        handleUrlChange(details.tabId, details.url);
-      }
-    });
+  browser.webNavigation.onBeforeNavigate.addListener((details) => {
+    if (details.frameId === 0) {
+      handleUrlChange(details.tabId, details.url);
+      resetTabData(details.tabId);
+    }
+  });
 
-    // Détecte les changements d'URL dans les SPAs (pushState/replaceState)
-    browser.webNavigation.onHistoryStateUpdated.addListener((details) => {
-      if (details.frameId === 0) {
-        handleUrlChange(details.tabId, details.url);
-      }
-    });
+  // Détecte les changements d'URL classiques
+  browser.webNavigation.onCompleted.addListener((details) => {
+    if (details.frameId === 0) {
+      handleUrlChange(details.tabId, details.url);
+    }
+  });
 
-    // Gère la fermeture des onglets
-    browser.tabs.onRemoved.addListener(async (tabId) => {
-      const tabData = tabNetworkData.get(tabId);
-      if (tabData && tabData.currentUrl) {
-        await handleUrlChange(tabId, tabData.currentUrl, true);
-      }
-      tabNetworkData.delete(tabId);
-    });
-  }
+  // Détecte les changements d'URL dans les SPAs (pushState/replaceState)
+  browser.webNavigation.onHistoryStateUpdated.addListener((details) => {
+    if (details.frameId === 0) {
+      handleUrlChange(details.tabId, details.url);
+    }
+  });
+
+  // Gère la fermeture des onglets
+  browser.tabs.onRemoved.addListener(async (tabId) => {
+    const tabData = tabNetworkData.get(tabId);
+    if (tabData && tabData.currentUrl) {
+      await handleUrlChange(tabId, tabData.currentUrl, true);
+    }
+    tabNetworkData.delete(tabId);
+  });
 }
 
 // Appelez cette fonction une seule fois au démarrage
@@ -415,11 +425,11 @@ browser.webRequest.onErrorOccurred.addListener(
 // Constantes pour calculer les émissions carbones
 const CARBON_CONSTANTS = {
   KWH_PER_GB_TRANSFER: 0.519, // Valeur donnée selon The Shift Project 2023
-  
+
   KWH_PER_GB_DATACENTER: 0.065, // Valeur donnée selon Sustainable Web Design
-  
+
   KWH_PER_REQUEST: 0.00015, // Valeur approximative selon plusieurs sources
- 
+
   BYTES_TO_GB: 1 / (1024 * 1024 * 1024),
   MS_TO_HOURS: 1 / (1000 * 60 * 60),
 };
@@ -454,7 +464,7 @@ function calculateCarbonEmissions(tabData) {
         transfer: transferEnergy,
         datacenter: datacenterEnergy,
         requests: requestEnergy,
-        total: totalEnergy
+        total: totalEnergy,
       },
       data: {
         gbTransferred,
@@ -506,32 +516,78 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === "getgCO2e") {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (tabs.length > 0) {
-        const tabData = getTabData(tabs[0].id);
-        const emissionsData = calculateCarbonEmissions(tabData);
+    return browser.tabs
+      .query({ active: true, currentWindow: true })
+      .then((tabs) => {
+        if (tabs.length > 0) {
+          const tabId = tabs[0].id;
+          const tabData = getTabData(tabId);
 
-        console.log("Emissions calculation details:", {
-          bytesTransferred: tabData.totalTransferredSize,
-          bytesResources: tabData.totalResourceSize,
-          requests: tabData.totalRequests,
-          loadTime: tabData.endTime - tabData.startTime,
-          carbonIntensity: tabData.carbonIntensity,
-          result: emissionsData,
-        });
+          // Étape 1 : Assurez-vous que le pays et le code du pays sont récupérés
+          const countryPromise =
+            !tabData.country || !tabData.countryCode
+              ? fetchCountry().then(({ country, countryCode }) => {
+                  tabData.country = country;
+                  tabData.countryCode = countryCode;
+                })
+              : Promise.resolve();
 
-        sendResponse({
-          gCO2e: emissionsData.totalEmissions,
-          breakdown: emissionsData.breakdown,
-        });
-      } else {
-        sendResponse({
-          gCO2e: 0,
-          breakdown: { transfer: 0, datacenter: 0, requests: 0 },
-        });
-      }
-    });
-    return true;
+          // Étape 2 : Une fois le pays obtenu, assurez-vous que l'intensité carbone est disponible
+          return countryPromise.then(() => {
+            const intensityPromise =
+              tabData.countryCode && tabData.carbonIntensity <= 0
+                ? getLatestCarbonIntensity(tabData.countryCode).then(
+                    (intensity) => {
+                      tabData.carbonIntensity = intensity;
+                    }
+                  )
+                : Promise.resolve();
+
+            // Étape 3 : Calcul des émissions après avoir récupéré les données nécessaires
+            return intensityPromise.then(() => {
+              const emissionsData = calculateCarbonEmissions(tabData);
+
+              console.log("Détails du calcul des émissions pour le front :", {
+                bytesTransferred: tabData.totalTransferredSize,
+                bytesResources: tabData.totalResourceSize,
+                requests: tabData.totalRequests,
+                loadTime: tabData.endTime - tabData.startTime,
+                carbonIntensity: tabData.carbonIntensity,
+                result: emissionsData,
+              });
+
+              return {
+                gCO2e: emissionsData.totalEmissions,
+                breakdown: emissionsData.breakdown,
+                metrics: emissionsData.metrics, // Inclut les métriques pour analyse
+              };
+            });
+          });
+        } else {
+          // Aucun onglet actif, envoyer des données par défaut
+          return {
+            gCO2e: 0,
+            breakdown: { transfer: 0, datacenter: 0, requests: 0 },
+            metrics: {
+              energy: { transfer: 0, datacenter: 0, requests: 0, total: 0 },
+              data: {
+                gbTransferred: 0,
+                gbResources: 0,
+                requests: 0,
+                loadTimeMs: 0,
+                carbonIntensity: 0,
+              },
+            },
+          };
+        }
+      })
+      .catch((error) => {
+        console.error("Erreur dans le gestionnaire getgCO2e :", error);
+        return {
+          error:
+            "Une erreur est survenue lors du calcul des émissions de carbone.",
+        };
+      });
   }
 
   if (message.type === "getFullDetails") {
@@ -555,7 +611,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
           totalTransferredSize: tabData.totalTransferredSize || 0,
           totalRequests: tabData.totalRequests || 0,
           totalResourceSize: tabData.totalResourceSize || 0,
-          loadTime: tabData.endTime - tabData.startTime || 0,
+          loadTime: (tabData.endTime - tabData.startTime) / 1000 || 0,
         });
       })
       .catch((error) => {
@@ -571,5 +627,57 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === "checkLoginStatus") {
     return getUserData();
+  }
+
+  if (message.type === "getEquivalent") {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      if (tabs.length === 0) {
+        sendResponse({ success: false, error: "Aucun onglet actif trouvé." });
+        return;
+      }
+
+      const tabId = tabs[0].id;
+      const tabData = getTabData(tabId);
+      
+      // Calcul des émissions d'abord
+      const emissions = calculateCarbonEmissions(tabData);
+      const gCO2 = emissions.totalEmissions;
+      const count = message.count || 1;
+
+      // Appel direct à l'API Symfony
+      fetch(`http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Erreur API Symfony : ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(equivalents => {
+        console.log("Équivalents reçus :", equivalents);
+        sendResponse({ 
+          success: true, 
+          equivalents: equivalents.map(eq => ({
+            image: eq.icon || "../assets/images/account.svg",
+            value: eq.value,
+            name: eq.name
+          }))
+        });
+      })
+      .catch(error => {
+        console.error("Erreur dans getEquivalent:", error);
+        sendResponse({ 
+          success: false, 
+          error: error.message 
+        });
+      });
+    });
+
+    // Important: retourner true pour indiquer que sendResponse sera appelé de manière asynchrone
+    return true;
   }
 });
