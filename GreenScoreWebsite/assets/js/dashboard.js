@@ -102,8 +102,8 @@ function initCharts() {
 }
 
 function initCircles() {
-    const circles = document.querySelectorAll("circle.text-green-600, circle.text-purple-600");
-    const values = [85, 85];
+    const circles = document.querySelectorAll("circle.text-green-600");
+    const values = [85, 85, 85]; 
 
     circles.forEach((circle, index) => {
         const value = values[index];
