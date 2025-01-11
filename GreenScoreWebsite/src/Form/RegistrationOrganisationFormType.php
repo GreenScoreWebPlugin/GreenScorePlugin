@@ -52,7 +52,7 @@ class RegistrationOrganisationFormType extends AbstractType
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'En vous inscrivant sur GreenScore, vous acceptez nos conditions générales d’utilisation.',
+                'label' => 'En vous inscrivant sur GreenScoreWeb, vous acceptez nos conditions générales d’utilisation.',
                 'required' => true,
                 'error_bubbling' => false,
                 'mapped' => false,
