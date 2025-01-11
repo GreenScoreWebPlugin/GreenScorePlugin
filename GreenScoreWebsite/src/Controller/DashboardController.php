@@ -137,7 +137,6 @@ class DashboardController extends AbstractController
             if ($lastMonitoredWebsite) {
                 // Website
                 $url_full = $lastMonitoredWebsite->getUrlFull();
-                $url_domain = $lastMonitoredWebsite->getUrlDomain();
 
                 // Country
                 $country = $lastMonitoredWebsite->getCountry();
@@ -169,15 +168,8 @@ class DashboardController extends AbstractController
         else if($request->query->has('url_full'))
         {
             // dump($request->get('country'));
-            // dump($request->get('url_domain'));
-            // dump($request->get('url_full'));
-            // dump($request->get('totalConsu'));
-            // dump($request->get('pageSize'));
-            // dump($request->get('loadingTime'));
-            // dump($request->get('queriesQuantity'));
             
             $country = is_string($request->get('country')) ? $request->get('country') : null;
-            $url_domain = is_string($request->get('url_domain')) ? $request->get('url_domain') : null;
             $url_full = is_string($request->get('url_full')) ? $request->get('url_full') : null;
             $totalConsu = is_numeric($request->get('totalConsu')) ? (float)$request->get('totalConsu') : null;
             $pageSize = is_numeric($request->get('pageSize')) ? (float)$request->get('pageSize') : null;
@@ -241,6 +233,46 @@ class DashboardController extends AbstractController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
             }
+
+            // Widget en fonction de l'eco index
+            try {
+                $urlSvgEcoIndex = 'https://bff.ecoindex.fr/badge/?theme=dark&url=' . $url_full;
+                $svgContent = file_get_contents($urlSvgEcoIndex);
+
+                if (preg_match('/<tspan[^>]*>([A-G])<\/tspan>/', $svgContent, $matches)) {
+                    $letterEcoIndex = $matches[1];
+                }
+                
+                switch ($letterEcoIndex) {
+                    case 'A':
+                        $envNomination = 'Maître des Forêts';
+                        break;
+                    case 'B':
+                        $envNomination = 'Protecteur des Bois';
+                        break;
+                    case 'C':
+                        $envNomination = 'Frère des Arbres';
+                        break;
+                    case 'D':
+                        $envNomination = 'Initié de la Nature';
+                        break;
+                    case 'E':
+                        $envNomination = 'Explorateur Imprudent';
+                        break;
+                    case 'F':
+                        $envNomination = 'Tempête Numérique';
+                        break;
+                    case 'G':
+                        $envNomination = 'Bouleverseur des Écosystèmes';
+                        break;
+                    default:
+                        $envNomination = null;
+                        break;
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Erreur lors de la récupération du badge EcoIndex : ' . $e->getMessage());
+            }
+
         }
         
         if($showDatas || $userId)
@@ -262,7 +294,9 @@ class DashboardController extends AbstractController
                 'loadingTime' => $loadingTime ?? null,
                 'queriesQuantity' => $queriesQuantity ?? null,
                 'url_full' => $url_full ?? null,
-                'noDatas' => $noDatas ?? null
+                'noDatas' => $noDatas ?? null,
+                'letterEcoIndex' => $letterEcoIndex ?? null,
+                'envNomination' => $envNomination ?? null,
             ]);
         else
             return $this->redirectToRoute('app_login');

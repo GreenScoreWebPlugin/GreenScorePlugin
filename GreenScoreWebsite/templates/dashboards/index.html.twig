@@ -172,12 +172,35 @@
 
       {% endif %}
 
-
       <!-- Widget 3: Badge Environnemental Impact -->
-      <div class="flex flex-col bg-gradient-to-tr from-purple-400 to-pink-500 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 items-center justify-center ">
-          
+      <div class="flex flex-col bg-gradient-to-tr from-white via-blue-100 to-green-100 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4">
+          {% if letterEcoIndex is defined %}
+              <div class="flex flex-col items-center justify-between h-full text-center">
+                  <h2 class="text-lg font-bold mb-4 row-span-1">Badge d'impact environnemental</h2>
+                  <div class="flex-1 flex items-center justify-center w-full relative">
+                      <picture class="w-full h-full flex items-center justify-center">
+                          <source
+                              media="(max-width: 768px)"
+                              srcset="{{ asset('images/badges/mobile/A.png') }}"
+                          >
+                          <img
+                              srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.png') }}"
+                              alt="Badge Impact Environnemental {{ letterEcoIndex }}"
+                              class="w-full h-auto object-contain"
+                              loading="lazy"
+                          >
+                      </picture>
+                      {% if envNomination is not null %}
+                          <p class="absolute bottom-1 text-lg font-bold ">
+                              {{ envNomination }}
+                          </p>
+                      {% endif %}
+                  </div>
+              </div>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+          {% endif %}
       </div>
-
 
       <!-- Widget 4: Equivalent 1 -->
       <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-4">
