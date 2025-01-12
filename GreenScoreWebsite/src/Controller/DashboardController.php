@@ -8,6 +8,7 @@ use App\Repository\AdviceRepository;
 use App\Repository\EquivalentRepository;
 use App\Service\EquivalentCalculatorService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -139,11 +140,11 @@ class DashboardController extends AbstractController
                     $user = $userRepository->find($userId);
             
                     if (!$user) {
-                        throw new \Exception('Utilisateur non trouvé');
+                        throw new Exception('Utilisateur non trouvé');
                     }
 
                     $totalConsu = $user->getTotalCarbonFootprint();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $totalConsu = null;
                 }
                 $showDatas = true;
@@ -178,7 +179,7 @@ class DashboardController extends AbstractController
                 $data = $response->toArray();
                 $flagUrl = $data[0]['flags']['svg'] ?? null;
                 $contryCode = $data[0]['cca2'] ?? null;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $error = 'Impossible de récupérer les informations pour ce pays.';
             }
             if($contryCode){
@@ -194,7 +195,7 @@ class DashboardController extends AbstractController
                     ]);
                     $data = $response->toArray();
                     $carbonIntensity = $data['carbonIntensity'] ?? null;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $error = 'Impossible de récupérer l intensité carbone pour ce pays.';
                 }
             }
@@ -217,7 +218,7 @@ class DashboardController extends AbstractController
                         $equivalent1 = $equivalents[0];
                         $equivalent2 = $equivalents[1];
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
             }
@@ -257,7 +258,7 @@ class DashboardController extends AbstractController
                         $envNomination = null;
                         break;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Erreur lors de la récupération du badge EcoIndex : ' . $e->getMessage());
             }
 
@@ -279,7 +280,7 @@ class DashboardController extends AbstractController
                 'equivalent2' => $equivalent2 ?? null,
                 'carbonIntensity' => $carbonIntensity ?? null,
                 'pageSize' => $pageSize ?? null,
-                'loadingTime' => $loadingTime ?? null,
+                'loadingTime' => round($loadingTime, 1) ?? null,
                 'queriesQuantity' => $queriesQuantity ?? null,
                 'url_full' => $url_full ?? null,
                 'noDatas' => $noDatas ?? null,
@@ -322,7 +323,7 @@ class DashboardController extends AbstractController
             $equivalents = $this->equivalentCalculatorService->calculateEquivalents($gCo2, (int)$count);
             return new JsonResponse($equivalents);
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Erreur API equivalent : ' . $e->getMessage());
             return new JsonResponse(['error' => 'An error occurred'], 500);
         }

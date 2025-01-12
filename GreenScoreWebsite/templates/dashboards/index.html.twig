@@ -5,35 +5,34 @@
 {% block body %}
 
 <div class="w-full bg-green-bg min-h-screen">
-  <!-- Top -->
-  <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
-      <h1 class="text-4xl font-bold">{{title}}</h1>
-      {% if not noDatas %}
-      <p class="text-base w-fit">
-          {{ description }}
-          <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
-              {{ link }}
-          </span>
-      </p>
-      {% endif %}
-  </div>
+    <!-- Top -->
+    <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
+        <h1 class="text-4xl font-bold">{{title}}</h1>
+        {% if not noDatas %}
+            <p class="text-base w-fit">
+                {{ description }}
+                <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
+                    {{ link }}
+                </span>
+            </p>
+        {% endif %}
+    </div>
 
-  {% if not noDatas %}
-  <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
+    {% if not noDatas %}
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
+        <!-- Widget 1 -->
+        {# S6 : dashboard donnees utilisateur et organisation
+        {% if page == 'mes-donnees' %}
 
-      <!-- Widget 1 -->
-      {# S6 : dashboard donnees utilisateur et organisation
-      {% if page == 'mes-donnees' %}
-
-          <!-- Carbon Average -->
-          <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950">
-              {% if averageFootprint is null and averageFootprint is null %}
-                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
-              {% else %}
-                  <h2 class="text-lg font-bold text-center font-outfit">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
-                  {% if averageFootprint is not null and averageFootprint is not null %}
-                      <div class="flex justify-center gap-5">
+            <!-- Carbon Average -->
+            <div class="bg-white flex flex-col justify-between gap-2 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950">
+                {% if averageFootprint is null and averageFootprint is null %}
+                    <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+                {% else %}
+                    <h2 class="text-lg font-bold text-center font-outfit">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
+                    {% if averageFootprint is not null and averageFootprint is not null %}
+                        <div class="flex justify-center gap-5">
                         {% if myAverageFootprint is not null %}
                             <div class="flex flex-col items-center">
                                 <div class="relative text-center">
@@ -56,69 +55,110 @@
                                 <p class="text-sm text-gray-500">Les autres utilisateurs</p>
                             </div>
                         {% endif %}
-                      </div>
+                        </div>
 
-                      {% if myAverageFootprint is not null and averageFootprint is not null and messageAverageFootprint is not null %}
-                          <p class="text-sm text-center text-green-700 font-medium mt-4">
-                              {{messageAverageFootprint}}
-                          </p>
-                      {% endif %}
-                  {% endif %}
-              {% endif %}
-          </div>
+                        {% if myAverageFootprint is not null and averageFootprint is not null and messageAverageFootprint is not null %}
+                            <p class="text-sm text-center text-green-700 font-medium mt-4">
+                                {{messageAverageFootprint}}
+                            </p>
+                        {% endif %}
+                    {% endif %}
+               {% endif %}
+            </div>
 
-      {% elseif page == 'mon-organisation' %}
+        {% elseif page == 'mon-organisation' %}
 
-          <!-- Carbon Average -->
-          <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950">
-              {% if averageFootprint is not null %}
-                  <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
-                  <div class="flex justify-center gap-5 flex-1 items-center">
-                      <div class="flex flex-col items-center">
-                          <div class="relative text-center">
-                              <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
-                                  <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
-                              </svg>
-                              <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{averageFootprint}}">0</p>
+            <!-- Carbon Average -->
+            <div class="bg-white flex flex-col justify-start gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950">
+                {% if averageFootprint is not null %}
+                    <h2 class="text-lg font-bold text-center">Moyenne de l'empreinte carbone sur un jour (en gCO2e)</h2>
+                    <div class="flex justify-center gap-5 flex-1 items-center">
+                        <div class="flex flex-col items-center">
+                            <div class="relative text-center">
+                                <svg class="w-20 h-20 rotate-[-90deg]" viewBox="0 0 36 36">
+                                    <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                </svg>
+                                <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600 animate-counter" data-value="{{averageFootprint}}">0</p>
+                            </div>
+                        </div>
+                        {% if equivalentAverage is not null %}
+                            <div class="flex flex-col justify-center">
+                                <div class="flex justify-center gap-2">
+                                    <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
+                                        <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+                                    </picture>
+                                    <h2 class="text-lg font-bold">Equivalent</h2>
+                                </div>
+                                <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage}}">0</span> douches</p>
                           </div>
-                      </div>
-                      {% if equivalentAverage is not null %}
-                          <div class="flex flex-col justify-center">
-                              <div class="flex justify-center gap-2">
-                                  <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
-                                      <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
-                                  </picture>
-                                  <h2 class="text-lg font-bold">Equivalent</h2>
-                              </div>
-                              <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage}}">0</span> douches</p>
-                          </div>
-                      {% else %}
-                          <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
-                      {% endif %}
-                  </div>
-              {% else %}
-                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
-              {% endif %}
-          </div>
+                        {% else %}
+                            <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+                {% endif %}
+            </div>
 
-      {% else %} #}
+        {% else %} #}
 
           <!-- EcoIndex -->
-          <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950 font-outfit">
-              <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
-              {% if url_full is not null %}
-                  <div class="flex justify-center w-full items-center">
-                      <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}" target="_blank" class="flex w-full items-center justify-center">
-                          <img src="https://bff.ecoindex.fr/badge/?theme=dark&url={{ url_full }}" alt="Ecoindex Badge" loading="lazy" class="w-44 h-auto"/>
-                      </a>
-                  </div>
-                  <p class="text-sm mt-2">
-                      La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP
+      <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950 font-outfit">
+          <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
+          {% if url_full is not null %}
+              <div class="flex flex-col items-center w-full">
+                  <!-- Lettre stylisée -->
+                  <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}"
+                     target="_blank"
+                     class="text-lg font-bold px-4 py-2 rounded-full
+                    {% if letterEcoIndex == 'A' %} bg-[#2e9b43] text-white
+                    {% elseif letterEcoIndex == 'B' %} bg-[#347851] text-white
+                    {% elseif letterEcoIndex == 'C' %} bg-[#cadd00] text-black
+                    {% elseif letterEcoIndex == 'D' %} bg-[#f7ed00] text-black
+                    {% elseif letterEcoIndex == 'E' %} bg-[#ffce00] text-white
+                    {% elseif letterEcoIndex == 'F' %} bg-[#fb9929] text-white
+                    {% elseif letterEcoIndex == 'G' %} bg-[#f01c16] text-white
+                    {% else %} bg-gray-300 text-gray-800
+                    {% endif %}">
+                        <span>
+                            {% if letterEcoIndex %}
+                                {{ letterEcoIndex }}
+                            {% else %}
+                                ?
+                            {% endif %}
+                        </span>
+                  </a>
+
+                  <!-- Texte contextuel -->
+                  <p class="mt-2 text-xl text-center font-bold w-3/4">
+                      {% if letterEcoIndex == 'A' %}
+                          Ce site est exemplaire 🌱.
+                      {% elseif letterEcoIndex == 'B' %}
+                          Très bien, mais le site peut encore être amélioré. 👍
+                      {% elseif letterEcoIndex == 'C' %}
+                          Encore un effort pour optimiser ! 🚀
+                      {% elseif letterEcoIndex == 'D' %}
+                          Cette page est gourmande ! 🤔
+                      {% elseif letterEcoIndex == 'E' %}
+                          Les ressources ont besoin d'être optimisées ! ⚡
+                      {% elseif letterEcoIndex == 'F' %}
+                          Impact élevé ! Ce site doit être revu pour être optimum. ❗
+                      {% elseif letterEcoIndex == 'G' %}
+                          Ouch.
+                      {% else %}
+                          Pas d'informations disponibles pour ce score.
+                      {% endif %}
                   </p>
-              {% else %}
-                  <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
-              {% endif %}
-          </div>
+              </div>
+              <p class="text-sm mt-4">
+                  La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP.
+              </p>
+          {% else %}
+              <p class="text-center text-gray-500 flex items-center justify-center h-full">Pas de données</p>
+          {% endif %}
+      </div>
+
+
 
       {# {% endif %} #}
 
@@ -382,7 +422,7 @@
             {% endif %}
         </div>
     {% endif %}
-</div>
+    </div>
 
 <script src="{{ asset('build/dashboard.js') }}"></script>
 {% endblock %}
