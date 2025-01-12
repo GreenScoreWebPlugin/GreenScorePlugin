@@ -82,6 +82,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  function updateAverageConsumption(gCO2e) {
+    const AVERAGE_CONSUMPTION = 0.74;
+    let multiplier = gCO2e / AVERAGE_CONSUMPTION;
+
+    if (multiplier > 1) {
+      document.getElementById("average-consumption").textContent =
+          `${multiplier.toFixed(2)}x supérieur`;
+    } else {
+      document.getElementById("average-consumption").textContent =
+          `${(1 / multiplier).toFixed(2)}x inférieur`;
+    }
+  }
+
   // Vérification du statut de connexion
   try {
     const userData = await browser.runtime.sendMessage({
@@ -109,6 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const response = await browser.runtime.sendMessage({ type: "getgCO2e" });
       if (response && typeof response.gCO2e === "number") {
         updateColors(response.gCO2e);
+        updateAverageConsumption(response.gCO2e);
         gCO2eValue = response.gCO2e;
       }
     } catch (error) {
