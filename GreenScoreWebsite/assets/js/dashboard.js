@@ -102,7 +102,7 @@ function initCharts() {
 }
 
 function initCircles() {
-    const circles = document.querySelectorAll("circle.text-green-600");
+    const circles = document.querySelectorAll("circle.text-gradient-purple");
     const values = [85, 85, 85]; 
 
     circles.forEach((circle, index) => {
@@ -127,7 +127,7 @@ function initCircles() {
 
 function iniAanimateCounter(){
     document.querySelectorAll('.animate-counter').forEach(counter => {
-    const value = parseInt(counter.getAttribute('data-value'));
+    const value = parseFloat(counter.getAttribute('data-value'));
     let count = 0;
     const updateCount = () => {
         count += Math.ceil(value / 100);

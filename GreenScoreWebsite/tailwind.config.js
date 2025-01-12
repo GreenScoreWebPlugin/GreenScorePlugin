@@ -30,6 +30,8 @@ module.exports = {
         'green-bg': "#e7f4f9",
         
         'red-900': '#7E1709',
+
+        'gradient-purple': "#8458A9"
       }
     },
   },

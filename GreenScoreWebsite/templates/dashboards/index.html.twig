@@ -104,7 +104,7 @@
       {% else %} #}
 
           <!-- EcoIndex -->
-          <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950">
+          <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950 font-outfit">
               <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
               {% if url_full is not null %}
                   <div class="flex justify-center w-full items-center">
@@ -162,7 +162,7 @@
                           <img src="{{ asset('/images/empreinte_carbone.png') }}" class="w-32 h-auto min-w-[100px]" alt="Empreinte Carbone" loading="lazy">
                       </picture>
                       <div class="flex flex-col justify-center items-center flex-1 font-outfit">
-                          <p class="text-6xl font-bold text-lime-600 animate-counter" data-value="{{carbonIntensity}}">0</p>
+                          <p class="text-6xl font-bold text-[#92bfff] animate-counter" data-value="{{carbonIntensity}}">0</p>
                           <p class="text-xl font-bold">gCO2eq/kWh</p>
                           <p class="text-sm text-center pt-5">Votre empreinte carbonne dépend aussi de l’intensité carbone du pays</p>
                       </div>
@@ -175,7 +175,7 @@
       {# {% endif %} #}
 
       <!-- Widget 3: Badge Environnemental Impact -->
-      <div class="flex flex-col bg-gradient-to-tr from-white via-blue-100 to-green-100 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 text-grey-950">
+      <div class="flex flex-col bg-gradient-to-tr from-white via-blue-100 to-green-100 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 text-grey-950 font-outfit">
           {% if letterEcoIndex is defined %}
               <div class="flex flex-col items-center justify-between h-full text-center">
                   <h2 class="text-lg font-bold mb-4 row-span-1">Badge d'impact environnemental</h2>
@@ -183,10 +183,10 @@
                       <picture class="w-full h-full flex items-center justify-center">
                           <source
                               media="(max-width: 768px)"
-                              srcset="{{ asset('images/badges/mobile/A.png') }}"
+                              srcset="{{ asset('images/badges/mobile/' ~ letterEcoIndex ~ '.png') }}"
                           >
                           <img
-                              srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.png') }}"
+                              srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.svg') }}"
                               alt="Badge Impact Environnemental {{ letterEcoIndex }}"
                               class="w-full h-auto object-contain"
                               loading="lazy"
@@ -208,8 +208,8 @@
       <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-4 text-grey-950">
           {% if equivalent1 is not null and equivalent1.name is not null and equivalent1.value is not null %}
               <div class="flex justify-center gap-2">
-                  <picture class="bg-green-300 w-8 h-8 flex items-center justify-center">
-                      <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
+                  <picture class="bg-[#94e9b8] w-8 h-8 flex items-center justify-center rounded-full">
+                      <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4 rounded-full">
                   </picture>
                   <h2 class="text-lg font-bold font-outfit">Equivalent</h2>
               </div>
@@ -226,7 +226,7 @@
 
 
       <!-- Widget 5: Total Consumption -->
-      <div class="bg-purple-600 min-h-[250px] grid grid-row-3 text-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-5 sm:order-4 lg:col-span-6 text-center lg:order-5">
+      <div class="min-h-[250px] grid grid-row-3 bg-gradient-to-tl to-gradient-purple from-zinc-600  text-white p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-5 sm:order-4 lg:col-span-6 text-center lg:order-5">
           <h2 class="font-bold font-outfit row-span-1 flex justify-start">Total de votre consommation :</h2>
           {% if totalConsu is not null %}
               <p class="text-6xl font-extrabold font-outfit mt-4 row-span-2 flex justify-center"><span class="animate-counter" data-value="{{totalConsu}}">0</span>&nbsp;gCO2e</p>
@@ -240,7 +240,7 @@
       <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-6 font-outfit text-grey-950">
           {% if equivalent2 is not null and equivalent2.name is not null and equivalent2.value is not null %}
               <div class="flex justify-center gap-2">
-                  <picture class="bg-green-300 w-8 h-8 flex items-center justify-center">
+                  <picture class="bg-[#94e9b8] w-8 h-8 flex items-center justify-center rounded-full">
                       <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
                   </picture>
                   <h2 class="text-lg font-bold font-outfit">Equivalent</h2>
@@ -296,9 +296,9 @@
                           <div class="flex flex-col flex-1 h-fit items-center">
                               <div class="relative text-center">
                                   <svg class="w-28 h-28 rotate-[-90deg]" viewBox="0 0 36 36">
-                                      <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                      <circle cx="18" cy="18" r="15.9155" class="text-gradient-purple" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
                                   </svg>
-                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{pageSize}}">0</span>o</p>
+                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple"><span class="animate-counter" data-value="{{pageSize}}">0</span>o</p>
                               </div>
                               <p class="text-sm text-gray-500">Taille</p>
                           </div>
@@ -307,9 +307,9 @@
                           <div class="flex flex-col flex-1 h-fit items-center">
                               <div class="relative text-center">
                                   <svg class="w-28 h-28 rotate-[-90deg]" viewBox="0 0 36 36">
-                                      <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                      <circle cx="18" cy="18" r="15.9155" class="text-gradient-purple" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
                                   </svg>
-                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{loadingTime}}">0</span> s</p>
+                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple"><span class="animate-counter" data-value="{{loadingTime}}">0</span> s</p>
                               </div>
                               <p class="text-sm text-gray-500">Temps de chargement</p>
                           </div>
@@ -318,9 +318,9 @@
                           <div class="flex flex-col flex-1 h-fit items-center">
                               <div class="relative text-center">
                                   <svg class="w-28 h-28 rotate-[-90deg]" viewBox="0 0 36 36">
-                                      <circle cx="18" cy="18" r="15.9155" class="text-green-600" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
+                                      <circle cx="18" cy="18" r="15.9155" class="text-gradient-purple" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"></circle>
                                   </svg>
-                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-green-600"><span class="animate-counter" data-value="{{queriesQuantity}}">0</span></p>
+                                  <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple"><span class="animate-counter" data-value="{{queriesQuantity}}">0</span></p>
                               </div>
                               <p class="text-sm text-gray-500">Nombre de requêtes</p>
                           </div>
@@ -329,23 +329,23 @@
               </div>
           </div>
 
-      {% endif %}
+      {# {% endif %} #}
 
 
       <!-- Widget 8: Tips 1 -->
-      <div class="bg-green-100 p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-8 lg:order-8">
+      <div class="bg-[#94E9B8] p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-8 lg:order-8 font-outfit">
           {% if advice is not null %}
-              <div class="flex justify-start gap-2">
+              <div class="flex gap-3 items-start">
                   <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
-                      <i class="fa-solid fa-circle-question" style="color: #dcfce7;"></i>
+                      <i class="fa-solid fa-circle-question text-gs-green-800"></i>
                   </div>
-                  <h2 class="text-lg font-bold text-green-700">Des conseils&nbsp;?</h2>
+                  <h2 class="text-lg font-bold text-white">Des conseils pour la navigation ?</h2>
               </div>
-              <p class="text-sm mt-2">
+              <p class="text-sm mt-2 text-white">
                   {{advice}}
               </p>
               <div class="flex w-full justify-end">
-                  <button class="bg-green-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+                  <button class="bg-[#4b7d60] text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
               </div>
           {% else %}
               <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
@@ -353,19 +353,19 @@
       </div>
 
       <!-- Widget 9: Tips 2 -->
-      <div class="bg-blue-100 p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-9 lg:order-9">
+      <div class="bg-[#92BFFF] p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-9 lg:order-9 font-outfit">
           {% if adviceDev is not null %}
-              <div class="flex justify-start gap-2">
+              <div class="flex items-start gap-3 text-[#263346]">
                   <div class="bg-white w-8 h-8 flex items-center justify-center rounded-lg">
-                      <i class="fa-solid fa-circle-question" style="color: #dbeafe;"></i>
+                      <i class="fa-solid fa-circle-question text-[#263346]"></i>
                   </div>
-                  <h2 class="text-lg font-bold text-blue-700">Des conseils&nbsp;?</h2>
+                  <h2 class="text-lg font-bold text-white">Des conseils pour le développement ?</h2>
               </div>
-              <p class="text-sm mt-2">
+              <p class="text-sm mt-2 text-white">
                   {{adviceDev}}
               </p>
               <div class="flex w-full justify-end">
-                  <button class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+                  <button class="bg-[#455a79] text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
               </div>
           {% else %}
               <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
