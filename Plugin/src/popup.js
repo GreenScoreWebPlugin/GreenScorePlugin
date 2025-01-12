@@ -38,19 +38,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   function getColorClass(gCO2e) {
     const value = Number(gCO2e);
 
-    if (value <= 200) {
+    if (value <= 0.3) {
       return {
         text: "text-[#617D3B]",
         bg: "bg-[#ECFDF2]",
         border: "border-[#6D874B]",
       };
-    } else if (value <= 400) {
+    } else if (value <= 0.7) {
       return {
         text: "text-[#EAC13A]",
         bg: "bg-[#FFF1C5]",
         border: "border-[#EAC13A]",
       };
-    } else if (value <= 600) {
+    } else if (value <= 1) {
       return {
         text: "text-[#E98035]",
         bg: "bg-[#F9D2B6]",
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           type: "getFullDetails",
         });
 
-        let url = "http://127.0.0.1:8000/derniere-page-web-consultee";
+        let url = "http://localhost:8000/derniere-page-web-consultee";
 
         if (!userData.isLoggedIn) {
           // Construction des paramètres d'URL si non connecté

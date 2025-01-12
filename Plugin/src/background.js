@@ -645,7 +645,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const count = message.count || 1;
 
       // Appel direct à l'API Symfony
-      fetch(`http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
+      fetch(`http://localhost:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -662,7 +662,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ 
           success: true, 
           equivalents: equivalents.map(eq => ({
-            image: eq.icon || "../assets/images/account.svg",
+            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon ||
+                   "../assets/images/account.svg",
             value: eq.value,
             name: eq.name
           }))
