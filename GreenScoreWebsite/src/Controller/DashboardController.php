@@ -273,13 +273,15 @@ class DashboardController extends AbstractController
                 'country' => $country ?? null,
                 'flagUrl' => $flagUrl ?? null,
                 'error' => $error ?? null,
-                'totalConsu' => $totalConsu ?? null,
+                'totalConsu' => $this->formatConsumption($totalConsu) ?? null,
+                'totalConsuUnit' => $this->formatUnitConsumption($totalConsu) ?? null,
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
                 'equivalent1' => $equivalent1 ?? null,
                 'equivalent2' => $equivalent2 ?? null,
                 'carbonIntensity' => $carbonIntensity ?? null,
-                'pageSize' => $pageSize ?? null,
+                'pageSize' => $this->formatSize($pageSize) ?? null,
+                'pageSizeUnit' => $this->formatUnitSize($pageSize) ?? null,
                 'loadingTime' => round($loadingTime, 1) ?? null,
                 'queriesQuantity' => $queriesQuantity ?? null,
                 'url_full' => $url_full ?? null,
@@ -328,4 +330,87 @@ class DashboardController extends AbstractController
             return new JsonResponse(['error' => 'An error occurred'], 500);
         }
     }
+
+    public function formatConsumption(?float $totalConsu): string
+    {
+        if ($totalConsu === null) {
+            return 'N/A';
+        }
+
+        if ($totalConsu >=1000000) {
+            $value = $totalConsu / 1000000;
+        } elseif ($totalConsu >= 1000) {
+            $value = $totalConsu / 1000;
+        } else {
+            $value = $totalConsu;
+        }
+
+        // Ajout de décimales uniquement pour les petites valeurs (<10)
+        $formattedValue = $value < 10
+            ? number_format($value, 2, '.', ' ') // 2 décimales pour les petites valeurs
+            : number_format($value, 0, '.', ' '); // Pas de décimales pour les autres
+
+        return $formattedValue;
+    }
+
+    public function formatUnitConsumption(?float $totalConsu): string
+    {
+
+        if ($totalConsu >=1000000) {
+            $unit = 'TCO2e'; // Tonne métrique
+        } elseif ($totalConsu >= 1000) {
+            $unit = 'kgCO2e'; // Kilogramme
+        } else {
+            $unit = 'gCO2e'; // Gramme
+        }
+        return $unit;
+    }
+
+    public function formatSize(?float $size): string
+    {
+        if ($size === null) {
+            return 'N/A';
+        }
+
+        if ($size >= 1099511627776) { // 1 To = 2^40 octets
+            $value = $size / 1099511627776;
+        } elseif ($size >= 1073741824) { // 1 Go = 2^30 octets
+            $value = $size / 1073741824;
+        } elseif ($size >= 1048576) { // 1 Mo = 2^20 octets
+            $value = $size / 1048576;
+        } elseif ($size >= 1024) { // 1 Ko = 2^10 octets
+            $value = $size / 1024;
+        } else {
+            $value = $size;
+        }
+
+        // Ajout de décimales uniquement pour les petites valeurs (<10)
+        $formattedValue = $value < 10
+            ? number_format($value, 2, '.', ' ') // 2 décimales pour les petites valeurs
+            : number_format($value, 0, '.', ' '); // Pas de décimales pour les autres
+
+        return round($formattedValue, 1);
+    }
+
+    public function formatUnitSize(?float $size): string
+    {
+        if ($size === null) {
+            return 'N/A';
+        }
+
+        if ($size >= 1099511627776) { // 1 To = 2^40 octets
+            $unit = 'To'; // Téraoctets
+        } elseif ($size >= 1073741824) { // 1 Go = 2^30 octets
+            $unit = 'Go'; // Gigaoctets
+        } elseif ($size >= 1048576) { // 1 Mo = 2^20 octets
+            $unit = 'Mo'; // Mégaoctets
+        } elseif ($size >= 1024) { // 1 Ko = 2^10 octets
+            $unit = 'Ko'; // Kilooctets
+        } else {
+            $unit = 'octets'; // Octets
+        }
+
+        return $unit;
+    }
+
 }
