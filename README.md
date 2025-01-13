@@ -38,7 +38,7 @@ Laissez ce terminal ouvert.
 ### 4. Configurer le backend du plugin
 Ouvrez un autre terminal et retournez à la racine du projet :
 ```bash
-cd ../BackEndPlugin
+cd ../BackendPlugin
 ```
 
 Démarrez le serveur PHP pour le backend :
