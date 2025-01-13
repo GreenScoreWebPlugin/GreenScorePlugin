@@ -22,7 +22,7 @@ class EquivalentRepository extends ServiceEntityRepository
         // 1. Récupérer les IDs et leurs valeurs
         $qb = $this->createQueryBuilder('e')
             ->select('e.id, e.equivalent')
-            ->andWhere('e.equivalent * :ratio > 0.01')
+            ->andWhere('e.equivalent * :ratio > 0.1')
             ->andWhere('e.equivalent * :ratio < 500')
             ->setParameter('ratio', $ratio);
 

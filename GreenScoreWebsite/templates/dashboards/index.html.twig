@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{title}} | GreenScoreWeb{% endblock %}
+{% block title %}{{title}} | GreenScore Web{% endblock %}
 
 {% block body %}
 
@@ -137,9 +137,9 @@
                   <!-- Texte contextuel -->
                   <p class="mt-2 text-xl text-center font-bold w-3/4">
                       {% if letterEcoIndex == 'A' %}
-                          Ce site est exemplaire 🌱.
+                          Ce site est exemplaire 🌱
                       {% elseif letterEcoIndex == 'B' %}
-                          Très bien, mais le site peut encore être amélioré. 👍
+                          Très bien, mais le site peut encore être amélioré 👍
                       {% elseif letterEcoIndex == 'C' %}
                           Encore un effort pour optimiser ! 🚀
                       {% elseif letterEcoIndex == 'D' %}
@@ -147,9 +147,9 @@
                       {% elseif letterEcoIndex == 'E' %}
                           Les ressources ont besoin d'être optimisées ! ⚡
                       {% elseif letterEcoIndex == 'F' %}
-                          Impact élevé ! Ce site doit être revu pour être optimum. ❗
+                          Impact élevé ! Ce site doit être revu pour être optimum ❗
                       {% elseif letterEcoIndex == 'G' %}
-                          Ouch.
+                          Outch.
                       {% else %}
                           Pas d'informations disponibles pour ce score.
                       {% endif %}
@@ -209,7 +209,7 @@
                       <div class="flex flex-col justify-center items-center flex-1 font-outfit">
                           <p class="text-6xl font-bold text-[#92bfff] animate-counter" data-value="{{carbonIntensity}}">0</p>
                           <p class="text-xl font-bold">gCO2eq/kWh</p>
-                          <p class="text-sm text-center pt-5">Votre empreinte carbonne dépend aussi de l’intensité carbone du pays</p>
+                          <p class="text-sm text-center pt-5">Votre empreinte carbonne dépend aussi de l’intensité carbone du pays.</p>
                       </div>
                   </div>
               {% else %}
@@ -419,7 +419,7 @@
 
     </div>
     {% else %}
-        <div class="w-full h-screen flex items-center justify-center">
+        <div class="w-full h-screen flex items-center justify-center font-outfit">
             {% if page == 'derniere-page-web-consultee' %}
                 <p class="text-2xl text-gray-600 font-medium">Vous n'avez pas encore analysé de pages web avec notre plugin</p>
             {% else %}
