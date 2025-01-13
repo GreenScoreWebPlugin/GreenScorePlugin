@@ -38,6 +38,13 @@ Si vous obtenez des erreurs lors de cette commande, rendez-vous dans votre php.i
 Si vous avez encore des erreurs, supprimez le ; devant l'extension suivante :
 - pdo_mysql
 
+#### Installer les dépendances front-end
+Installez les dépendances front-end nécessaires avec npm :
+```bash
+npm install
+npm run build
+```
+
 #### Démarrer le serveur Symfony
 Lancez le serveur local Symfony :
 ```bash
