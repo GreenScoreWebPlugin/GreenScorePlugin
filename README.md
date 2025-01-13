@@ -33,6 +33,10 @@ Installez les dépendances nécessaires à Symfony :
 ```bash
 composer install
 ```
+Si vous obtenez des erreurs lors de cette commande, rendez-vous dans votre php.ini puis ajoutez cette ligne :
+;entension=xml
+Si vous avez encore des erreurs, supprimez le ; devant l'extension suivante :
+- pdo_mysql
 
 #### Démarrer le serveur Symfony
 Lancez le serveur local Symfony :
