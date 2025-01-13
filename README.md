@@ -5,7 +5,7 @@
 - **Node**
 - **PHP** 
 - **Firefox**
-- Si vous testez avec eduroam à l'IUT, il faut mettre une VPN
+- Si vous testez avec eduroam à l'IUT, il faut mettre un VPN
   
 ---
 
@@ -23,6 +23,10 @@ Accédez à la racine du projet puis au dossier **GreenScoreWebsite** :
 cd GreenScorePlugin
 cd GreenScoreWebsite
 ```
+
+#### Nous demander pour pouvoir tester !!!
+Pour que le projet fonctionne en local, il vous faut les identifiants de la base de données dans un fichier .env.local que nous vous enverrons, et qui sera à placer à la racine du dossier GreenScoreWebsite.
+
 
 #### Installer les dépendances
 Installez les dépendances nécessaires à Symfony :
