@@ -18,8 +18,9 @@ git clone https://github.com/GreenScoreWebPlugin/GreenScorePlugin.git
 ```
 
 ### 2. Configurer le site web
-Dans un nouveau terminal, accédez au dossier **GreenScoreWebsite** depuis la racine du projet :
+Accédez à la racine du projet puis au dossier **GreenScoreWebsite** :
 ```bash
+cd GreenScorePlugin
 cd GreenScoreWebsite
 ```
 
