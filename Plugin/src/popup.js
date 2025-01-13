@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function updateAverageConsumption(gCO2e) {
-    const AVERAGE_CONSUMPTION = 0.74;
+    const AVERAGE_CONSUMPTION = 0.74; // Valeur obtenue sur un calcul de moyenne sur plus de 100 sites
     let multiplier = gCO2e / AVERAGE_CONSUMPTION;
 
     if (multiplier > 1) {
