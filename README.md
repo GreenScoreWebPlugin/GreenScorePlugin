@@ -5,6 +5,7 @@
 - **Node**
 - **PHP** 
 - **Firefox**
+- Si vous testez avec eduroam à l'IUT, il faut mettre une VPN
   
 ---
 
