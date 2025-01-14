@@ -133,20 +133,9 @@ class DashboardController extends AbstractController
                 // Page in numbers
                 $pageSize = $lastMonitoredWebsite->getResources();
                 $loadingTime = $lastMonitoredWebsite->getLoadingTime();
-                $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity(); 
+                $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity();
+                $totalConsu = $lastMonitoredWebsite->getCarbonFootprint();
 
-                // Total Consumption
-                try {
-                    $user = $userRepository->find($userId);
-            
-                    if (!$user) {
-                        throw new Exception('Utilisateur non trouvé');
-                    }
-
-                    $totalConsu = $user->getTotalCarbonFootprint();
-                } catch (Exception $e) {
-                    $totalConsu = null;
-                }
                 $showDatas = true;
             } else {
                 $showDatas = false;
@@ -369,7 +358,7 @@ class DashboardController extends AbstractController
     public function formatSize(?float $size): string
     {
         if ($size === null) {
-            return 'N/A';
+            return '0';
         }
 
         if ($size >= 1099511627776) { // 1 To = 2^40 octets
