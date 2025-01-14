@@ -75,7 +75,7 @@ try {
 
     
     $insertData = [
-        'user_id' => 54321,
+        'user_id' => $data['userId'],
         'queries_quantity' => $data['totalRequests'],
         'loading_time' => $data['loadTime'],
         'data_transferred' => $data['totalTransferredSize'],
