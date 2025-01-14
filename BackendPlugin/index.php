@@ -80,7 +80,7 @@ try {
         'loading_time' => $data['loadTime'],
         'data_transferred' => $data['totalTransferredSize'],
         'resources' => $data['totalResourceSize'],
-        'carbon_footprint' => $data['totalResourceSize'] * 0.000001 + $data['carbonIntensity'],
+        'carbon_footprint' => $data['totalEmissions'],
         'country' => $data['country'],
         'url_full' => $data['url'],
         'url_domain' => $data['domain'],
