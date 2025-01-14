@@ -67,7 +67,7 @@ async function getLatestCarbonIntensity(countryCode) {
 async function sendDataToServer(data) {
   try {
     console.log("Sending data to server:", data);
-    const response = await fetch("http://127.0.0.1/index.php", {
+    const response = await fetch("http://127.0.0.1:8080/index.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -645,7 +645,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const count = message.count || 1;
 
       // Appel direct à l'API Symfony
-      fetch(`http://localhost:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
+      fetch(`http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

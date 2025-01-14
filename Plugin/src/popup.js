@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           type: "getFullDetails",
         });
 
-        let url = "http://localhost:8000/derniere-page-web-consultee";
+        let url = "http://127.0.0.1:8000/derniere-page-web-consultee";
 
         if (!userData.isLoggedIn) {
           // Construction des paramètres d'URL si non connecté
