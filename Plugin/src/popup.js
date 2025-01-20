@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const userData = await browser.runtime.sendMessage({
       type: "checkLoginStatus",
     });
+    const accountSection = document.querySelector(".cursor-pointer");
     const loginSection = document.querySelector(
       ".flex.font-outfit.text-sm.justify-center"
     );
@@ -107,9 +108,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (loginSection) {
       if (userData.isLoggedIn) {
+        accountSection.innerHTML = `
+          <a href="http://127.0.0.1:8000/mon-compte">
+            <img src="../assets/images/account.svg" alt="Compte" class="cursor-pointer"
+          </a>
+        `;
         loginSection.innerHTML =
-          '<span class="text-sm text-grey-950">Vous êtes connecté</span>';
+            '<span class="text-sm text-grey-950">Vous êtes connecté</span>';
       } else {
+        accountSection.innerHTML = `
+          <a href="http://127.0.0.1:8000/login">
+            <img src="../assets/images/account.svg" alt="Compte" class="cursor-pointer"
+          </a>
+        `;
         loginSection.innerHTML = `
           <span class="text-sm text-grey-950">Vous souhaitez enregistrer ce résultat ?&nbsp;</span>
           <a href="http://127.0.0.1:8000/login" class="text-[#6D874B] font-bold underline">Se connecter</a>
