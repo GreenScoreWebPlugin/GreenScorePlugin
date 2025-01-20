@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GreenScore Web - Mon compte{% endblock %}
+
+{% block body %}
+
+{{ include('my_account/_message.html.twig') }}
+
+<div class="px-52 flex flex-col">
+    <div class="px-16 py-8 flex items-center gap-x-4">
+        <img class="w-[54px] h-auto" src="{{ asset('images/salutation.png') }}" alt="Salutation">
+        <h1 class="text-2xl font-bold">Bonjour {{ user.firstName }}!</h1>
+    </div>
+    <div class="flex px-16 gap-x-16">
+        <div class=" flex-grid h-28 min-w-60 shadow-lg bg-white">
+            {{ include('my_organisation/_left_menu_my_organisation.html.twig') }}
+        </div>
+        <div class="shadow-lg bg-white py-4 px-6">
+            {{ include('my_organisation/_form_my_organisation.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}
