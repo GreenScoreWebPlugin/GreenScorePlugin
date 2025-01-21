@@ -3,6 +3,11 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -11,15 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Path to error log file
 define("ERROR_LOG_FILE", __DIR__ . "/error_log.json");
 
-file_put_contents(__DIR__ . "/debug_log.txt", file_get_contents("php://input"), FILE_APPEND);
+// Debug log for input data
+file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Input: " . file_get_contents("php://input") . "\n", FILE_APPEND);
 
-
-/**
- * Log errors to a JSON file
- * 
- * @param string $message Error message
- * @param mixed $data Optional additional data
- */
 function logError($message, $data = null) {
     $errorEntry = [
         "timestamp" => date("Y-m-d H:i:s"),
@@ -36,25 +35,17 @@ function logError($message, $data = null) {
     file_put_contents(ERROR_LOG_FILE, json_encode($existingErrors, JSON_PRETTY_PRINT));
 }
 
-
-// Validate and parse input data
 try {
     $inputData = file_get_contents("php://input");
-    if (!$inputData) {
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Received data: " . $inputData . "\n", FILE_APPEND);
+
+    if (empty($inputData)) {
         throw new Exception("No data received", 400);
     }
 
     $data = json_decode($inputData, true);
-    if (!$data) {
-        throw new Exception("Invalid JSON format", 400);
-    }
-
-    // Validate required fields
-    $requiredFields = ['totalRequests', 'loadTime', 'totalTransferredSize', 'totalResourceSize', 'url', 'domain'];
-    foreach ($requiredFields as $field) {
-        if (!isset($data[$field]) || empty($data[$field])) {
-            throw new Exception("Missing required field: $field", 400);
-        }
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("Invalid JSON format: " . json_last_error_msg(), 400);
     }
 
     // Database connection parameters
@@ -65,15 +56,17 @@ try {
         'password' => 'Greenscore64600'
     ];
 
-    // Establish database connection with port
+    // Establish database connection
     $pdo = new PDO(
-        "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['dbname']};charset=utf8", 
+        "mysql:host={$dbConfig['host']};dbname={$dbConfig['dbname']};charset=utf8", 
         $dbConfig['username'], 
         $dbConfig['password']
     );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Connected to database\n", FILE_APPEND);
     
+    // Insert new monitored website data
     $insertData = [
         'user_id' => $data['userId'],
         'queries_quantity' => $data['totalRequests'],
@@ -86,7 +79,7 @@ try {
         'url_domain' => $data['domain'],
     ];
 
-    // Prepare and execute insert statement
+    // First query: Insert website data
     $sqlInsert = "
         INSERT INTO monitored_website 
         (url_domain, user_id, queries_quantity, data_transferred, resources, 
@@ -98,28 +91,68 @@ try {
     
     $stmt = $pdo->prepare($sqlInsert);
     $stmt->execute($insertData);
+    
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Inserted website data\n", FILE_APPEND);
+
+    // Second query: Update user's total carbon footprint
+    $sqlUpdateUser = "
+        UPDATE user 
+        SET total_carbon_footprint = COALESCE(total_carbon_footprint, 0) + :new_emissions
+        WHERE id = :user_id
+    ";
+
+    $updateStmt = $pdo->prepare($sqlUpdateUser);
+    $updateStmt->execute([
+        'new_emissions' => $data['totalEmissions'],
+        'user_id' => $data['userId']
+    ]);
+
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Updated user carbon footprint\n", FILE_APPEND);
+
+    // Third query: Get the updated total
+    $sqlGetTotal = "
+        SELECT total_carbon_footprint 
+        FROM user 
+        WHERE id = :user_id
+    ";
+
+    $totalStmt = $pdo->prepare($sqlGetTotal);
+    $totalStmt->execute(['user_id' => $data['userId']]);
+    $updatedTotal = $totalStmt->fetchColumn();
+
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Retrieved new total: " . $updatedTotal . "\n", FILE_APPEND);
 
     // Success response
     http_response_code(200);
     echo json_encode([
         "success" => true, 
         "message" => "Data inserted successfully",
-        "insertedId" => $pdo->lastInsertId()
+        "insertedId" => $pdo->lastInsertId(),
+        "updatedTotalCarbonFootprint" => $updatedTotal
     ]);
 
 } catch (Exception $e) {
-    // Comprehensive error handling
-    $errorCode = $e->getCode() ?: 500;
-    $errorMessage = $e->getMessage();
-
-    // Log the error
-    logError($errorMessage, $inputData ?? null);
+    // Log detailed error information
+    $errorDetails = [
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ];
+    
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Error: " . json_encode($errorDetails) . "\n", FILE_APPEND);
+    
+    logError($e->getMessage(), [
+        'input' => $inputData ?? null,
+        'error_details' => $errorDetails
+    ]);
 
     // Send error response
-    http_response_code($errorCode);
+    http_response_code($e->getCode() ?: 500);
     echo json_encode([
-        "error" => $errorMessage,
-        "code" => $errorCode
+        "error" => $e->getMessage(),
+        "code" => $e->getCode() ?: 500,
+        "details" => $errorDetails
     ]);
 }
 ?>
