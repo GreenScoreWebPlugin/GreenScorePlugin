@@ -11,9 +11,11 @@
         {% if not noDatas %}
             <p class="text-base w-fit">
                 {{ description }}
-                <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
-                    {{ link }}
-                </span>
+                {% if page == 'derniere-page-web-consultee' and link is not null %}
+                    <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
+                        {{ link }}
+                    </span>
+                {% endif %}
             </p>
         {% endif %}
     </div>
@@ -22,7 +24,6 @@
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
         <!-- Widget 1 -->
-        {# S6 : dashboard donnees utilisateur et organisation
         {% if page == 'mes-donnees' %}
 
             <!-- Carbon Average -->
@@ -100,76 +101,75 @@
                 {% endif %}
             </div>
 
-        {% else %} #}
+        {% else %}
 
-          <!-- EcoIndex -->
-      <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950 font-outfit">
-          <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
-          {% if url_full is not null %}
-              <div class="flex flex-col items-center w-full">
-                  <!-- Lettre stylisée -->
-                  <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}"
-                     target="_blank"
-                     class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 bg-grey-700 rounded-lg px-4 py-2 shadow-md"
-                  >
-                      <h1 class="text-xl font-medium text-white">
-                          EcoIndex
-                      </h1>
-                      <div class="w-10 h-10 flex items-center justify-center rounded-full {% if letterEcoIndex == 'A' %} bg-[#2e9b43] text-white
-                        {% elseif letterEcoIndex == 'B' %} bg-[#347851] text-white
-                        {% elseif letterEcoIndex == 'C' %} bg-[#cadd00] text-black
-                        {% elseif letterEcoIndex == 'D' %} bg-[#f7ed00] text-black
-                        {% elseif letterEcoIndex == 'E' %} bg-[#ffce00] text-white
-                        {% elseif letterEcoIndex == 'F' %} bg-[#fb9929] text-white
-                        {% elseif letterEcoIndex == 'G' %} bg-[#f01c16] text-white
-                        {% else %} bg-gray-300 text-gray-800
-                        {% endif %}">
-                          <p>
-                            {% if letterEcoIndex %}
-                                {{ letterEcoIndex }}
-                            {% else %}
-                                ?
-                            {% endif %}
-                          </p>
-                      </div>
-                  </a>
+        <!-- EcoIndex -->
+        <div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950 font-outfit">
+            <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
+            {% if url_full is not null %}
+                <div class="flex flex-col items-center w-full">
+                    <!-- Lettre stylisée -->
+                    <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}"
+                        target="_blank"
+                        class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 bg-grey-700 rounded-lg px-4 py-2 shadow-md"
+                    >
+                        <h1 class="text-xl font-medium text-white">
+                            EcoIndex
+                        </h1>
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full {% if letterEcoIndex == 'A' %} bg-[#2e9b43] text-white
+                            {% elseif letterEcoIndex == 'B' %} bg-[#347851] text-white
+                            {% elseif letterEcoIndex == 'C' %} bg-[#cadd00] text-black
+                            {% elseif letterEcoIndex == 'D' %} bg-[#f7ed00] text-black
+                            {% elseif letterEcoIndex == 'E' %} bg-[#ffce00] text-white
+                            {% elseif letterEcoIndex == 'F' %} bg-[#fb9929] text-white
+                            {% elseif letterEcoIndex == 'G' %} bg-[#f01c16] text-white
+                            {% else %} bg-gray-300 text-gray-800
+                            {% endif %}">
+                            <p>
+                                {% if letterEcoIndex %}
+                                    {{ letterEcoIndex }}
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            </p>
+                        </div>
+                    </a>
 
-                  <!-- Texte contextuel -->
-                  <p class="mt-2 text-xl text-center font-bold w-3/4">
-                      {% if letterEcoIndex == 'A' %}
-                          Ce site est exemplaire 🌱
-                      {% elseif letterEcoIndex == 'B' %}
-                          Très bien, mais le site peut encore être amélioré 👍
-                      {% elseif letterEcoIndex == 'C' %}
-                          Encore un effort pour optimiser ! 🚀
-                      {% elseif letterEcoIndex == 'D' %}
-                          Cette page est gourmande ! 🤔
-                      {% elseif letterEcoIndex == 'E' %}
-                          Les ressources ont besoin d'être optimisées ! ⚡
-                      {% elseif letterEcoIndex == 'F' %}
-                          Impact élevé ! Ce site doit être revu pour être optimum ❗
-                      {% elseif letterEcoIndex == 'G' %}
-                          Outch.
-                      {% else %}
-                          Pas d'informations disponibles pour ce score.
-                      {% endif %}
-                  </p>
-              </div>
-              <p class="text-sm mt-4">
-                  La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP.
-              </p>
-          {% else %}
-              <p class="text-center text-gray-500 flex items-center justify-center h-full">Pas de données</p>
-          {% endif %}
-      </div>
+                    <!-- Texte contextuel -->
+                    <p class="mt-2 text-xl text-center font-bold w-3/4">
+                        {% if letterEcoIndex == 'A' %}
+                            Ce site est exemplaire 🌱
+                        {% elseif letterEcoIndex == 'B' %}
+                            Très bien, mais le site peut encore être amélioré 👍
+                        {% elseif letterEcoIndex == 'C' %}
+                            Encore un effort pour optimiser ! 🚀
+                        {% elseif letterEcoIndex == 'D' %}
+                            Cette page est gourmande ! 🤔
+                        {% elseif letterEcoIndex == 'E' %}
+                            Les ressources ont besoin d'être optimisées ! ⚡
+                        {% elseif letterEcoIndex == 'F' %}
+                            Impact élevé ! Ce site doit être revu pour être optimum ❗
+                        {% elseif letterEcoIndex == 'G' %}
+                            Outch.
+                        {% else %}
+                            Pas d'informations disponibles pour ce score.
+                        {% endif %}
+                    </p>
+                </div>
+                <p class="text-sm mt-4">
+                    La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP.
+                </p>
+            {% else %}
+                <p class="text-center text-gray-500 flex items-center justify-center h-full">Pas de données</p>
+            {% endif %}
+        </div>
 
 
 
-      {# {% endif %} #}
+      {% endif %}
 
 
       <!-- Widget 2 -->
-      {# S6 : dashboard donnees utilisateur et organisation
       {% if page != 'derniere-page-web-consultee' %}
 
           <!-- Chart -->
@@ -189,7 +189,7 @@
               </div>
           </div>
 
-      {% else %} #}
+      {% else %}
 
           <!-- Carbon Intensity  -->
           <div class="bg-white flex flex-col justify-between gap-4 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 lg:col-span-4 lg:order-2">
@@ -217,37 +217,37 @@
               {% endif %}
           </div>
 
-      {# {% endif %} #}
+      {% endif %}
 
-      <!-- Widget 3: Badge Environnemental Impact -->
-      <div class="flex flex-col bg-gradient-to-tr from-white via-blue-100 to-green-100 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 text-grey-950 font-outfit">
-          {% if letterEcoIndex is defined %}
-              <div class="flex flex-col items-center justify-between h-full text-center">
-                  <h2 class="text-lg font-bold row-span-1">Badge d'impact environnemental</h2>
-                  <div class="flex-1 flex items-center justify-center w-full relative">
-                      <picture class="w-full h-full flex items-center justify-center">
-                          <source
-                              media="(max-width: 768px)"
-                              srcset="{{ asset('images/badges/mobile/' ~ letterEcoIndex ~ '.png') }}"
-                          >
-                          <img
-                              srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.svg') }}"
-                              alt="Badge Impact Environnemental {{ letterEcoIndex }}"
-                              class="w-[80%] h-auto object-contain"
-                              loading="lazy"
-                          >
-                      </picture>
-                  </div>
-                  {% if envNomination is not null %}
-                    <p class="text-lg font-bold ">
-                        {{ envNomination }}
-                    </p>
-                  {% endif %}
-              </div>
-          {% else %}
-              <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
-          {% endif %}
-      </div>
+        <!-- Widget 3: Badge Environnemental Impact -->
+        <div class="flex flex-col bg-gradient-to-tr from-white via-blue-100 to-green-100 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 text-grey-950 font-outfit">
+            {% if letterEcoIndex is defined %}
+                <div class="flex flex-col items-center justify-between h-full text-center">
+                    <h2 class="text-lg font-bold row-span-1">Badge d'impact environnemental</h2>
+                    <div class="flex-1 flex items-center justify-center w-full relative">
+                        <picture class="w-full h-full flex items-center justify-center">
+                            <source
+                                media="(max-width: 768px)"
+                                srcset="{{ asset('images/badges/mobile/' ~ letterEcoIndex ~ '.png') }}"
+                            >
+                            <img
+                                srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.svg') }}"
+                                alt="Badge Impact Environnemental {{ letterEcoIndex }}"
+                                class="w-[80%] h-auto object-contain"
+                                loading="lazy"
+                            >
+                        </picture>
+                    </div>
+                    {% if envNomination is not null %}
+                        <p class="text-lg font-bold ">
+                            {{ envNomination }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+            {% endif %}
+        </div>
 
       <!-- Widget 4: Equivalent 1 -->
       <div class="bg-white flex flex-col items-center justify-center p-6 rounded-lg shadow-md col-span-1 order-4 sm:order-5 lg:col-span-3 lg:order-4 text-grey-950">
@@ -302,7 +302,6 @@
       </div>
 
       <!-- Widget 7 -->
-      {# S6 : dashboard donnees utilisateur et organisation
       {% if page != 'derniere-page-web-consultee'%}
 
           <!-- Top Polluting Sites -->
@@ -328,7 +327,7 @@
               {% endif %}
           </div>
 
-      {% else %} #}
+      {% else %}
 
           <!-- Page in numbers -->
           <div class="bg-white grid grid-row-3 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 lg:col-span-6 flex-col flex-wrap min-h-[300px] order-7 lg:order-7">
@@ -374,7 +373,7 @@
               </div>
           </div>
 
-      {# {% endif %} #}
+      {% endif %}
 
 
       <!-- Widget 8: Tips 1 -->

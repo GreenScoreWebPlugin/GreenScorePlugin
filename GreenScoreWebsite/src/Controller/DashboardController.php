@@ -31,84 +31,165 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
-    public function monOrganisation(EntityManagerInterface $entityManager, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
+    public function monOrganisation(UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
-    //     S6 : dashboard donnees utilisateur et organisation
+        $averageFootprint = 320;
+        $equivalentAverage = 20;
+        $top5Sites = [
+            ["Youtube", 800],
+            ["Facebook", 750],
+            ["Netflix", 700],
+            ["Instagram", 650],
+            ["Tik Tok", 600]
+        ];
 
-    //     $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-    //     $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-    //     $totalConsu = 65000;
-    //     $averageFootprint = 320;
-    //     $equivalent1 = 20;
-    //     $equivalent2 = 20;
-    //     $equivalentAverage = 20;
-    //     $top5Sites = [
-    //         ["Youtube", 800],
-    //         ["Facebook", 750],
-    //         ["Netflix", 700],
-    //         ["Instagram", 650],
-    //         ["Tik Tok", 600]
-    //     ];
+        $noDatas = false;
+        $user = $this->getUser();
 
-        return $this->render('dashboards/index.html.twig', [
-            'page' => 'mon-organisation',
-            'title' => 'Mon Organisation',
-            // 'description' => 'bla bla bla',
-            // 'totalConsu' => $totalConsu,
-            // 'advice' => $advice,
-            // 'adviceDev' => $adviceDev,
-            // 'averageFootprint' => $averageFootprint,
-            // 'equivalent1' => $equivalent1,
-            // 'equivalent2' => $equivalent2,
-            // 'equivalentAverage' => $equivalentAverage,
-            // 'top5Sites' => $top5Sites,
-            'noDatas' => true,
-        ]);
+        if ($user){
+            $userId = $user->getId();
+
+            // Total Consumption
+            try {
+                $user = $userRepository->find($userId);
+        
+                if (!$user) {
+                    throw new Exception('Utilisateur non trouvé');
+                }
+
+                $totalConsu = $user->getTotalCarbonFootprint();
+            } catch (Exception $e) {
+                $totalConsu = null;
+                $noDatas = true;
+            }
+        }else{
+            $noDatas = true;
+        }
+        
+        // Advices : Recuperer deux conseils aleatoire
+        $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+        if ($adviceEntity) {
+            $advice = $adviceEntity->getAdvice();
+        }
+        $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+        if ($adviceDevEntity) {
+            $adviceDev = $adviceDevEntity->getAdvice();
+        }
+
+        // Equivalents : Recuperer deux equivalents aleatoires
+        if ($totalConsu) {
+            try {
+                $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
+                if (count($equivalents) >= 2) {
+                    $equivalent1 = $equivalents[0];
+                    $equivalent2 = $equivalents[1];
+                }
+            } catch (Exception $e) {
+                $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+            }
+        }
+
+        if($user)
+            return $this->render('dashboards/index.html.twig', [
+                'page' => 'mon-organisation',
+                'title' => 'Mon Organisation',
+                'description' => 'bla bla bla',
+                'equivalentAverage' => $equivalentAverage,
+                'totalConsu' => $totalConsu ?? null,
+                'advice' => $advice ?? null,
+                'adviceDev' => $adviceDev ?? null,
+                'averageFootprint' => $averageFootprint ?? null,
+                'equivalent1' => $equivalent1 ?? null,
+                'equivalent2' => $equivalent2 ?? null,
+                'top5Sites' => $top5Sites ?? null,
+                'noDatas' => $noDatas,
+            ]);
+        else
+            return $this->redirectToRoute('app_login');
     }
 
     #[Route('/mes-donnees', name: 'app_mes_donnees')]
-    public function mesDonnees(): Response
+    public function mesDonnees(UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
+        $myAverageFootprint = 320;
+        $messageAverageFootprint = "Bravo ! Votre empreinte carbone est plus basse que la moyenne !!";
+        $averageFootprint = 320;
+        $top5Sites = [
+            ["Youtube", 800],
+            ["Facebook", 750],
+            ["Netflix", 700],
+            ["Instagram", 650],
+            ["Tik Tok", 600]
+        ];
+
+        $noDatas = false;
+        $user = $this->getUser();
+
+        if ($user){
+            $userId = $user->getId();
+
+            // Total Consumption
+            try {
+                $user = $userRepository->find($userId);
         
-    //     S6 : dashboard donnees utilisateur et organisation
+                if (!$user) {
+                    throw new Exception('Utilisateur non trouvé');
+                }
 
-    //     $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-    //     $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-    //     $totalConsu = 65000;
-    //     $myAverageFootprint = 320;
-    //     $messageAverageFootprint = "Bravo ! Votre empreinte carbone est plus basse que la moyenne !!";
-    //     $averageFootprint = 320;
-    //     $equivalent1 = 20;
-    //     $equivalent2 = 20;
-    //     $equivalent2 = 20;
-    //     $equivalent2 = 20;
-    //     $top5Sites = [
-    //         ["Youtube", 800],
-    //         ["Facebook", 750],
-    //         ["Netflix", 700],
-    //         ["Instagram", 650],
-    //         ["Tik Tok", 600]
-    //     ];
+                $totalConsu = $user->getTotalCarbonFootprint();
+            } catch (Exception $e) {
+                $totalConsu = null;
+                $noDatas = true;
+            }
+        }else{
+            $noDatas = true;
+        }
+        
+        // Advices : Recuperer deux conseils aleatoire
+        $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+        if ($adviceEntity) {
+            $advice = $adviceEntity->getAdvice();
+        }
+        $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+        if ($adviceDevEntity) {
+            $adviceDev = $adviceDevEntity->getAdvice();
+        }
 
-        return $this->render('dashboards/index.html.twig', [
-            'page' => 'mes-donnees',
-            'title' => 'Mes Données',
-            // 'description' => 'bla bla bla',
-            // 'totalConsu' => $totalConsu,
-            // 'advice' => $advice,
-            // 'adviceDev' => $adviceDev,
-            // 'averageFootprint' => $averageFootprint,
-            // 'equivalent1' => $equivalent1,
-            // 'equivalent2' => $equivalent2,
-            // 'myAverageFootprint' => $myAverageFootprint,
-            // 'messageAverageFootprint' => $messageAverageFootprint,
-            // 'top5Sites' => $top5Sites,
-            'noDatas' => true,
-        ]);
+        // Equivalents : Recuperer deux equivalents aleatoires
+        if ($totalConsu) {
+            try {
+                $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
+                if (count($equivalents) >= 2) {
+                    $equivalent1 = $equivalents[0];
+                    $equivalent2 = $equivalents[1];
+                }
+            } catch (Exception $e) {
+                $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+            }
+        }
+
+        if($user)
+            return $this->render('dashboards/index.html.twig', [
+                'page' => 'mes-donnees',
+                'title' => 'Mes Données',
+                'description' => 'bla bla bla',
+                'totalConsu' => $totalConsu ?? null,
+                'advice' => $advice ?? null,
+                'adviceDev' => $adviceDev ?? null,
+                'averageFootprint' => $averageFootprint ?? null,
+                'equivalent1' => $equivalent1 ?? null,
+                'equivalent2' => $equivalent2 ?? null,
+                'myAverageFootprint' => $myAverageFootprint ?? null,
+                'messageAverageFootprint' => $messageAverageFootprint ?? null,
+                'top5Sites' => $top5Sites ?? null,
+                'noDatas' => $noDatas,
+            ]);
+        else
+            return $this->redirectToRoute('app_login');
     }
 
     #[Route('/derniere-page-web-consultee', name: 'app_derniere_page_web_consultee')]
-    public function siteWebSurveille(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
+    public function siteWebSurveille(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
         // dd($userId);
         // dump($toto);
@@ -136,17 +217,8 @@ class DashboardController extends AbstractController
                 $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity(); 
 
                 // Total Consumption
-                try {
-                    $user = $userRepository->find($userId);
-            
-                    if (!$user) {
-                        throw new Exception('Utilisateur non trouvé');
-                    }
-
-                    $totalConsu = $user->getTotalCarbonFootprint();
-                } catch (Exception $e) {
-                    $totalConsu = null;
-                }
+                $totalConsu = $lastMonitoredWebsite->getCarbonFootprint(); 
+                
                 $showDatas = true;
             } else {
                 $showDatas = false;
