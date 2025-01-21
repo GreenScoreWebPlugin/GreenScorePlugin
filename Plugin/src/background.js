@@ -487,192 +487,97 @@ function calculateCarbonEmissions(tabData) {
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // Envoyer un message au popup si l'onglet est sur localhost
-  browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-    if (tabs.length > 0) {
-      const activeTab = tabs[0];
-      if (isLocalDomain(activeTab.url)) {
-        // Envoie uniquement le message localhost
-        browser.runtime.sendMessage({
-          type: "localhostDetected",
-          message: "Vous êtes bien arrivé sur notre site ;)",
-        });
-        // Retourne early pour éviter l'exécution du reste du code
-        if (sendResponse) {
-          sendResponse({ localhostDetected: true });
-        }
-        return;
-      }
-    }
-
+  const handleNonLocalhost = async (activeTab, message) => {
+    // Gestion des messages pour les sites non-localhost
     if (message.type === "getCountryAndUrl") {
-      const handleResponse = (tabUrl) => {
-        fetchCountry()
-          .then(({ country }) => {
-            sendResponse({ country, url: extractDomain(tabUrl) });
-          })
-          .catch((error) => {
-            console.error("Erreur lors de la récupération du pays :", error);
-            sendResponse({ country: "Unknown", url: extractDomain(tabUrl) });
-          });
-      };
-
-      if (sender.tab && sender.tab.url) {
-        handleResponse(sender.tab.url);
-        return true;
+      const tabUrl = sender.tab?.url || activeTab.url;
+      try {
+        const { country } = await fetchCountry();
+        return { country, url: extractDomain(tabUrl) };
+      } catch (error) {
+        console.error("Erreur lors de la récupération du pays :", error);
+        return { country: "Unknown", url: extractDomain(tabUrl) };
       }
-
-      browser.tabs
-        .query({ active: true, currentWindow: true })
-        .then((tabs) => {
-          if (tabs.length > 0 && tabs[0].url) {
-            handleResponse(tabs[0].url);
-          } else {
-            sendResponse({ country: "Unknown", url: "Unknown" });
-          }
-        })
-        .catch((error) => {
-          console.error(
-            "Erreur lors de la récupération de l'onglet actif :",
-            error
-          );
-          sendResponse({ country: "Unknown", url: "Unknown" });
-        });
-
-      return true;
     }
 
     if (message.type === "getgCO2e") {
-      return browser.tabs
-        .query({ active: true, currentWindow: true })
-        .then((tabs) => {
-          if (tabs.length > 0) {
-            const tabId = tabs[0].id;
-            const tabData = getTabData(tabId);
+      const tabData = getTabData(activeTab.id);
+      
+      try {
+        // Récupération du pays si nécessaire
+        if (!tabData.country || !tabData.countryCode) {
+          const { country, countryCode } = await fetchCountry();
+          tabData.country = country;
+          tabData.countryCode = countryCode;
+        }
 
-            // Étape 1 : Assurez-vous que le pays et le code du pays sont récupérés
-            const countryPromise =
-              !tabData.country || !tabData.countryCode
-                ? fetchCountry().then(({ country, countryCode }) => {
-                    tabData.country = country;
-                    tabData.countryCode = countryCode;
-                  })
-                : Promise.resolve();
+        // Récupération de l'intensité carbone si nécessaire
+        if (tabData.countryCode && tabData.carbonIntensity <= 0) {
+          tabData.carbonIntensity = await getLatestCarbonIntensity(tabData.countryCode);
+        }
 
-            // Étape 2 : Une fois le pays obtenu, assurez-vous que l'intensité carbone est disponible
-            return countryPromise.then(() => {
-              const intensityPromise =
-                tabData.countryCode && tabData.carbonIntensity <= 0
-                  ? getLatestCarbonIntensity(tabData.countryCode).then(
-                      (intensity) => {
-                        tabData.carbonIntensity = intensity;
-                      }
-                    )
-                  : Promise.resolve();
+        // Calcul des émissions
+        const emissionsData = calculateCarbonEmissions(tabData);
 
-              // Étape 3 : Calcul des émissions après avoir récupéré les données nécessaires
-              return intensityPromise.then(() => {
-                const emissionsData = calculateCarbonEmissions(tabData);
-
-                console.log("Détails du calcul des émissions pour le front :", {
-                  bytesTransferred: tabData.totalTransferredSize,
-                  bytesResources: tabData.totalResourceSize,
-                  requests: tabData.totalRequests,
-                  loadTime: tabData.endTime - tabData.startTime,
-                  carbonIntensity: tabData.carbonIntensity,
-                  result: emissionsData,
-                });
-
-                return {
-                  gCO2e: emissionsData.totalEmissions,
-                  breakdown: emissionsData.breakdown,
-                  metrics: emissionsData.metrics, // Inclut les métriques pour analyse
-                };
-              });
-            });
-          } else {
-            // Aucun onglet actif, envoyer des données par défaut
-            return {
-              gCO2e: 0,
-              breakdown: { transfer: 0, datacenter: 0, requests: 0 },
-              metrics: {
-                energy: { transfer: 0, datacenter: 0, requests: 0, total: 0 },
-                data: {
-                  gbTransferred: 0,
-                  gbResources: 0,
-                  requests: 0,
-                  loadTimeMs: 0,
-                  carbonIntensity: 0,
-                },
-              },
-            };
-          }
-        })
-        .catch((error) => {
-          console.error("Erreur dans le gestionnaire getgCO2e :", error);
-          return {
-            error:
-              "Une erreur est survenue lors du calcul des émissions de carbone.",
-          };
+        console.log("Détails du calcul des émissions pour le front :", {
+          bytesTransferred: tabData.totalTransferredSize,
+          bytesResources: tabData.totalResourceSize,
+          requests: tabData.totalRequests,
+          loadTime: tabData.endTime - tabData.startTime,
+          carbonIntensity: tabData.carbonIntensity,
+          result: emissionsData,
         });
+
+        return {
+          gCO2e: emissionsData.totalEmissions,
+          breakdown: emissionsData.breakdown,
+          metrics: emissionsData.metrics
+        };
+      } catch (error) {
+        console.error("Erreur dans le calcul des émissions :", error);
+        return {
+          gCO2e: 0,
+          breakdown: { transfer: 0, datacenter: 0, requests: 0 },
+          metrics: {
+            energy: { transfer: 0, datacenter: 0, requests: 0, total: 0 },
+            data: {
+              gbTransferred: 0,
+              gbResources: 0,
+              requests: 0,
+              loadTimeMs: 0,
+              carbonIntensity: 0,
+            },
+          },
+        };
+      }
     }
 
     if (message.type === "getFullDetails") {
-      browser.tabs
-        .query({ active: true, currentWindow: true })
-        .then((tabs) => {
-          if (tabs.length === 0) {
-            sendResponse({ error: "Aucun onglet actif trouvé." });
-            return;
-          }
-
-          const activeTab = tabs[0];
-          const tabId = activeTab.id;
-          const tabData = getTabData(tabId);
-
-          sendResponse({
-            country: tabData.country || "Unknown",
-            countryCode: tabData.countryCode || "Unknown",
-            urlDomain: extractDomain(tabData.currentUrl || activeTab.url),
-            urlFull: tabData.currentUrl || activeTab.url,
-            totalTransferredSize: tabData.totalTransferredSize || 0,
-            totalRequests: tabData.totalRequests || 0,
-            totalResourceSize: tabData.totalResourceSize || 0,
-            loadTime: (tabData.endTime - tabData.startTime) / 1000 || 0,
-          });
-        })
-        .catch((error) => {
-          console.error(
-            "Erreur lors de la récupération de l'onglet actif :",
-            error
-          );
-          sendResponse({ error: error.message });
-        });
-
-      return true;
+      const tabData = getTabData(activeTab.id);
+      return {
+        country: tabData.country || "Unknown",
+        countryCode: tabData.countryCode || "Unknown",
+        urlDomain: extractDomain(tabData.currentUrl || activeTab.url),
+        urlFull: tabData.currentUrl || activeTab.url,
+        totalTransferredSize: tabData.totalTransferredSize || 0,
+        totalRequests: tabData.totalRequests || 0,
+        totalResourceSize: tabData.totalResourceSize || 0,
+        loadTime: (tabData.endTime - tabData.startTime) / 1000 || 0,
+      };
     }
 
     if (message.type === "checkLoginStatus") {
-      return getUserData();
+      return await getUserData();
     }
 
     if (message.type === "getEquivalent") {
-      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        if (tabs.length === 0) {
-          sendResponse({ success: false, error: "Aucun onglet actif trouvé." });
-          return;
-        }
+      const tabData = getTabData(activeTab.id);
+      const emissions = calculateCarbonEmissions(tabData);
+      const gCO2 = emissions.totalEmissions;
+      const count = message.count || 1;
 
-        const tabId = tabs[0].id;
-        const tabData = getTabData(tabId);
-
-        // Calcul des émissions d'abord
-        const emissions = calculateCarbonEmissions(tabData);
-        const gCO2 = emissions.totalEmissions;
-        const count = message.count || 1;
-
-        // Appel direct à l'API Symfony
-        fetch(
+      try {
+        const response = await fetch(
           `http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`,
           {
             method: "GET",
@@ -680,37 +585,61 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
               "Content-Type": "application/json",
             },
           }
-        )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`Erreur API Symfony : ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((equivalents) => {
-            console.log("Équivalents reçus :", equivalents);
-            sendResponse({
-              success: true,
-              equivalents: equivalents.map((eq) => ({
-                image:
-                  "https://greenscoreweb.alwaysdata.net/public/equivalents/" +
-                    eq.icon || "../assets/images/account.svg",
-                value: eq.value,
-                name: eq.name,
-              })),
-            });
-          })
-          .catch((error) => {
-            console.error("Erreur dans getEquivalent:", error);
-            sendResponse({
-              success: false,
-              error: error.message,
-            });
-          });
-      });
+        );
 
-      // Important: retourner true pour indiquer que sendResponse sera appelé de manière asynchrone
-      return true;
+        if (!response.ok) {
+          throw new Error(`Erreur API Symfony : ${response.status}`);
+        }
+
+        const equivalents = await response.json();
+        return {
+          success: true,
+          equivalents: equivalents.map((eq) => ({
+            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon || "../assets/images/account.svg",
+            value: eq.value,
+            name: eq.name,
+          })),
+        };
+      } catch (error) {
+        console.error("Erreur dans getEquivalent:", error);
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
     }
+  };
+
+  // Point d'entrée principal du listener
+  const handleMessage = async () => {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+    
+    if (tabs.length === 0) {
+      return { error: "Aucun onglet actif trouvé." };
+    }
+
+    const activeTab = tabs[0];
+
+    // Vérification localhost
+    if (isLocalDomain(activeTab.url)) {
+      await browser.runtime.sendMessage({
+        type: "localhostDetected",
+        message: "Vous êtes bien arrivé sur notre site ;)"
+      });
+      return { localhostDetected: true };
+    }
+
+    // Si ce n'est pas localhost, traiter les autres messages
+    return handleNonLocalhost(activeTab, message);
+  };
+
+  // Gestion correcte de la réponse asynchrone
+  handleMessage().then(response => {
+    sendResponse(response);
+  }).catch(error => {
+    console.error('Erreur dans le message handler:', error);
+    sendResponse({ error: error.message });
   });
+
+  return true; // Indique que sendResponse sera appelé de manière asynchrone
 });
