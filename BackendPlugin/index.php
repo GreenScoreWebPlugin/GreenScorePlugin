@@ -35,7 +35,44 @@ function logError($message, $data = null) {
     file_put_contents(ERROR_LOG_FILE, json_encode($existingErrors, JSON_PRETTY_PRINT));
 }
 
+function loadEnv($filePath) {
+    if (!file_exists($filePath)) {
+        throw new Exception("Le fichier .env.local est introuvable : $filePath");
+    }
+
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        // Ignorer les commentaires
+        if (strpos(trim($line), '#') === 0) {
+            continue;
+        }
+
+        // Parse les lignes sous forme NOM_VARIABLE=valeur
+        [$name, $value] = explode('=', $line, 2);
+
+        // Supprime les espaces superflus
+        $name = trim($name);
+        $value = trim($value);
+
+        // Définit la variable dans $_ENV et $_SERVER (et éventuellement getenv())
+        putenv("$name=$value");
+        $_ENV[$name] = $value;
+        $_SERVER[$name] = $value;
+    }
+}
+
 try {
+    // Charger les variables d'environnement
+    loadEnv(__DIR__ . '/.env.local');
+    file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Env variables loaded\n", FILE_APPEND);
+
+    $dbConfig = [
+        'host' => getenv('DB_HOST'),
+        'dbname' => getenv('DB_NAME'),
+        'username' => getenv('DB_USER'),
+        'password' => getenv('DB_PASS')
+    ];
+
     $inputData = file_get_contents("php://input");
     file_put_contents(__DIR__ . "/debug_log.txt", date('Y-m-d H:i:s') . " - Received data: " . $inputData . "\n", FILE_APPEND);
 
@@ -47,14 +84,6 @@ try {
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception("Invalid JSON format: " . json_last_error_msg(), 400);
     }
-
-    // Database connection parameters
-    $dbConfig = [
-        'host' => 'mysql-greenscoreweb.alwaysdata.net',
-        'dbname' => 'greenscoreweb_database',
-        'username' => '387850',
-        'password' => 'Greenscore64600'
-    ];
 
     // Establish database connection
     $pdo = new PDO(
