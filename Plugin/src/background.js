@@ -188,6 +188,17 @@ async function processAndSendData(tabId, tabData, isFinal = false) {
 
     // Prépare les données à envoyer
     const domain = extractDomain(tabData.currentUrl);
+    if (
+      domain === "localhost" ||
+      domain === "127.0.0.1" ||
+      domain === "[::1]"
+    ) {
+      console.log(
+        "Données non calculées/envoyées : URL en localhost ou domaine local."
+      );
+      return; // Interrompt le traitement si l'URL est locale
+    }
+
     const carbonIntensity = tabData.countryCode
       ? await getLatestCarbonIntensity(tabData.countryCode)
       : -1;
@@ -638,44 +649,48 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
       const tabId = tabs[0].id;
       const tabData = getTabData(tabId);
-      
+
       // Calcul des émissions d'abord
       const emissions = calculateCarbonEmissions(tabData);
       const gCO2 = emissions.totalEmissions;
       const count = message.count || 1;
 
       // Appel direct à l'API Symfony
-      fetch(`http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Erreur API Symfony : ${response.status}`);
+      fetch(
+        `http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-        return response.json();
-      })
-      .then(equivalents => {
-        console.log("Équivalents reçus :", equivalents);
-        sendResponse({ 
-          success: true, 
-          equivalents: equivalents.map(eq => ({
-            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon ||
-                   "../assets/images/account.svg",
-            value: eq.value,
-            name: eq.name
-          }))
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Erreur API Symfony : ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((equivalents) => {
+          console.log("Équivalents reçus :", equivalents);
+          sendResponse({
+            success: true,
+            equivalents: equivalents.map((eq) => ({
+              image:
+                "https://greenscoreweb.alwaysdata.net/public/equivalents/" +
+                  eq.icon || "../assets/images/account.svg",
+              value: eq.value,
+              name: eq.name,
+            })),
+          });
+        })
+        .catch((error) => {
+          console.error("Erreur dans getEquivalent:", error);
+          sendResponse({
+            success: false,
+            error: error.message,
+          });
         });
-      })
-      .catch(error => {
-        console.error("Erreur dans getEquivalent:", error);
-        sendResponse({ 
-          success: false, 
-          error: error.message 
-        });
-      });
     });
 
     // Important: retourner true pour indiquer que sendResponse sera appelé de manière asynchrone
