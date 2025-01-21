@@ -2,7 +2,14 @@ document.addEventListener("turbo:load", () => {
     // Code pour afficher les graphiques
     initCharts();
     initCircles();
-    iniAanimateCounter();
+    initAnimateCounter();
+
+    document.querySelectorAll("[data-endpoint]").forEach(canvas => {
+        const endpoint = canvas.getAttribute("data-endpoint");
+        if (endpoint) {
+            initTop5PollutionChart(canvas.id, endpoint);
+        }
+    });
 });
 
 function initCharts() {
@@ -58,48 +65,72 @@ function initCharts() {
             chart.update();
         });
     }
+}
 
-    const pollutionCanvas = document.getElementById("pollutionChart");
-    if (pollutionCanvas) {
-        fetch('/api/top-sites')
-    .then(response => response.json())
-    .then(top5Sites => {
-        const labels = top5Sites.map(site => site[0]);
-        const dataValues = top5Sites.map(site => site[1]);
+function initTop5PollutionChart(canvasId, endpoint) {
+    const canvas = document.getElementById(canvasId);
 
-        const data = {
-            labels: labels,
-            datasets: [{
-                label: "Emissions (gCO2e)",
-                data: dataValues,
-                backgroundColor: ["#D4A3FF", "#A3D4FF", "#FFC3A3", "#FFA3A3", "#A3FFD4"],
-                borderRadius: 10,
-                barThickness: 20
-            }]
-        };
+    if (!canvas) {
+        console.error(`Canvas with ID "${canvasId}" not found.`);
+        return;
+    }
 
-        new Chart(pollutionCanvas.getContext("2d"), {
-            type: "bar",
-            data: data,
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
+    fetch(endpoint)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const labels = data.map(site => site[0]);
+            const dataValues = data.map(site => site[1]);
+
+            new Chart(canvas.getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Emissions (gCO2e)",
+                        data: dataValues,
+                        backgroundColor: ["#D4A3FF", "#A3D4FF", "#FFC3A3", "#FFA3A3", "#A3FFD4"],
+                        borderRadius: 10,
+                        barThickness: 20
+                    }]
                 },
-                scales: {
-                    x: { display: false },
-                    y: { ticks: { font: { size: 14 }, color: "#333" }, grid: { display: false } }
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { 
+                            ticks: { 
+                                font: { size: 14 }, 
+                                color: "#333",
+                                callback: function(value) {
+                                    return value.length > 25 ? value.substring(0, 22) + '...' : value;
+                                }
+                            }, 
+                            grid: { display: false } 
+                        }
+                    }
                 }
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des données :', error);
+            const parent = canvas.parentElement;
+            if (parent) {
+                parent.innerHTML = '<p class="text-center text-gray-500">Erreur de chargement des données</p>';
             }
         });
-    })
-    .catch(error => console.error('Erreur lors de la récupération des données :', error));
-
-    }
 }
+
 
 function initCircles() {
     const circles = document.querySelectorAll("circle.text-gradient-purple");
@@ -125,7 +156,7 @@ function initCircles() {
     });
 }
 
-function iniAanimateCounter(){
+function initAnimateCounter(){
     document.querySelectorAll('.animate-counter').forEach(counter => {
     const value = parseFloat(counter.getAttribute('data-value'));
     let count = 0;

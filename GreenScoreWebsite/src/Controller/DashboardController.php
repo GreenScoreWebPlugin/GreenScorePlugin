@@ -66,26 +66,28 @@ class DashboardController extends AbstractController
             $noDatas = true;
         }
         
-        // Advices : Recuperer deux conseils aleatoire
-        $adviceEntity = $adviceRepository->findRandomByIsDev(false);
-        if ($adviceEntity) {
-            $advice = $adviceEntity->getAdvice();
-        }
-        $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
-        if ($adviceDevEntity) {
-            $adviceDev = $adviceDevEntity->getAdvice();
-        }
+        if (!$noDatas){
+            // Advices : Recuperer deux conseils aleatoire
+            $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+            if ($adviceEntity) {
+                $advice = $adviceEntity->getAdvice();
+            }
+            $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+            if ($adviceDevEntity) {
+                $adviceDev = $adviceDevEntity->getAdvice();
+            }
 
-        // Equivalents : Recuperer deux equivalents aleatoires
-        if ($totalConsu) {
-            try {
-                $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
-                if (count($equivalents) >= 2) {
-                    $equivalent1 = $equivalents[0];
-                    $equivalent2 = $equivalents[1];
+            // Equivalents : Recuperer deux equivalents aleatoires
+            if ($totalConsu) {
+                try {
+                    $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
+                    if (count($equivalents) >= 2) {
+                        $equivalent1 = $equivalents[0];
+                        $equivalent2 = $equivalents[1];
+                    }
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
-            } catch (Exception $e) {
-                $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
             }
         }
 
@@ -95,7 +97,8 @@ class DashboardController extends AbstractController
                 'title' => 'Mon Organisation',
                 'description' => 'bla bla bla',
                 'equivalentAverage' => $equivalentAverage,
-                'totalConsu' => $totalConsu ?? null,
+                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
+                'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
                 'averageFootprint' => $averageFootprint ?? null,
@@ -109,11 +112,9 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/mes-donnees', name: 'app_mes_donnees')]
-    public function mesDonnees(UserRepository $userRepository, AdviceRepository $adviceRepository): Response
+    public function mesDonnees(UserRepository $userRepository, AdviceRepository $adviceRepository, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
-        $myAverageFootprint = 320;
-        $messageAverageFootprint = "Bravo ! Votre empreinte carbone est plus basse que la moyenne !!";
-        $averageFootprint = 320;
+        $messageAverageFootprint = "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!";
         $top5Sites = [
             ["Youtube", 800],
             ["Facebook", 750],
@@ -144,27 +145,33 @@ class DashboardController extends AbstractController
         }else{
             $noDatas = true;
         }
-        
-        // Advices : Recuperer deux conseils aleatoire
-        $adviceEntity = $adviceRepository->findRandomByIsDev(false);
-        if ($adviceEntity) {
-            $advice = $adviceEntity->getAdvice();
-        }
-        $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
-        if ($adviceDevEntity) {
-            $adviceDev = $adviceDevEntity->getAdvice();
-        }
 
-        // Equivalents : Recuperer deux equivalents aleatoires
-        if ($totalConsu) {
-            try {
-                $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
-                if (count($equivalents) >= 2) {
-                    $equivalent1 = $equivalents[0];
-                    $equivalent2 = $equivalents[1];
+        if (!$noDatas){
+            // AverageDailyCarbonFootprint
+            $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint($userId);
+            $averageDailyCarbonFootprint = $monitoredWebsiteRepository->getGlobalAverageDailyCarbonFootprint();
+
+            // Advices : Recuperer deux conseils aleatoire
+            $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+            if ($adviceEntity) {
+                $advice = $adviceEntity->getAdvice();
+            }
+            $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+            if ($adviceDevEntity) {
+                $adviceDev = $adviceDevEntity->getAdvice();
+            }
+
+            // Equivalents : Recuperer deux equivalents aleatoires
+            if ($totalConsu) {
+                try {
+                    $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
+                    if (count($equivalents) >= 2) {
+                        $equivalent1 = $equivalents[0];
+                        $equivalent2 = $equivalents[1];
+                    }
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
-            } catch (Exception $e) {
-                $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
             }
         }
 
@@ -173,13 +180,14 @@ class DashboardController extends AbstractController
                 'page' => 'mes-donnees',
                 'title' => 'Mes Données',
                 'description' => 'bla bla bla',
-                'totalConsu' => $totalConsu ?? null,
+                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
+                'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
-                'averageFootprint' => $averageFootprint ?? null,
+                'averageDailyCarbonFootprint' => $averageDailyCarbonFootprint ?? null,
                 'equivalent1' => $equivalent1 ?? null,
                 'equivalent2' => $equivalent2 ?? null,
-                'myAverageFootprint' => $myAverageFootprint ?? null,
+                'myAverageDailyCarbonFootprint' => $myAverageDailyCarbonFootprint ?? null,
                 'messageAverageFootprint' => $messageAverageFootprint ?? null,
                 'top5Sites' => $top5Sites ?? null,
                 'noDatas' => $noDatas,
@@ -365,6 +373,28 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute('app_login');
     }
 
+    #[Route('/api/top-sites/user', name: 'top_sites_user')]
+    public function getTopSitesByUser(MonitoredWebsiteRepository $repository): JsonResponse
+    {
+        $user = $this->getUser();
+        $top5Sites = $repository->getTop5PollutingSitesByUser($user->getId());
+        
+        return $this->json(array_map(fn($site) => [
+            $site['urlDomain'],
+            round((float)$site['totalFootprint'], 2)
+        ], $top5Sites));
+    }
+
+    #[Route('/api/top-sites/organisation', name: 'top_sites_organisation')]
+    public function getTopSitesByOrganisation(MonitoredWebsiteRepository $repository): JsonResponse
+    {
+        $top5Sites = $repository->getTop5PollutingSitesByOrganisation();
+        
+        return $this->json(array_map(fn($site) => [
+            $site['urlDomain'],
+            round((float)$site['totalFootprint'], 2)
+        ], $top5Sites));
+    }
     // #[Route('/api/top-sites', name: 'api_top_sites')]
     // public function getTopSites(): Response
     // {

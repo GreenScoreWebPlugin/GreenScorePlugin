@@ -16,7 +16,7 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
         parent::__construct($registry, MonitoredWebsite::class);
     }
     
-    // Recupere un la derniere entree ajoutee en fonction de userId
+    // Recupere la derniere entree ajoutee en fonction de userId
     public function findLastAddedByUser(int $userId): ?MonitoredWebsite
     {
         return $this->createQueryBuilder('m')
@@ -26,6 +26,76 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    // Recupere la moyenne de l'empreinte carbone sur une journée en fonction de userId
+    public function getAverageDailyCarbonFootprint(int $userId): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('SUBSTRING(m.creationDate, 1, 10) as day, AVG(m.carbonFootprint) as dailyAverage')
+            ->where('m.user = :userId')
+            ->setParameter('userId', $userId)
+            ->groupBy('day');
+
+        $dailyAverages = $qb->getQuery()->getResult();
+        
+        if (empty($dailyAverages)) {
+            return 0.0;
+        }
+        
+        $sum = 0;
+        foreach ($dailyAverages as $daily) {
+            $sum += $daily['dailyAverage'];
+        }
+        
+        return round($sum / count($dailyAverages), 2);
+    }
+
+    // Recupere la moyenne de l'empreinte carbone sur une journée sur l'ensemble des utilisateurs
+    public function getGlobalAverageDailyCarbonFootprint(): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('SUBSTRING(m.creationDate, 1, 10) as day, IDENTITY(m.user) as userId, AVG(m.carbonFootprint) as dailyAverage')
+            ->groupBy('day', 'm.user');
+
+        $dailyAverages = $qb->getQuery()->getResult();
+        
+        if (empty($dailyAverages)) {
+            return 0.0;
+        }
+        
+        $sum = 0;
+        foreach ($dailyAverages as $daily) {
+            $sum += $daily['dailyAverage'];
+        }
+        
+        return round($sum / count($dailyAverages), 2);
+    }
+
+    // Recupere le top5 des sites les plus polluants en fonction de userId
+    public function getTop5PollutingSitesByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('m.urlDomain', 'SUM(m.carbonFootprint) as totalFootprint')
+            ->where('m.user = :userId')
+            ->setParameter('userId', $userId)
+            ->groupBy('m.urlDomain')
+            ->orderBy('totalFootprint', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Recupere le top5 des sites les plus polluants en fonction de userId
+    public function getTop5PollutingSitesByOrganisation(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('m.urlDomain', 'SUM(m.carbonFootprint) as totalFootprint')
+            ->groupBy('m.urlDomain')
+            ->orderBy('totalFootprint', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**
