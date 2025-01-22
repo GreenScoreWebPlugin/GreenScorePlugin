@@ -35,13 +35,7 @@ class DashboardController extends AbstractController
     {
         $averageFootprint = 320;
         $equivalentAverage = 20;
-        $top5Sites = [
-            ["Youtube", 800],
-            ["Facebook", 750],
-            ["Netflix", 700],
-            ["Instagram", 650],
-            ["Tik Tok", 600]
-        ];
+        $userIds = [5];
 
         $noDatas = false;
         $user = $this->getUser();
@@ -104,7 +98,7 @@ class DashboardController extends AbstractController
                 'averageFootprint' => $averageFootprint ?? null,
                 'equivalent1' => $equivalent1 ?? null,
                 'equivalent2' => $equivalent2 ?? null,
-                'top5Sites' => $top5Sites ?? null,
+                'userIds' => implode(',', $userIds ?? null) ?? null,
                 'noDatas' => $noDatas,
             ]);
         else
@@ -115,13 +109,6 @@ class DashboardController extends AbstractController
     public function mesDonnees(UserRepository $userRepository, AdviceRepository $adviceRepository, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
         $messageAverageFootprint = "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!";
-        $top5Sites = [
-            ["Youtube", 800],
-            ["Facebook", 750],
-            ["Netflix", 700],
-            ["Instagram", 650],
-            ["Tik Tok", 600]
-        ];
 
         $noDatas = false;
         $user = $this->getUser();
@@ -189,7 +176,6 @@ class DashboardController extends AbstractController
                 'equivalent2' => $equivalent2 ?? null,
                 'myAverageDailyCarbonFootprint' => $myAverageDailyCarbonFootprint ?? null,
                 'messageAverageFootprint' => $messageAverageFootprint ?? null,
-                'top5Sites' => $top5Sites ?? null,
                 'noDatas' => $noDatas,
             ]);
         else
@@ -388,14 +374,12 @@ class DashboardController extends AbstractController
     #[Route('/api/top-sites/organisation', name: 'top_sites_organisation')]
     public function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
     {
-        $userIds = $request->query->get('userIds', []);
+        $userIdsString = $request->query->get('userIds', '');
+
+        $userIds = array_filter(explode(',', $userIdsString), fn($id) => is_numeric($id));
 
         if (empty($userIds)) {
-            return $this->json(['error' => 'La liste des utilisateurs est vide'], 400);
-        }
-
-        if (!is_array($userIds) || empty($userIds)) {
-            return $this->json(['error' => 'La liste des utilisateurs est invalide ou vide'], 400);
+            return $this->json(['error' => 'La liste des utilisateurs est vide ou invalide'], 400);
         }
 
         $top5Sites = $repository->getTop5PollutingSitesByUsers($userIds);

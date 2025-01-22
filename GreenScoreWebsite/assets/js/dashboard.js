@@ -69,9 +69,8 @@ function initCharts() {
 
 function initTop5PollutionChart(canvasId, endpoint) {
     const canvas = document.getElementById(canvasId);
-    const container = document.getElementById('userPollutionChart');
 
-    if (!canvas || !container) {
+    if (!canvas) {
         console.error(`Required elements not found`);
         return;
     }
@@ -174,8 +173,7 @@ function initTop5PollutionChart(canvasId, endpoint) {
                 }]
             });
 
-            // On vide le container des valeurs puisqu'elles sont maintenant sur le graphique
-            container.innerHTML = '';
+            canvas.innerHTML = '';
         })
         .catch(error => {
             console.error('Erreur lors de la récupération des données :', error);
