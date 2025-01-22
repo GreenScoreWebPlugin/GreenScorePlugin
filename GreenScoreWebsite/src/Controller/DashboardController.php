@@ -377,7 +377,7 @@ class DashboardController extends AbstractController
     public function getTopSitesByUser(MonitoredWebsiteRepository $repository): JsonResponse
     {
         $user = $this->getUser();
-        $top5Sites = $repository->getTop5PollutingSitesByUser($user->getId());
+        $top5Sites = $repository->getTop5PollutingSitesByUsers([$user->getId()]);
         
         return $this->json(array_map(fn($site) => [
             $site['urlDomain'],
@@ -386,15 +386,26 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/api/top-sites/organisation', name: 'top_sites_organisation')]
-    public function getTopSitesByOrganisation(MonitoredWebsiteRepository $repository): JsonResponse
+    public function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
     {
-        $top5Sites = $repository->getTop5PollutingSitesByOrganisation();
+        $userIds = $request->query->get('userIds', []);
+
+        if (empty($userIds)) {
+            return $this->json(['error' => 'La liste des utilisateurs est vide'], 400);
+        }
+
+        if (!is_array($userIds) || empty($userIds)) {
+            return $this->json(['error' => 'La liste des utilisateurs est invalide ou vide'], 400);
+        }
+
+        $top5Sites = $repository->getTop5PollutingSitesByUsers($userIds);
         
         return $this->json(array_map(fn($site) => [
             $site['urlDomain'],
             round((float)$site['totalFootprint'], 2)
         ], $top5Sites));
     }
+
     // #[Route('/api/top-sites', name: 'api_top_sites')]
     // public function getTopSites(): Response
     // {

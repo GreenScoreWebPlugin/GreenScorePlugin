@@ -69,12 +69,13 @@ function initCharts() {
 
 function initTop5PollutionChart(canvasId, endpoint) {
     const canvas = document.getElementById(canvasId);
+    const container = document.getElementById('userPollutionChart');
 
-    if (!canvas) {
-        console.error(`Canvas with ID "${canvasId}" not found.`);
+    if (!canvas || !container) {
+        console.error(`Required elements not found`);
         return;
     }
-
+    
     fetch(endpoint)
         .then(response => {
             if (!response.ok) {
@@ -83,6 +84,15 @@ function initTop5PollutionChart(canvasId, endpoint) {
             return response.json();
         })
         .then(data => {
+            // Configuration des couleurs pastel exactes
+            const backgroundColors = [
+                'rgba(221, 192, 255, 0.7)', // violet pastel
+                'rgba(179, 216, 255, 0.7)', // bleu pastel
+                'rgba(255, 205, 184, 0.7)', // pêche pastel
+                'rgba(255, 192, 192, 0.7)', // rose pastel
+                'rgba(192, 255, 218, 0.7)'  // vert pastel
+            ];
+
             const labels = data.map(site => site[0]);
             const dataValues = data.map(site => site[1]);
 
@@ -93,34 +103,79 @@ function initTop5PollutionChart(canvasId, endpoint) {
                     datasets: [{
                         label: "Emissions (gCO2e)",
                         data: dataValues,
-                        backgroundColor: ["#D4A3FF", "#A3D4FF", "#FFC3A3", "#FFA3A3", "#A3FFD4"],
-                        borderRadius: 10,
-                        barThickness: 20
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0,
+                        borderRadius: 6,
+                        barThickness: 25
                     }]
                 },
                 options: {
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            right: 80,
+                        }
+                    },
                     plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
+                        legend: { 
+                            display: false 
+                        },
+                        tooltip: { 
+                            enabled: false 
+                        }
                     },
                     scales: {
-                        x: { display: false },
-                        y: { 
-                            ticks: { 
-                                font: { size: 14 }, 
-                                color: "#333",
-                                callback: function(value) {
-                                    return value.length > 25 ? value.substring(0, 22) + '...' : value;
-                                }
-                            }, 
-                            grid: { display: false } 
+                        x: {
+                            display: false,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    family: "system-ui"
+                                },
+                                color: "#000",
+                                padding: 12
+                            }
                         }
+                    },
+                    animation: {
+                        duration: 1000
                     }
-                }
+                },
+                plugins: [{
+                    id: 'valueLabels',
+                    afterDraw: (chart) => {
+                        const ctx = chart.ctx;
+                        chart.data.datasets[0].data.forEach((value, index) => {
+                            const meta = chart.getDatasetMeta(0);
+                            const y = meta.data[index].y;
+                            const x = chart.width - 80;
+                            
+                            ctx.fillStyle = '#000';
+                            ctx.font = '14px system-ui';
+                            ctx.textAlign = 'left';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(
+                                `${value}gCO2e`,
+                                x,
+                                y
+                            );
+                        });
+                    }
+                }]
             });
+
+            // On vide le container des valeurs puisqu'elles sont maintenant sur le graphique
+            container.innerHTML = '';
         })
         .catch(error => {
             console.error('Erreur lors de la récupération des données :', error);
@@ -130,7 +185,6 @@ function initTop5PollutionChart(canvasId, endpoint) {
             }
         });
 }
-
 
 function initCircles() {
     const circles = document.querySelectorAll("circle.text-gradient-purple");

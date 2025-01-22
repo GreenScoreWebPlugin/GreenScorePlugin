@@ -72,13 +72,13 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
         return round($sum / count($dailyAverages), 2);
     }
 
-    // Recupere le top5 des sites les plus polluants en fonction de userId
-    public function getTop5PollutingSitesByUser(int $userId): array
+    // Recupere le top5 des sites les plus polluants en fonction d'une liste d'utilisateurs
+    public function getTop5PollutingSitesByUsers(array $userIds): array
     {
         return $this->createQueryBuilder('m')
             ->select('m.urlDomain', 'SUM(m.carbonFootprint) as totalFootprint')
-            ->where('m.user = :userId')
-            ->setParameter('userId', $userId)
+            ->where('m.user IN (:userIds)')
+            ->setParameter('userIds', $userIds)
             ->groupBy('m.urlDomain')
             ->orderBy('totalFootprint', 'DESC')
             ->setMaxResults(5)
@@ -86,17 +86,6 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    // Recupere le top5 des sites les plus polluants en fonction de userId
-    public function getTop5PollutingSitesByOrganisation(): array
-    {
-        return $this->createQueryBuilder('m')
-            ->select('m.urlDomain', 'SUM(m.carbonFootprint) as totalFootprint')
-            ->groupBy('m.urlDomain')
-            ->orderBy('totalFootprint', 'DESC')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
-    }
 
     //    /**
     //     * @return MonitoredWebsite[] Returns an array of MonitoredWebsite objects
