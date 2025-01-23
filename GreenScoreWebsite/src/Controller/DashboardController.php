@@ -293,6 +293,7 @@ class DashboardController extends AbstractController
             try {
                 $urlSvgEcoIndex = 'https://bff.ecoindex.fr/badge/?theme=dark&url=' . $url_full;
                 $svgContent = file_get_contents($urlSvgEcoIndex);
+                $letterEcoIndex = null;
 
                 if (preg_match('/<tspan[^>]*>([A-G])<\/tspan>/', $svgContent, $matches)) {
                     $letterEcoIndex = $matches[1];
@@ -326,6 +327,7 @@ class DashboardController extends AbstractController
                 }
             } catch (Exception $e) {
                 $this->logger->error('Erreur lors de la récupération du badge EcoIndex : ' . $e->getMessage());
+                $letterEcoIndex = null;
             }
 
         }
