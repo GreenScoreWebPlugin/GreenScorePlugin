@@ -28,6 +28,20 @@ function getTabData(tabId) {
   return tabNetworkData.get(tabId);
 }
 
+function isLocalDomain(url) {
+  try {
+    const hostname = new URL(url).hostname;
+    return (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "[::1]"
+    );
+  } catch (error) {
+    console.error("Erreur lors de la vérification du domaine :", error);
+    return false;
+  }
+}
+
 // Récupérer l'intensité carbone pour un pays
 async function getLatestCarbonIntensity(countryCode) {
   try {
@@ -176,17 +190,20 @@ async function processAndSendData(tabId, tabData, isFinal = false) {
     return;
   }
 
-  sendInProgress = true; // Active le verrou
+  // Si l'URL est locale, ne calculez rien
+  if (isLocalDomain(tabData.currentUrl)) {
+    console.log("Données réseau et calculs ignorés : URL en localhost.");
+    return;
+  }
+
+  sendInProgress = true;
 
   try {
-    // Récupère les données utilisateur
     const { isLoggedIn, userId } = await getUserData();
-    console.log(isLoggedIn, userId);
     if (!isLoggedIn || !userId) {
-      return; // Abandonne si l'utilisateur n'est pas connecté
+      return;
     }
 
-    // Prépare les données à envoyer
     const domain = extractDomain(tabData.currentUrl);
     const carbonIntensity = tabData.countryCode
       ? await getLatestCarbonIntensity(tabData.countryCode)
@@ -209,13 +226,12 @@ async function processAndSendData(tabId, tabData, isFinal = false) {
       isFinal,
     };
 
-    // Envoie les données
     await sendDataToServer(dataToSend);
-    lastSendTime = now; // Mise à jour du temps du dernier envoi
+    lastSendTime = now;
   } catch (error) {
     console.error("Erreur dans processAndSendData:", error);
   } finally {
-    sendInProgress = false; // Libère le verrou
+    sendInProgress = false;
   }
 }
 
@@ -314,7 +330,7 @@ async function fetchCountry() {
 // Listener pour le début des requêtes
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
-    if (details.tabId === -1) return; // Ignore les requêtes non associées à un onglet
+    if (details.tabId === -1 || isLocalDomain(details.url)) return; // Ignore les requêtes locales
 
     const tabData = getTabData(details.tabId);
     tabData.totalRequests++;
@@ -335,14 +351,13 @@ browser.webRequest.onBeforeRequest.addListener(
 // Listener pour les headers de réponse
 browser.webRequest.onHeadersReceived.addListener(
   (details) => {
-    if (details.tabId === -1) return;
+    if (details.tabId === -1 || isLocalDomain(details.url)) return;
 
     const tabData = getTabData(details.tabId);
     const requestData = tabData.requestSizes.get(details.requestId);
 
     if (!requestData) return;
 
-    // Récupère la taille du contenu depuis les headers
     const contentLength = details.responseHeaders?.find(
       (header) => header.name.toLowerCase() === "content-length"
     );
@@ -354,7 +369,6 @@ browser.webRequest.onHeadersReceived.addListener(
       }
     }
 
-    // Détermine le type de compression
     const contentEncoding = details.responseHeaders?.find(
       (header) => header.name.toLowerCase() === "content-encoding"
     );
@@ -370,41 +384,36 @@ browser.webRequest.onHeadersReceived.addListener(
 // Listener pour la fin des requêtes
 browser.webRequest.onCompleted.addListener(
   (details) => {
-    if (details.tabId === -1) return;
+    if (details.tabId === -1 || isLocalDomain(details.url)) return;
 
     const tabData = getTabData(details.tabId);
     const requestData = tabData.requestSizes.get(details.requestId);
 
     if (!requestData) return;
 
-    // Met à jour le timestamp de fin
     tabData.endTime = details.timeStamp;
 
-    // Calcule la taille transférée réelle
     let transferredSize = details.responseSize || 0;
     requestData.transferredSize = transferredSize;
 
-    // Calcule la taille réelle de la ressource en fonction de la compression
     let resourceSize = requestData.resourceSize;
     if (transferredSize > 0 && !resourceSize) {
       switch (requestData.encoding) {
         case "gzip":
         case "deflate":
-          resourceSize = transferredSize * 3; // Ratio de compression moyen de 3:1
+          resourceSize = transferredSize * 3;
           break;
         case "br":
-          resourceSize = transferredSize * 5; // Ratio de compression moyen de 5:1
+          resourceSize = transferredSize * 5;
           break;
         default:
           resourceSize = transferredSize;
       }
     }
 
-    // Met à jour les totaux
     tabData.totalTransferredSize += transferredSize;
     tabData.totalResourceSize += resourceSize;
 
-    // Nettoie les données de cette requête
     tabData.requestSizes.delete(details.requestId);
   },
   { urls: ["<all_urls>"] },
@@ -414,7 +423,7 @@ browser.webRequest.onCompleted.addListener(
 // Listener pour les erreurs
 browser.webRequest.onErrorOccurred.addListener(
   (details) => {
-    if (details.tabId === -1) return;
+    if (details.tabId === -1 || isLocalDomain(details.url)) return;
 
     const tabData = getTabData(details.tabId);
     tabData.requestSizes.delete(details.requestId);
@@ -478,207 +487,159 @@ function calculateCarbonEmissions(tabData) {
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "getCountryAndUrl") {
-    const handleResponse = (tabUrl) => {
-      fetchCountry()
-        .then(({ country }) => {
-          sendResponse({ country, url: extractDomain(tabUrl) });
-        })
-        .catch((error) => {
-          console.error("Erreur lors de la récupération du pays :", error);
-          sendResponse({ country: "Unknown", url: extractDomain(tabUrl) });
-        });
-    };
-
-    if (sender.tab && sender.tab.url) {
-      handleResponse(sender.tab.url);
-      return true;
+  const handleNonLocalhost = async (activeTab, message) => {
+    // Gestion des messages pour les sites non-localhost
+    if (message.type === "getCountryAndUrl") {
+      const tabUrl = sender.tab?.url || activeTab.url;
+      try {
+        const { country } = await fetchCountry();
+        return { country, url: extractDomain(tabUrl) };
+      } catch (error) {
+        console.error("Erreur lors de la récupération du pays :", error);
+        return { country: "Unknown", url: extractDomain(tabUrl) };
+      }
     }
 
-    browser.tabs
-      .query({ active: true, currentWindow: true })
-      .then((tabs) => {
-        if (tabs.length > 0 && tabs[0].url) {
-          handleResponse(tabs[0].url);
-        } else {
-          sendResponse({ country: "Unknown", url: "Unknown" });
-        }
-      })
-      .catch((error) => {
-        console.error(
-          "Erreur lors de la récupération de l'onglet actif :",
-          error
-        );
-        sendResponse({ country: "Unknown", url: "Unknown" });
-      });
-
-    return true;
-  }
-
-  if (message.type === "getgCO2e") {
-    return browser.tabs
-      .query({ active: true, currentWindow: true })
-      .then((tabs) => {
-        if (tabs.length > 0) {
-          const tabId = tabs[0].id;
-          const tabData = getTabData(tabId);
-
-          // Étape 1 : Assurez-vous que le pays et le code du pays sont récupérés
-          const countryPromise =
-            !tabData.country || !tabData.countryCode
-              ? fetchCountry().then(({ country, countryCode }) => {
-                  tabData.country = country;
-                  tabData.countryCode = countryCode;
-                })
-              : Promise.resolve();
-
-          // Étape 2 : Une fois le pays obtenu, assurez-vous que l'intensité carbone est disponible
-          return countryPromise.then(() => {
-            const intensityPromise =
-              tabData.countryCode && tabData.carbonIntensity <= 0
-                ? getLatestCarbonIntensity(tabData.countryCode).then(
-                    (intensity) => {
-                      tabData.carbonIntensity = intensity;
-                    }
-                  )
-                : Promise.resolve();
-
-            // Étape 3 : Calcul des émissions après avoir récupéré les données nécessaires
-            return intensityPromise.then(() => {
-              const emissionsData = calculateCarbonEmissions(tabData);
-
-              console.log("Détails du calcul des émissions pour le front :", {
-                bytesTransferred: tabData.totalTransferredSize,
-                bytesResources: tabData.totalResourceSize,
-                requests: tabData.totalRequests,
-                loadTime: tabData.endTime - tabData.startTime,
-                carbonIntensity: tabData.carbonIntensity,
-                result: emissionsData,
-              });
-
-              return {
-                gCO2e: emissionsData.totalEmissions,
-                breakdown: emissionsData.breakdown,
-                metrics: emissionsData.metrics, // Inclut les métriques pour analyse
-              };
-            });
-          });
-        } else {
-          // Aucun onglet actif, envoyer des données par défaut
-          return {
-            gCO2e: 0,
-            breakdown: { transfer: 0, datacenter: 0, requests: 0 },
-            metrics: {
-              energy: { transfer: 0, datacenter: 0, requests: 0, total: 0 },
-              data: {
-                gbTransferred: 0,
-                gbResources: 0,
-                requests: 0,
-                loadTimeMs: 0,
-                carbonIntensity: 0,
-              },
-            },
-          };
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur dans le gestionnaire getgCO2e :", error);
-        return {
-          error:
-            "Une erreur est survenue lors du calcul des émissions de carbone.",
-        };
-      });
-  }
-
-  if (message.type === "getFullDetails") {
-    browser.tabs
-      .query({ active: true, currentWindow: true })
-      .then((tabs) => {
-        if (tabs.length === 0) {
-          sendResponse({ error: "Aucun onglet actif trouvé." });
-          return;
-        }
-
-        const activeTab = tabs[0];
-        const tabId = activeTab.id;
-        const tabData = getTabData(tabId);
-
-        sendResponse({
-          country: tabData.country || "Unknown",
-          countryCode: tabData.countryCode || "Unknown",
-          urlDomain: extractDomain(tabData.currentUrl || activeTab.url),
-          urlFull: tabData.currentUrl || activeTab.url,
-          totalTransferredSize: tabData.totalTransferredSize || 0,
-          totalRequests: tabData.totalRequests || 0,
-          totalResourceSize: tabData.totalResourceSize || 0,
-          loadTime: (tabData.endTime - tabData.startTime) / 1000 || 0,
-        });
-      })
-      .catch((error) => {
-        console.error(
-          "Erreur lors de la récupération de l'onglet actif :",
-          error
-        );
-        sendResponse({ error: error.message });
-      });
-
-    return true;
-  }
-
-  if (message.type === "checkLoginStatus") {
-    return getUserData();
-  }
-
-  if (message.type === "getEquivalent") {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (tabs.length === 0) {
-        sendResponse({ success: false, error: "Aucun onglet actif trouvé." });
-        return;
-      }
-
-      const tabId = tabs[0].id;
-      const tabData = getTabData(tabId);
+    if (message.type === "getgCO2e") {
+      const tabData = getTabData(activeTab.id);
       
-      // Calcul des émissions d'abord
+      try {
+        // Récupération du pays si nécessaire
+        if (!tabData.country || !tabData.countryCode) {
+          const { country, countryCode } = await fetchCountry();
+          tabData.country = country;
+          tabData.countryCode = countryCode;
+        }
+
+        // Récupération de l'intensité carbone si nécessaire
+        if (tabData.countryCode && tabData.carbonIntensity <= 0) {
+          tabData.carbonIntensity = await getLatestCarbonIntensity(tabData.countryCode);
+        }
+
+        // Calcul des émissions
+        const emissionsData = calculateCarbonEmissions(tabData);
+
+        console.log("Détails du calcul des émissions pour le front :", {
+          bytesTransferred: tabData.totalTransferredSize,
+          bytesResources: tabData.totalResourceSize,
+          requests: tabData.totalRequests,
+          loadTime: tabData.endTime - tabData.startTime,
+          carbonIntensity: tabData.carbonIntensity,
+          result: emissionsData,
+        });
+
+        return {
+          gCO2e: emissionsData.totalEmissions,
+          breakdown: emissionsData.breakdown,
+          metrics: emissionsData.metrics
+        };
+      } catch (error) {
+        console.error("Erreur dans le calcul des émissions :", error);
+        return {
+          gCO2e: 0,
+          breakdown: { transfer: 0, datacenter: 0, requests: 0 },
+          metrics: {
+            energy: { transfer: 0, datacenter: 0, requests: 0, total: 0 },
+            data: {
+              gbTransferred: 0,
+              gbResources: 0,
+              requests: 0,
+              loadTimeMs: 0,
+              carbonIntensity: 0,
+            },
+          },
+        };
+      }
+    }
+
+    if (message.type === "getFullDetails") {
+      const tabData = getTabData(activeTab.id);
+      return {
+        country: tabData.country || "Unknown",
+        countryCode: tabData.countryCode || "Unknown",
+        urlDomain: extractDomain(tabData.currentUrl || activeTab.url),
+        urlFull: tabData.currentUrl || activeTab.url,
+        totalTransferredSize: tabData.totalTransferredSize || 0,
+        totalRequests: tabData.totalRequests || 0,
+        totalResourceSize: tabData.totalResourceSize || 0,
+        loadTime: (tabData.endTime - tabData.startTime) / 1000 || 0,
+      };
+    }
+
+    if (message.type === "checkLoginStatus") {
+      return await getUserData();
+    }
+
+    if (message.type === "getEquivalent") {
+      const tabData = getTabData(activeTab.id);
       const emissions = calculateCarbonEmissions(tabData);
       const gCO2 = emissions.totalEmissions;
       const count = message.count || 1;
 
-      // Appel direct à l'API Symfony
-      fetch(`http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(response => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         if (!response.ok) {
           throw new Error(`Erreur API Symfony : ${response.status}`);
         }
-        return response.json();
-      })
-      .then(equivalents => {
-        console.log("Équivalents reçus :", equivalents);
-        sendResponse({ 
-          success: true, 
-          equivalents: equivalents.map(eq => ({
-            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon ||
-                   "../assets/images/account.svg",
-            value: eq.value,
-            name: eq.name
-          }))
-        });
-      })
-      .catch(error => {
-        console.error("Erreur dans getEquivalent:", error);
-        sendResponse({ 
-          success: false, 
-          error: error.message 
-        });
-      });
-    });
 
-    // Important: retourner true pour indiquer que sendResponse sera appelé de manière asynchrone
-    return true;
-  }
+        const equivalents = await response.json();
+        return {
+          success: true,
+          equivalents: equivalents.map((eq) => ({
+            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon || "../assets/images/account.svg",
+            value: eq.value,
+            name: eq.name,
+          })),
+        };
+      } catch (error) {
+        console.error("Erreur dans getEquivalent:", error);
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+    }
+  };
+
+  // Point d'entrée principal du listener
+  const handleMessage = async () => {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+    
+    if (tabs.length === 0) {
+      return { error: "Aucun onglet actif trouvé." };
+    }
+
+    const activeTab = tabs[0];
+
+    // Vérification localhost
+    if (isLocalDomain(activeTab.url)) {
+      await browser.runtime.sendMessage({
+        type: "localhostDetected",
+        message: "Vous êtes bien arrivé sur notre site ;)"
+      });
+      return { localhostDetected: true };
+    }
+
+    // Si ce n'est pas localhost, traiter les autres messages
+    return handleNonLocalhost(activeTab, message);
+  };
+
+  // Gestion correcte de la réponse asynchrone
+  handleMessage().then(response => {
+    sendResponse(response);
+  }).catch(error => {
+    console.error('Erreur dans le message handler:', error);
+    sendResponse({ error: error.message });
+  });
+
+  return true; // Indique que sendResponse sera appelé de manière asynchrone
 });

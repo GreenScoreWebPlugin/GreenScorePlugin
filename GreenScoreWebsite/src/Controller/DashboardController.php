@@ -31,84 +31,159 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
-    public function monOrganisation(EntityManagerInterface $entityManager, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
+    public function monOrganisation(UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
-    //     S6 : dashboard donnees utilisateur et organisation
+        $averageFootprint = 320;
+        $equivalentAverage = 20;
+        $userIds = [5];
 
-    //     $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-    //     $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-    //     $totalConsu = 65000;
-    //     $averageFootprint = 320;
-    //     $equivalent1 = 20;
-    //     $equivalent2 = 20;
-    //     $equivalentAverage = 20;
-    //     $top5Sites = [
-    //         ["Youtube", 800],
-    //         ["Facebook", 750],
-    //         ["Netflix", 700],
-    //         ["Instagram", 650],
-    //         ["Tik Tok", 600]
-    //     ];
+        $noDatas = false;
+        $user = $this->getUser();
 
-        return $this->render('dashboards/index.html.twig', [
-            'page' => 'mon-organisation',
-            'title' => 'Mon Organisation',
-            // 'description' => 'bla bla bla',
-            // 'totalConsu' => $totalConsu,
-            // 'advice' => $advice,
-            // 'adviceDev' => $adviceDev,
-            // 'averageFootprint' => $averageFootprint,
-            // 'equivalent1' => $equivalent1,
-            // 'equivalent2' => $equivalent2,
-            // 'equivalentAverage' => $equivalentAverage,
-            // 'top5Sites' => $top5Sites,
-            'noDatas' => true,
-        ]);
+        if ($user){
+            $userId = $user->getId();
+
+            // Total Consumption
+            try {
+                $user = $userRepository->find($userId);
+        
+                if (!$user) {
+                    throw new Exception('Utilisateur non trouvé');
+                }
+
+                $totalConsu = $user->getTotalCarbonFootprint();
+            } catch (Exception $e) {
+                $totalConsu = null;
+                $noDatas = true;
+            }
+        }else{
+            $noDatas = true;
+        }
+        
+        if (!$noDatas){
+            // Advices : Recuperer deux conseils aleatoire
+            $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+            if ($adviceEntity) {
+                $advice = $adviceEntity->getAdvice();
+            }
+            $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+            if ($adviceDevEntity) {
+                $adviceDev = $adviceDevEntity->getAdvice();
+            }
+
+            // Equivalents : Recuperer deux equivalents aleatoires
+            if ($totalConsu) {
+                try {
+                    $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
+                    if (count($equivalents) >= 2) {
+                        $equivalent1 = $equivalents[0];
+                        $equivalent2 = $equivalents[1];
+                    }
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+                }
+            }
+        }
+
+        if($user)
+            return $this->render('dashboards/index.html.twig', [
+                'page' => 'mon-organisation',
+                'title' => 'Mon Organisation',
+                'description' => 'bla bla bla',
+                'equivalentAverage' => $equivalentAverage,
+                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
+                'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
+                'advice' => $advice ?? null,
+                'adviceDev' => $adviceDev ?? null,
+                'averageFootprint' => $averageFootprint ?? null,
+                'equivalent1' => $equivalent1 ?? null,
+                'equivalent2' => $equivalent2 ?? null,
+                'userIds' => implode(',', $userIds ?? null) ?? null,
+                'noDatas' => $noDatas,
+            ]);
+        else
+            return $this->redirectToRoute('app_login');
     }
 
     #[Route('/mes-donnees', name: 'app_mes_donnees')]
-    public function mesDonnees(): Response
+    public function mesDonnees(UserRepository $userRepository, AdviceRepository $adviceRepository, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
+        $messageAverageFootprint = "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!";
+
+        $noDatas = false;
+        $user = $this->getUser();
+
+        if ($user){
+            $userId = $user->getId();
+
+            // Total Consumption
+            try {
+                $user = $userRepository->find($userId);
         
-    //     S6 : dashboard donnees utilisateur et organisation
+                if (!$user) {
+                    throw new Exception('Utilisateur non trouvé');
+                }
 
-    //     $advice = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-    //     $adviceDev = "Activez le mode sombre pour réduire l'énergie consommée par votre écran.";
-    //     $totalConsu = 65000;
-    //     $myAverageFootprint = 320;
-    //     $messageAverageFootprint = "Bravo ! Votre empreinte carbone est plus basse que la moyenne !!";
-    //     $averageFootprint = 320;
-    //     $equivalent1 = 20;
-    //     $equivalent2 = 20;
-    //     $equivalent2 = 20;
-    //     $equivalent2 = 20;
-    //     $top5Sites = [
-    //         ["Youtube", 800],
-    //         ["Facebook", 750],
-    //         ["Netflix", 700],
-    //         ["Instagram", 650],
-    //         ["Tik Tok", 600]
-    //     ];
+                $totalConsu = $user->getTotalCarbonFootprint();
+            } catch (Exception $e) {
+                $totalConsu = null;
+                $noDatas = true;
+            }
+        }else{
+            $noDatas = true;
+        }
 
-        return $this->render('dashboards/index.html.twig', [
-            'page' => 'mes-donnees',
-            'title' => 'Mes Données',
-            // 'description' => 'bla bla bla',
-            // 'totalConsu' => $totalConsu,
-            // 'advice' => $advice,
-            // 'adviceDev' => $adviceDev,
-            // 'averageFootprint' => $averageFootprint,
-            // 'equivalent1' => $equivalent1,
-            // 'equivalent2' => $equivalent2,
-            // 'myAverageFootprint' => $myAverageFootprint,
-            // 'messageAverageFootprint' => $messageAverageFootprint,
-            // 'top5Sites' => $top5Sites,
-            'noDatas' => true,
-        ]);
+        if (!$noDatas){
+            // AverageDailyCarbonFootprint
+            $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint($userId);
+            $averageDailyCarbonFootprint = $monitoredWebsiteRepository->getGlobalAverageDailyCarbonFootprint();
+
+            // Advices : Recuperer deux conseils aleatoire
+            $adviceEntity = $adviceRepository->findRandomByIsDev(false);
+            if ($adviceEntity) {
+                $advice = $adviceEntity->getAdvice();
+            }
+            $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
+            if ($adviceDevEntity) {
+                $adviceDev = $adviceDevEntity->getAdvice();
+            }
+
+            // Equivalents : Recuperer deux equivalents aleatoires
+            if ($totalConsu) {
+                try {
+                    $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
+                    if (count($equivalents) >= 2) {
+                        $equivalent1 = $equivalents[0];
+                        $equivalent2 = $equivalents[1];
+                    }
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+                }
+            }
+        }
+
+        if($user)
+            return $this->render('dashboards/index.html.twig', [
+                'page' => 'mes-donnees',
+                'title' => 'Mes Données',
+                'description' => 'bla bla bla',
+                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
+                'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
+                'advice' => $advice ?? null,
+                'adviceDev' => $adviceDev ?? null,
+                'averageDailyCarbonFootprint' => $averageDailyCarbonFootprint ?? null,
+                'equivalent1' => $equivalent1 ?? null,
+                'equivalent2' => $equivalent2 ?? null,
+                'myAverageDailyCarbonFootprint' => $myAverageDailyCarbonFootprint ?? null,
+                'messageAverageFootprint' => $messageAverageFootprint ?? null,
+                'noDatas' => $noDatas,
+            ]);
+        else
+            return $this->redirectToRoute('app_login');
     }
 
     #[Route('/derniere-page-web-consultee', name: 'app_derniere_page_web_consultee')]
-    public function siteWebSurveille(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository, EquivalentRepository $equivalentRepository): Response
+    public function siteWebSurveille(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
         // dd($userId);
         // dump($toto);
@@ -136,17 +211,8 @@ class DashboardController extends AbstractController
                 $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity(); 
 
                 // Total Consumption
-                try {
-                    $user = $userRepository->find($userId);
-            
-                    if (!$user) {
-                        throw new Exception('Utilisateur non trouvé');
-                    }
-
-                    $totalConsu = $user->getTotalCarbonFootprint();
-                } catch (Exception $e) {
-                    $totalConsu = null;
-                }
+                $totalConsu = $lastMonitoredWebsite->getCarbonFootprint(); 
+                
                 $showDatas = true;
             } else {
                 $showDatas = false;
@@ -227,6 +293,7 @@ class DashboardController extends AbstractController
             try {
                 $urlSvgEcoIndex = 'https://bff.ecoindex.fr/badge/?theme=dark&url=' . $url_full;
                 $svgContent = file_get_contents($urlSvgEcoIndex);
+                $letterEcoIndex = null;
 
                 if (preg_match('/<tspan[^>]*>([A-G])<\/tspan>/', $svgContent, $matches)) {
                     $letterEcoIndex = $matches[1];
@@ -260,6 +327,7 @@ class DashboardController extends AbstractController
                 }
             } catch (Exception $e) {
                 $this->logger->error('Erreur lors de la récupération du badge EcoIndex : ' . $e->getMessage());
+                $letterEcoIndex = null;
             }
 
         }
@@ -291,6 +359,37 @@ class DashboardController extends AbstractController
             ]);
         else
             return $this->redirectToRoute('app_login');
+    }
+
+    #[Route('/api/top-sites/user', name: 'top_sites_user')]
+    public function getTopSitesByUser(MonitoredWebsiteRepository $repository): JsonResponse
+    {
+        $user = $this->getUser();
+        $top5Sites = $repository->getTop5PollutingSitesByUsers([$user->getId()]);
+        
+        return $this->json(array_map(fn($site) => [
+            $site['urlDomain'],
+            round((float)$site['totalFootprint'], 2)
+        ], $top5Sites));
+    }
+
+    #[Route('/api/top-sites/organisation', name: 'top_sites_organisation')]
+    public function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
+    {
+        $userIdsString = $request->query->get('userIds', '');
+
+        $userIds = array_filter(explode(',', $userIdsString), fn($id) => is_numeric($id));
+
+        if (empty($userIds)) {
+            return $this->json(['error' => 'La liste des utilisateurs est vide ou invalide'], 400);
+        }
+
+        $top5Sites = $repository->getTop5PollutingSitesByUsers($userIds);
+        
+        return $this->json(array_map(fn($site) => [
+            $site['urlDomain'],
+            round((float)$site['totalFootprint'], 2)
+        ], $top5Sites));
     }
 
     // #[Route('/api/top-sites', name: 'api_top_sites')]

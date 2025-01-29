@@ -28,6 +28,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "-": "^0.0.1",
         "chart.js": "^4.4.6",
         "stimulus": "^3.2.2"
     }
