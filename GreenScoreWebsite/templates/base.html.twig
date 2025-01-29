@@ -40,7 +40,7 @@
                             <!-- Menu déroulant du profil -->
                             <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
                                 {% if app.user.roles[0] == 'ROLE_ORGANISATION' %}
-                                    <a href="{{ path('app_my_organisation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon organisation</a>
+                                    <a href="{{ path('app_handle_organisation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon organisation</a>
                                 {% else %}
                                     <a href="{{ path('app_my_account') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
                                 {% endif %}

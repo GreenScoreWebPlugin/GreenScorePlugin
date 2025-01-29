@@ -19,40 +19,14 @@ class MyOrganisationFormType extends AbstractType
         $builder
             ->add('organisationName', TextType::class, [
                 'label' => 'Nom de l\'organisation',
+                'required' => true,
                 'attr' => [
                     'class' => 'w-full',
                 ],
             ])
             ->add('siret', TextType::class, [
                 'label' => 'N° SIRET',
-            ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'mapped' => false,
-                'attr' => [
-                    'class' => 'w-full',
-                ],
-            ])
-            ->add('plainPassword', PasswordType::class, [
                 'required' => false,
-                'mapped' => false,
-                'label' => 'Mot de passe',
-                'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Votre mot de passe de avoir au moins {{ limit }} caractères.',
-                        'max' => 50,
-                    ]),
-                ],
-            ])
-            ->add('passwordConfirmation', PasswordType::class, [
-                'required' => false,
-                'mapped' => false,
-                'label' => 'Confirmation du mot de passe',
-                'constraints' => [
-                    new ConfirmPassword(),
-                ],
             ])
         ;
     }
