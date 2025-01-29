@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Organisation;
 use App\Entity\User;
 use App\Form\MyAccountFormType;
 
 use App\Form\MyOrganisationFormType;
+use App\Repository\OrganisationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -16,7 +19,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MyAccountController extends AbstractController
 {
-
     #[IsGranted('ROLE_USER')]
     #[Route('/mon-compte', name: 'app_my_account')]
     public function index(
@@ -55,15 +57,92 @@ class MyAccountController extends AbstractController
     public function myOrganisation(
         EntityManagerInterface $entityManager,
         Request $request,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
+
+        $form = $this->createForm(MyAccountFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $organisation = $entityManager
+                ->getRepository(Organisation::class)
+                ->findOneBy(['organisationCode' => $form->get('codeOrganisation')->getData()]);
+            if ($organisation) {
+                $organisation->addUser($user);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $this->addFlash("success", "Vous avez bien rejoint l'organisation.");
+                return $this->redirect('app_my_account_show_organisation');
+            } else {
+                $this->addFlash("error", "Aucune organisation ne possède ce code.");
+                return $this->redirect('app_my_account_show_organisation');
+            }
+        }
 
         return $this->render('my_account/my_organisation_user_side.html.twig', [
             'user' => $user,
             'showMyOrga' => true,
             'organisation' => $user?->getOrganisation() ?? null,
+            'form' => $form->createView()
         ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/mon-compte/organisation/remove-organisation', name: 'app_remove_organisation')]
+    public function removeOrganisation(Request $request, EntityManagerInterface $entityManager)
+    {
+        $user = $this->getUser();
+        $user->setOrganisation(null);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous avez quitté l\'organisation avec succès');
+
+        return $this->redirectToRoute('app_my_account_show_organisation');
+    }
+
+    #[Route('/mon-compte/organisation/exist', name: 'app_check_if_organisation_exist')]
+    public function checkCodeOrganisationExists(Request $request, EntityManagerInterface $entityManager)
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $this->getUser();
+
+        if (!preg_match('/^[0-9A-Z]{8}$/', $data['code'])) {
+            return new JsonResponse(['success' => false, 'errorMessage' => 'Code invalide'], 400);
+        }
+
+        $code = $data['code'];
+
+        if ($entityManager->getRepository(Organisation::class)->findOneBy(['organisationCode' => $code]) === null) {
+            return new JsonResponse(['success' => false, 'errorMessage' => 'Ce code n\'est pas valide'], 400);
+        }
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/mon-compte/organisation/change-organisation', name: 'app_change_organisation', methods: ['POST'])]
+    public function changeOrganisation(
+        Request $request,
+        OrganisationRepository $organisationRepository,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        // Rechercher l'organisation avec ce code
+        $organisation = $organisationRepository->findOneBy(['organisationCode' => $request->get('codeOrganisation')]);
+
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        $organisation->addUser($user);
+
+        // Sauvegarder en base de données
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous avez bien rejoint l\'organisation nommée ' . $organisation->getOrganisationName());
+
+        return $this->redirectToRoute('app_my_account_show_organisation');
     }
 
     #[IsGranted('ROLE_ORGANISATION')]
