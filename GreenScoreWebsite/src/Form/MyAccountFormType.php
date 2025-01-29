@@ -19,15 +19,18 @@ class MyAccountFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
+                'required' => false,
                 'attr' => [
                     'class' => 'w-full',
                 ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'required' => false,
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'required' => false,
                 'attr' => [
                     'class' => 'w-full',
                 ],
@@ -40,7 +43,7 @@ class MyAccountFormType extends AbstractType
                 'constraints' => [
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Votre mot de passe de avoir au moins {{ limit }} caractères.',
+                        'minMessage' => 'Votre mot de passe doit avoir au moins {{ limit }} caractères.',
                         'max' => 50,
                     ]),
                 ],
@@ -51,6 +54,21 @@ class MyAccountFormType extends AbstractType
                 'label' => 'Confirmation du mot de passe',
                 'constraints' => [
                     new ConfirmPassword(),
+                ],
+            ])
+            ->add('codeOrganisation', TextType::class, [
+                'required' => false,
+                'mapped' => false,
+                'label' => "Code de l'organisation",
+                'attr' => [
+                    'placeholder' => 'Entrez le code à 8 caractères que votre organisation vous a envoyé',
+                ],
+                'constraints' => [
+                    new Length([
+                        'min' => 8,
+                        'minMessage' => 'Le code doit avoir {{ limit }} caractères.',
+                        'max' => 8,
+                    ]),
                 ],
             ])
         ;
