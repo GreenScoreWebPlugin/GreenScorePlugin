@@ -500,9 +500,21 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     }
 
+    if (message.type === "sendDataToDB") {
+      const tabData = getTabData(activeTab.id);
+      const lastProcessedUrl = lastProcessedUrls.get(activeTab.id)
+
+      if (!lastProcessedUrl == tabData.url_full) {
+        await processAndSendData(activeTab.id, tabData, true);
+        return { success: true };
+      }
+      
+      return { success: false };
+    }
+
     if (message.type === "getgCO2e") {
       const tabData = getTabData(activeTab.id);
-      
+
       try {
         // Récupération du pays si nécessaire
         if (!tabData.country || !tabData.countryCode) {
@@ -513,7 +525,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // Récupération de l'intensité carbone si nécessaire
         if (tabData.countryCode && tabData.carbonIntensity <= 0) {
-          tabData.carbonIntensity = await getLatestCarbonIntensity(tabData.countryCode);
+          tabData.carbonIntensity = await getLatestCarbonIntensity(
+            tabData.countryCode
+          );
         }
 
         // Calcul des émissions
@@ -531,7 +545,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return {
           gCO2e: emissionsData.totalEmissions,
           breakdown: emissionsData.breakdown,
-          metrics: emissionsData.metrics
+          metrics: emissionsData.metrics,
         };
       } catch (error) {
         console.error("Erreur dans le calcul des émissions :", error);
@@ -595,7 +609,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return {
           success: true,
           equivalents: equivalents.map((eq) => ({
-            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon || "../assets/images/account.svg",
+            image:
+              "https://greenscoreweb.alwaysdata.net/public/equivalents/" +
+                eq.icon || "../assets/images/account.svg",
             value: eq.value,
             name: eq.name,
           })),
@@ -612,8 +628,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Point d'entrée principal du listener
   const handleMessage = async () => {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
     if (tabs.length === 0) {
       return { error: "Aucun onglet actif trouvé." };
     }
@@ -624,7 +643,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (isLocalDomain(activeTab.url)) {
       await browser.runtime.sendMessage({
         type: "localhostDetected",
-        message: "Vous êtes bien arrivé sur notre site ;)"
+        message: "Vous êtes bien arrivé sur notre site ;)",
       });
       return { localhostDetected: true };
     }
@@ -634,12 +653,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   };
 
   // Gestion correcte de la réponse asynchrone
-  handleMessage().then(response => {
-    sendResponse(response);
-  }).catch(error => {
-    console.error('Erreur dans le message handler:', error);
-    sendResponse({ error: error.message });
-  });
+  handleMessage()
+    .then((response) => {
+      sendResponse(response);
+    })
+    .catch((error) => {
+      console.error("Erreur dans le message handler:", error);
+      sendResponse({ error: error.message });
+    });
 
   return true; // Indique que sendResponse sera appelé de manière asynchrone
 });
