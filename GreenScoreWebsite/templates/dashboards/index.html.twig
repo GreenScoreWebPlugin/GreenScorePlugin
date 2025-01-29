@@ -181,8 +181,10 @@
                           <option value="jour">Jour</option>
                       </select>
                   </div>
+                  <!-- Phrase dynamique -->
+                  <p id="dynamic-text" class="text-sm text-gray-600"></p>
                   <div class="relative w-full h-auto">
-                      <canvas class="w-full h-auto" id="co2Chart" data-turbo-permanent></canvas>
+                      <canvas class="w-full h-auto" id="co2Chart" data-ids="{{ usersIdsCharts }}" data-turbo-permanent></canvas>
                   </div>
               </div>
           </div>
@@ -307,11 +309,7 @@
               <div class="flex flex-col w-full h-auto">
                   <h2 class="text-lg font-bold mb-4">Top 5 des sites les plus polluants</h2>
                   <div class="relative w-full h-[230px]">
-                      {% if page == 'mes-donnees' %}
-                          <canvas id="userPollutionChart" data-endpoint="/api/top-sites/user" data-turbo-permanent></canvas>
-                      {% elseif page == 'mon-organisation' %}
-                          <canvas id="orgaPollutionChart" data-endpoint="/api/top-sites/organisation?userIds={{ userIds }}" data-turbo-permanent></canvas>
-                      {% endif %}
+                      <canvas id="pollutionChart" data-endpoint="/api/top-sites?usersIds={{ usersIdsCharts }}" data-turbo-permanent></canvas>
                   </div>
               </div>
           </div>

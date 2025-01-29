@@ -5,9 +5,7 @@ namespace App\Controller;
 use App\Repository\MonitoredWebsiteRepository;
 use App\Repository\UserRepository;
 use App\Repository\AdviceRepository;
-use App\Repository\EquivalentRepository;
 use App\Service\EquivalentCalculatorService;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +33,7 @@ class DashboardController extends AbstractController
     {
         $averageFootprint = 320;
         $equivalentAverage = 20;
-        $userIds = [5];
+        $usersIdsCharts = [5];
 
         $noDatas = false;
         $user = $this->getUser();
@@ -98,7 +96,7 @@ class DashboardController extends AbstractController
                 'averageFootprint' => $averageFootprint ?? null,
                 'equivalent1' => $equivalent1 ?? null,
                 'equivalent2' => $equivalent2 ?? null,
-                'userIds' => implode(',', $userIds ?? null) ?? null,
+                'usersIdsCharts' => implode(',', $usersIdsCharts ?? null) ?? null,
                 'noDatas' => $noDatas,
             ]);
         else
@@ -115,7 +113,7 @@ class DashboardController extends AbstractController
 
         if ($user){
             $userId = $user->getId();
-
+            $usersIdsCharts = [$user->getId()];
             // Total Consumption
             try {
                 $user = $userRepository->find($userId);
@@ -176,6 +174,7 @@ class DashboardController extends AbstractController
                 'equivalent2' => $equivalent2 ?? null,
                 'myAverageDailyCarbonFootprint' => $myAverageDailyCarbonFootprint ?? null,
                 'messageAverageFootprint' => $messageAverageFootprint ?? null,
+                'usersIdsCharts' => implode(',', $usersIdsCharts ?? null) ?? null,
                 'noDatas' => $noDatas,
             ]);
         else
@@ -358,51 +357,146 @@ class DashboardController extends AbstractController
         else
             return $this->redirectToRoute('app_login');
     }
-
-    #[Route('/api/top-sites/user', name: 'top_sites_user')]
-    public function getTopSitesByUser(MonitoredWebsiteRepository $repository): JsonResponse
+    
+    #[Route('/api/{filter}-consu', name: 'consu_user')]
+    public function getConsuByUser(Request $request, MonitoredWebsiteRepository $repository, string $filter): JsonResponse
     {
-        $user = $this->getUser();
-        $top5Sites = $repository->getTop5PollutingSitesByUsers([$user->getId()]);
-        
-        return $this->json(array_map(fn($site) => [
-            $site['urlDomain'],
-            round((float)$site['totalFootprint'], 2)
-        ], $top5Sites));
-    }
+        $usersIdsString = $request->query->get('usersIds', '');
+        $usersIds = array_filter(explode(',', $usersIdsString), fn($id) => is_numeric($id));
 
-    #[Route('/api/top-sites/organisation', name: 'top_sites_organisation')]
-    public function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
-    {
-        $userIdsString = $request->query->get('userIds', '');
-
-        $userIds = array_filter(explode(',', $userIdsString), fn($id) => is_numeric($id));
-
-        if (empty($userIds)) {
+        if (empty($usersIds)) {
             return $this->json(['error' => 'La liste des utilisateurs est vide ou invalide'], 400);
         }
 
-        $top5Sites = $repository->getTop5PollutingSitesByUsers($userIds);
+        $date = new \DateTime();
+        $consuData = $repository->getConsuByFilter($usersIds, $filter);
+        
+        // Préparation des périodes et données
+        switch ($filter) {
+            case 'jour':
+                return $this->formatDailyData($consuData, $date);
+            case 'semaine':
+                return $this->formatWeeklyData($consuData, $date);
+            case 'mois':
+                return $this->formatMonthlyData($consuData, $date);
+            default:
+                return $this->json(['error' => 'Filtre invalide'], 400);
+        }
+    }
+
+    private function formatDailyData(array $consuData, \DateTime $currentDate): JsonResponse
+    {
+        $labels = [];
+        $data = [];
+        
+        // Créer un tableau associatif pour un accès rapide aux données
+        $consumptionByDate = [];
+        foreach ($consuData as $item) {
+            $consumptionByDate[$item['period']] = $item['total_consumption'];
+        }
+        
+        // Générer les 7 derniers jours
+        for ($i = 6; $i >= 0; $i--) {
+            $date = (clone $currentDate)->modify("-$i days");
+            $formattedDate = $date->format('Y-m-d');
+            $labels[] = $date->format('d/m');
+            $data[] = $consumptionByDate[$formattedDate] ?? 0;
+        }
+        
+        return $this->json([
+            'labels' => $labels,
+            'data' => $data
+        ]);
+    }
+
+    private function formatWeeklyData(array $consuData, \DateTime $currentDate): JsonResponse
+    {
+        $labels = ['s-3', 's-2', 's-1', 's'];
+        $data = array_fill(0, 4, 0);
+        
+        // On définit le début de la semaine courante
+        $currentWeekStart = (clone $currentDate)->modify('monday this week');
+        
+        // On crée un mapping des dates de début de chaque semaine
+        $weekStarts = [];
+        for ($i = 0; $i < 4; $i++) {
+            $weekStart = (clone $currentWeekStart)->modify("-{$i} weeks");
+            $weekStarts[$i] = [
+                'start' => clone $weekStart,
+                'end' => (clone $weekStart)->modify('sunday this week')
+            ];
+        }
+
+        // On traite chaque entrée de données
+        foreach ($consuData as $item) {
+            $date = new \DateTime($item['period']);
+            
+            // On cherche dans quelle semaine tombe cette date
+            foreach ($weekStarts as $weekIndex => $weekDates) {
+                if ($date >= $weekDates['start'] && $date <= $weekDates['end']) {
+                    $displayIndex = 3 - $weekIndex; // Converti l'index pour l'affichage (0 => s, 1 => s-1, etc.)
+                    $data[$displayIndex] = $item['total_consumption'];
+                    break;
+                }
+            }
+        }
+        
+        return $this->json([
+            'labels' => $labels,
+            'data' => $data
+        ]);
+    }
+
+    private function formatMonthlyData(array $consuData, \DateTime $currentDate): JsonResponse
+    {
+        $labels = [];
+        $data = array_fill(0, 12, 0);
+        $frenchMonths = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+        
+        // Créer un mapping des périodes
+        $periodMap = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = (clone $currentDate)->modify("-$i months");
+            $month = (int)$date->format('n');
+            $year = (int)$date->format('Y');
+            $labels[] = $frenchMonths[$month - 1] . ' ' . $year;
+            $periodMap[] = ['month' => $month, 'year' => $year];
+        }
+        
+        // Mapper les données aux mois correspondants
+        foreach ($consuData as $item) {
+            foreach ($periodMap as $index => $period) {
+                if ($item['month'] === $period['month'] && $item['year'] === $period['year']) {
+                    $data[$index] = $item['total_consumption'];
+                    break;
+                }
+            }
+        }
+        
+        return $this->json([
+            'labels' => $labels,
+            'data' => $data
+        ]);
+    }
+
+    #[Route('/api/top-sites', name: 'top_sites_organisation')]
+    public function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
+    {
+        $usersIdsString = $request->query->get('usersIds', '');
+
+        $usersIds = array_filter(explode(',', $usersIdsString), fn($id) => is_numeric($id));
+
+        if (empty($usersIds)) {
+            return $this->json(['error' => 'La liste des utilisateurs est vide ou invalide'], 400);
+        }
+
+        $top5Sites = $repository->getTop5PollutingSitesByUsers($usersIds);
         
         return $this->json(array_map(fn($site) => [
             $site['urlDomain'],
             round((float)$site['totalFootprint'], 2)
         ], $top5Sites));
     }
-
-    // #[Route('/api/top-sites', name: 'api_top_sites')]
-    // public function getTopSites(): Response
-    // {
-    //     $top5Sites = [
-    //         ["Youtube", 800],
-    //         ["Facebook", 750],
-    //         ["Netflix", 700],
-    //         ["Instagram", 650],
-    //         ["Tik Tok", 600]
-    //     ];
-
-    //     return $this->json($top5Sites);
-    // }
 
     #[Route('/api/equivalent', name: 'get_equivalent', methods: ['GET'])]
     public function getEquivalent(Request $request): JsonResponse
