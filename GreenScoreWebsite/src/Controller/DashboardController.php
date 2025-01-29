@@ -160,6 +160,53 @@ class DashboardController extends AbstractController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
             }
+
+            // Consommation moyenne de l'ensemble des utilisateurs du site et consommateur le plus faible
+            $averageConsumption = $monitoredWebsiteRepository->getGlobalAverageCarbonFootprint();
+            $leastConsumption = $monitoredWebsiteRepository->getLeastConsumptionCarbonFootprint();
+
+            if($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu != null) {
+                $maxConsumption = ($averageConsumption - $leastConsumption) * 2;
+                $scale = ($maxConsumption - $leastConsumption) / 7;
+                try {
+                    switch ($totalConsu) {
+                        case $totalConsu < $leastConsumption + $scale :
+                            $envNomination = 'Gardien des Écosystèmes';
+                            $letterGreenScore = 'A';
+                            break;
+                        case $totalConsu >= $leastConsumption + $scale && $totalConsu < $leastConsumption + $scale * 2:
+                            $envNomination = 'Allié de la Nature';
+                            $letterGreenScore = 'B';
+                            break;
+                        case $totalConsu >= $leastConsumption + $scale * 2 && $totalConsu < $leastConsumption + $scale * 3:
+                            $envNomination = 'Explorateur Prudent';
+                            $letterGreenScore = 'C';
+                            break;
+                        case $totalConsu >= $leastConsumption + $scale * 3 && $totalConsu < $leastConsumption + $scale * 4:
+                            $envNomination = 'Voyageur Insouciant';
+                            $letterGreenScore = 'D';
+                            break;
+                        case $totalConsu >= $leastConsumption + $scale * 4 && $totalConsu < $leastConsumption + $scale * 5:
+                            $envNomination = 'Consommateur Dynamique';
+                            $letterGreenScore = 'E';
+                            break;
+                        case $totalConsu >= $leastConsumption + $scale * 5 && $totalConsu < $leastConsumption + $scale * 6:
+                            $envNomination = 'Exploitant Intense';
+                            $letterGreenScore = 'F';
+                            break;
+                        case $totalConsu >= $leastConsumption + $scale * 7:
+                            $envNomination = 'Grand Consommateur';
+                            $letterGreenScore = 'G';
+                            break;
+                        default:
+                            $envNomination = null;
+                            break;
+                    }
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors de la récupération du badge : ' . $e->getMessage());
+                    $letterEcoIndex = null;
+                }
+            }
         }
 
         if($user)
@@ -177,6 +224,8 @@ class DashboardController extends AbstractController
                 'myAverageDailyCarbonFootprint' => $myAverageDailyCarbonFootprint ?? null,
                 'messageAverageFootprint' => $messageAverageFootprint ?? null,
                 'noDatas' => $noDatas,
+                'letterGreenScore' => $letterGreenScore ?? null,
+                'envNomination' => $envNomination ?? null,
             ]);
         else
             return $this->redirectToRoute('app_login');
