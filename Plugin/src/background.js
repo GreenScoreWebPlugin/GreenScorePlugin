@@ -99,6 +99,8 @@ async function sendDataToServer(data) {
 // Reset tab data
 function resetTabData(tabId) {
   const tabData = getTabData(tabId);
+  const previousUrl = tabData.currentUrl; // Sauvegarder l'URL précédente
+  
   tabData.totalTransferredSize = 0;
   tabData.totalResourceSize = 0;
   tabData.totalRequests = 0;
@@ -106,7 +108,9 @@ function resetTabData(tabId) {
   tabData.startTime = null;
   tabData.endTime = null;
   tabData.isProcessing = false;
-  tabData.userId = null;
+  
+  // Ne pas réinitialiser l'URL tout de suite pour permettre l'envoi des données
+  return previousUrl;
 }
 
 // Fonction pour extraire le domaine de l'URL
@@ -275,8 +279,22 @@ function initializeListeners() {
 
   browser.webNavigation.onBeforeNavigate.addListener((details) => {
     if (details.frameId === 0) {
-      handleUrlChange(details.tabId, details.url);
-      resetTabData(details.tabId);
+      // Récupérer les données de l'onglet avant de les réinitialiser
+      const tabData = getTabData(details.tabId);
+      
+      // Si nous avons des données pour l'URL précédente, les envoyer
+      if (tabData.currentUrl && tabData.currentUrl !== details.url) {
+        processAndSendData(details.tabId, tabData, true).then(() => {
+          // Réinitialiser les données seulement après l'envoi
+          resetTabData(details.tabId);
+          // Puis démarrer le suivi de la nouvelle URL
+          handleUrlChange(details.tabId, details.url);
+        });
+      } else {
+        // Si pas de données précédentes, simplement réinitialiser et commencer le suivi
+        resetTabData(details.tabId);
+        handleUrlChange(details.tabId, details.url);
+      }
     }
   });
 
@@ -500,9 +518,23 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     }
 
-    if (message.type === "getgCO2e") {
+    if (message.type === "sendDataToDB") {
       const tabData = getTabData(activeTab.id);
       
+      // Si l'URL actuelle est différente de la dernière URL envoyée
+      if (tabData.currentUrl !== lastSentData.get(activeTab.id)) {
+        await processAndSendData(activeTab.id, tabData, true);
+        // Mettre à jour la dernière URL envoyée
+        lastSentData.set(activeTab.id, tabData.currentUrl);
+        return { success: true };
+      }
+      
+      return { success: false, message: "URL already sent" };
+    }
+
+    if (message.type === "getgCO2e") {
+      const tabData = getTabData(activeTab.id);
+
       try {
         // Récupération du pays si nécessaire
         if (!tabData.country || !tabData.countryCode) {
@@ -513,7 +545,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // Récupération de l'intensité carbone si nécessaire
         if (tabData.countryCode && tabData.carbonIntensity <= 0) {
-          tabData.carbonIntensity = await getLatestCarbonIntensity(tabData.countryCode);
+          tabData.carbonIntensity = await getLatestCarbonIntensity(
+            tabData.countryCode
+          );
         }
 
         // Calcul des émissions
@@ -531,7 +565,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return {
           gCO2e: emissionsData.totalEmissions,
           breakdown: emissionsData.breakdown,
-          metrics: emissionsData.metrics
+          metrics: emissionsData.metrics,
         };
       } catch (error) {
         console.error("Erreur dans le calcul des émissions :", error);
@@ -595,7 +629,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return {
           success: true,
           equivalents: equivalents.map((eq) => ({
-            image: "https://greenscoreweb.alwaysdata.net/public/equivalents/" + eq.icon || "../assets/images/account.svg",
+            image:
+              "https://greenscoreweb.alwaysdata.net/public/equivalents/" +
+                eq.icon || "../assets/images/account.svg",
             value: eq.value,
             name: eq.name,
           })),
@@ -612,8 +648,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Point d'entrée principal du listener
   const handleMessage = async () => {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
     if (tabs.length === 0) {
       return { error: "Aucun onglet actif trouvé." };
     }
@@ -624,7 +663,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (isLocalDomain(activeTab.url)) {
       await browser.runtime.sendMessage({
         type: "localhostDetected",
-        message: "Vous êtes bien arrivé sur notre site ;)"
+        message: "Vous êtes bien arrivé sur notre site ;)",
       });
       return { localhostDetected: true };
     }
@@ -634,12 +673,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   };
 
   // Gestion correcte de la réponse asynchrone
-  handleMessage().then(response => {
-    sendResponse(response);
-  }).catch(error => {
-    console.error('Erreur dans le message handler:', error);
-    sendResponse({ error: error.message });
-  });
+  handleMessage()
+    .then((response) => {
+      sendResponse(response);
+    })
+    .catch((error) => {
+      console.error("Erreur dans le message handler:", error);
+      sendResponse({ error: error.message });
+    });
 
   return true; // Indique que sendResponse sera appelé de manière asynchrone
 });

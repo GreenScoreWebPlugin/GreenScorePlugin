@@ -174,6 +174,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         detailsButton.addEventListener("click", async (e) => {
           e.preventDefault();
 
+          if (userData.isLoggedIn) {
+            await browser.runtime.sendMessage({
+              type: "sendDataToDB"
+            })
+          }
+
           // Récupérer les détails actuels
           const response = await browser.runtime.sendMessage({
             type: "getFullDetails",
