@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\Repository\AdviceRepository;
 use App\Repository\EquivalentRepository;
 use App\Service\EquivalentCalculatorService;
+use App\Service\CalculateGreenScoreService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,12 +85,12 @@ class DashboardController extends AbstractController
                 } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
-                
+
                 try {
-                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore();
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu);
                     if($calculateGreenScore) {
-                        $envNomination = $calculateGreenScore[0];
-                        $letterGreenScore = $calculateGreenScore[1];
+                        $envNomination = $calculateGreenScore['envNomination'];
+                        $letterGreenScore = $calculateGreenScore['letterGreenScore'];
                     }
 
                 } catch (Exception $e) {
@@ -113,6 +114,8 @@ class DashboardController extends AbstractController
                 'equivalent2' => $equivalent2 ?? null,
                 'userIds' => implode(',', $userIds ?? null) ?? null,
                 'noDatas' => $noDatas,
+                'letterGreenScore' => $letterGreenScore ?? null,
+                'envNomination' => $envNomination ?? null
             ]);
         else
             return $this->redirectToRoute('app_login');
@@ -174,10 +177,10 @@ class DashboardController extends AbstractController
                 }
 
                 try {
-                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore();
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu);
                     if($calculateGreenScore) {
-                        $envNomination = $calculateGreenScore[0];
-                        $letterGreenScore = $calculateGreenScore[1];
+                        $envNomination = $calculateGreenScore[0]['envNomination'];
+                        $letterGreenScore = $calculateGreenScore[0]['letterGreenScore'];
                     }
 
                 } catch (Exception $e) {

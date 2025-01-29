@@ -1,66 +1,75 @@
 <?php
-// src/Service/EquivalentCalculator.php
+// src/Service/CalculateGreenScoreService.php
 
 namespace App\Service;
 
-use App\Repository\MonitoredWebsiteRepository;
+use App\Repository\UserRepository;
+use Psr\Log\LoggerInterface; // Ajout pour logger les erreurs
+use Exception;
 
-class CalculateGreenScoreService 
+class CalculateGreenScoreService
 {
     public function __construct(
-        private MonitoredWebsiteRepository $MonitoredWebsiteRepository
-    ) {}
+        private UserRepository $userRepository
+    ) {
+    }
 
-    public function calculateGreenScore(): array
+    public function calculateGreenScore(float $totalConsu): array
     {
         // Consommation moyenne de l'ensemble des utilisateurs du site et consommateur le plus faible
-        $averageConsumption = $monitoredWebsiteRepository->getGlobalAverageCarbonFootprint();
-        $leastConsumption = $monitoredWebsiteRepository->getLeastConsumptionCarbonFootprint();
+        $averageConsumption = $this->userRepository->getGlobalAverageCarbonFootprint();
+        $leastConsumption = $this->userRepository->getLeastConsumptionCarbonFootprint();
+        
+        $envNomination = null;
+        $letterGreenScore = null;
 
-        if($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu != null) {
+        // Vérification des valeurs nécessaires avant de calculer
+        if ($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu !== null) {
             $maxConsumption = ($averageConsumption - $leastConsumption) * 2;
             $scale = ($maxConsumption - $leastConsumption) / 7;
+
             try {
-                switch ($totalConsu) {
-                    case $totalConsu < $leastConsumption + $scale :
+                switch (true) {
+                    case ($totalConsu < $leastConsumption + $scale):
                         $envNomination = 'Gardien des Écosystèmes';
                         $letterGreenScore = 'A';
                         break;
-                    case $totalConsu >= $leastConsumption + $scale && $totalConsu < $leastConsumption + $scale * 2:
+                    case ($totalConsu >= $leastConsumption + $scale && $totalConsu < $leastConsumption + $scale * 2):
                         $envNomination = 'Allié de la Nature';
                         $letterGreenScore = 'B';
                         break;
-                    case $totalConsu >= $leastConsumption + $scale * 2 && $totalConsu < $leastConsumption + $scale * 3:
+                    case ($totalConsu >= $leastConsumption + $scale * 2 && $totalConsu < $leastConsumption + $scale * 3):
                         $envNomination = 'Explorateur Prudent';
                         $letterGreenScore = 'C';
                         break;
-                    case $totalConsu >= $leastConsumption + $scale * 3 && $totalConsu < $leastConsumption + $scale * 4:
+                    case ($totalConsu >= $leastConsumption + $scale * 3 && $totalConsu < $leastConsumption + $scale * 4):
                         $envNomination = 'Voyageur Insouciant';
                         $letterGreenScore = 'D';
                         break;
-                    case $totalConsu >= $leastConsumption + $scale * 4 && $totalConsu < $leastConsumption + $scale * 5:
+                    case ($totalConsu >= $leastConsumption + $scale * 4 && $totalConsu < $leastConsumption + $scale * 5):
                         $envNomination = 'Consommateur Dynamique';
                         $letterGreenScore = 'E';
                         break;
-                    case $totalConsu >= $leastConsumption + $scale * 5 && $totalConsu < $leastConsumption + $scale * 6:
+                    case ($totalConsu >= $leastConsumption + $scale * 5 && $totalConsu < $leastConsumption + $scale * 6):
                         $envNomination = 'Exploitant Intense';
                         $letterGreenScore = 'F';
                         break;
-                    case $totalConsu >= $leastConsumption + $scale * 7:
+                    case ($totalConsu >= $leastConsumption + $scale * 7):
                         $envNomination = 'Grand Consommateur';
                         $letterGreenScore = 'G';
                         break;
                     default:
                         $envNomination = null;
+                        $letterGreenScore = null;
                         break;
                 }
-
             } catch (Exception $e) {
+                // Gestion des erreurs avec logging
                 $this->logger->error('Erreur lors de la récupération du badge : ' . $e->getMessage());
+                $envNomination = null;
                 $letterGreenScore = null;
             }
         }
-
 
         $response[] = [
             'envNomination' => $envNomination ?? null,

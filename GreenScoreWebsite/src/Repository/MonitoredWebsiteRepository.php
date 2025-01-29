@@ -51,27 +51,6 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
         return round($sum / count($dailyAverages), 2);
     }
 
-    // Récupère la moyenne de l'empreinte carbone sur l'ensemble des utilisateurs
-    public function getGlobalAverageCarbonFootprint() : float
-    {
-        $qb = $this->createQueryBuilder('m')
-            ->select('IDENTITY(m.user) as userId, AVG(m.carbonFootprint) as averageConsumption')
-            ->groupBy('m.user');
-        
-        $averageConsumption = $qb->getQuery()->getResult();
-
-        if (empty($averageConsumption)) {
-            return 0.0;
-        }
-
-        $sum = 0;
-        foreach ($averageConsumption as $average) {
-            $sum += $average['averageConsumption'];
-        }
-
-        return round($sum / count($averageConsumption), 2);
-    }
-
     // Recupere la moyenne de l'empreinte carbone sur une journée sur l'ensemble des utilisateurs
     public function getGlobalAverageDailyCarbonFootprint(): float
     {
@@ -91,17 +70,6 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
         }
         
         return round($sum / count($dailyAverages), 2);
-    }
-
-    // Récupère l'utilisateur ayant le moins consommé
-    public function getLeastConsumptionCarbonFootprint(): float
-    {
-        $qb = $this->createQueryBuilder('m')
-            ->select('MIN(m.carbonFootprint) as leastConsumption');
-
-        $result = $qb->getQuery()->getSingleResult(); 
-
-        return round($result['leastConsumption'], 2);
     }
 
     // Recupere le top5 des sites les plus polluants en fonction d'une liste d'utilisateurs
