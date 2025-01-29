@@ -22,12 +22,14 @@ class DashboardController extends AbstractController
     private HttpClientInterface $httpClient;
     private LoggerInterface $logger;
     private EquivalentCalculatorService $equivalentCalculatorService;
+    private CalculateGreenScoreService $calculateGreenScoreService;
 
-    public function __construct(HttpClientInterface $httpClient, LoggerInterface $logger, EquivalentCalculatorService $equivalentCalculatorService)
+    public function __construct(HttpClientInterface $httpClient, LoggerInterface $logger, EquivalentCalculatorService $equivalentCalculatorService, CalculateGreenScoreService $calculateGreenScoreService)
     {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->equivalentCalculatorService = $equivalentCalculatorService;
+        $this->calculateGreenScoreService = $calculateGreenScoreService;
     }
 
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
@@ -81,6 +83,17 @@ class DashboardController extends AbstractController
                     }
                 } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+                }
+                
+                try {
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore();
+                    if($calculateGreenScore) {
+                        $envNomination = $calculateGreenScore[0];
+                        $letterGreenScore = $calculateGreenScore[1];
+                    }
+
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
                 }
             }
         }
@@ -159,52 +172,16 @@ class DashboardController extends AbstractController
                 } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
-            }
 
-            // Consommation moyenne de l'ensemble des utilisateurs du site et consommateur le plus faible
-            $averageConsumption = $monitoredWebsiteRepository->getGlobalAverageCarbonFootprint();
-            $leastConsumption = $monitoredWebsiteRepository->getLeastConsumptionCarbonFootprint();
-
-            if($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu != null) {
-                $maxConsumption = ($averageConsumption - $leastConsumption) * 2;
-                $scale = ($maxConsumption - $leastConsumption) / 7;
                 try {
-                    switch ($totalConsu) {
-                        case $totalConsu < $leastConsumption + $scale :
-                            $envNomination = 'Gardien des Écosystèmes';
-                            $letterGreenScore = 'A';
-                            break;
-                        case $totalConsu >= $leastConsumption + $scale && $totalConsu < $leastConsumption + $scale * 2:
-                            $envNomination = 'Allié de la Nature';
-                            $letterGreenScore = 'B';
-                            break;
-                        case $totalConsu >= $leastConsumption + $scale * 2 && $totalConsu < $leastConsumption + $scale * 3:
-                            $envNomination = 'Explorateur Prudent';
-                            $letterGreenScore = 'C';
-                            break;
-                        case $totalConsu >= $leastConsumption + $scale * 3 && $totalConsu < $leastConsumption + $scale * 4:
-                            $envNomination = 'Voyageur Insouciant';
-                            $letterGreenScore = 'D';
-                            break;
-                        case $totalConsu >= $leastConsumption + $scale * 4 && $totalConsu < $leastConsumption + $scale * 5:
-                            $envNomination = 'Consommateur Dynamique';
-                            $letterGreenScore = 'E';
-                            break;
-                        case $totalConsu >= $leastConsumption + $scale * 5 && $totalConsu < $leastConsumption + $scale * 6:
-                            $envNomination = 'Exploitant Intense';
-                            $letterGreenScore = 'F';
-                            break;
-                        case $totalConsu >= $leastConsumption + $scale * 7:
-                            $envNomination = 'Grand Consommateur';
-                            $letterGreenScore = 'G';
-                            break;
-                        default:
-                            $envNomination = null;
-                            break;
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore();
+                    if($calculateGreenScore) {
+                        $envNomination = $calculateGreenScore[0];
+                        $letterGreenScore = $calculateGreenScore[1];
                     }
+
                 } catch (Exception $e) {
-                    $this->logger->error('Erreur lors de la récupération du badge : ' . $e->getMessage());
-                    $letterEcoIndex = null;
+                    $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
                 }
             }
         }
