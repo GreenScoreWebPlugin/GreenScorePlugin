@@ -99,6 +99,8 @@ async function sendDataToServer(data) {
 // Reset tab data
 function resetTabData(tabId) {
   const tabData = getTabData(tabId);
+  const previousUrl = tabData.currentUrl; // Sauvegarder l'URL précédente
+  
   tabData.totalTransferredSize = 0;
   tabData.totalResourceSize = 0;
   tabData.totalRequests = 0;
@@ -106,7 +108,9 @@ function resetTabData(tabId) {
   tabData.startTime = null;
   tabData.endTime = null;
   tabData.isProcessing = false;
-  tabData.userId = null;
+  
+  // Ne pas réinitialiser l'URL tout de suite pour permettre l'envoi des données
+  return previousUrl;
 }
 
 // Fonction pour extraire le domaine de l'URL
@@ -275,8 +279,22 @@ function initializeListeners() {
 
   browser.webNavigation.onBeforeNavigate.addListener((details) => {
     if (details.frameId === 0) {
-      handleUrlChange(details.tabId, details.url);
-      resetTabData(details.tabId);
+      // Récupérer les données de l'onglet avant de les réinitialiser
+      const tabData = getTabData(details.tabId);
+      
+      // Si nous avons des données pour l'URL précédente, les envoyer
+      if (tabData.currentUrl && tabData.currentUrl !== details.url) {
+        processAndSendData(details.tabId, tabData, true).then(() => {
+          // Réinitialiser les données seulement après l'envoi
+          resetTabData(details.tabId);
+          // Puis démarrer le suivi de la nouvelle URL
+          handleUrlChange(details.tabId, details.url);
+        });
+      } else {
+        // Si pas de données précédentes, simplement réinitialiser et commencer le suivi
+        resetTabData(details.tabId);
+        handleUrlChange(details.tabId, details.url);
+      }
     }
   });
 
@@ -502,14 +520,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message.type === "sendDataToDB") {
       const tabData = getTabData(activeTab.id);
-      const lastProcessedUrl = lastProcessedUrls.get(activeTab.id)
-
-      if (!lastProcessedUrl == tabData.url_full) {
+      
+      // Si l'URL actuelle est différente de la dernière URL envoyée
+      if (tabData.currentUrl !== lastSentData.get(activeTab.id)) {
         await processAndSendData(activeTab.id, tabData, true);
+        // Mettre à jour la dernière URL envoyée
+        lastSentData.set(activeTab.id, tabData.currentUrl);
         return { success: true };
       }
       
-      return { success: false };
+      return { success: false, message: "URL already sent" };
     }
 
     if (message.type === "getgCO2e") {
