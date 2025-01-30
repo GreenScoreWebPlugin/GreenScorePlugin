@@ -89,8 +89,8 @@ class DashboardController extends AbstractController
                 try {
                     $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'mon-organisation');
                     if($calculateGreenScore) {
-                        $envNomination = $calculateGreenScore['envNomination'];
-                        $letterGreenScore = $calculateGreenScore['letterGreenScore'];
+                        $envNomination = $calculateGreenScore[0]['envNomination'];
+                        $letterGreenScore = $calculateGreenScore[0]['letterGreenScore'];
                     }
 
                 } catch (Exception $e) {

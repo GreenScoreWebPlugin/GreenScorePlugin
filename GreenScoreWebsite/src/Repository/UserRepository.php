@@ -34,13 +34,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     // Récupère la moyenne de l'empreinte carbone sur l'ensemble des utilisateurs
-    public function getGlobalAverageCarbonFootprint() : float
+    public function getGlobalAverageCarbonFootprint(): float
     {
         $qb = $this->createQueryBuilder('m')
             ->select(' AVG(m.totalCarbonFootprint) as averageConsumption')
             ->where('m.totalCarbonFootprint IS NOT NULL')
             ->andWhere('m.totalCarbonFootprint > 0');
-        
+
         $averageConsumption = $qb->getQuery()->getResult();
 
         if (empty($averageConsumption)) {
@@ -56,14 +56,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     // Récupère la moyenne de l'empreinte carbone sur l'ensemble des entreprise
-    public function getOrganisationGlobalAverageCarbonFootprint() : float
+    public function getOrganisationGlobalAverageCarbonFootprint(): float
     {
         $qb = $this->createQueryBuilder('m')
             ->select(' AVG(m.totalCarbonFootprint) as averageConsumption, IDENTITY(m.organisation) as organisationId')
             ->where('m.totalCarbonFootprint IS NOT NULL')
             ->andWhere('m.totalCarbonFootprint > 0')
             ->groupBy('organisationId');
-        
+
         $averageConsumption = $qb->getQuery()->getResult();
 
         if (empty($averageConsumption)) {
@@ -86,7 +86,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->where('m.totalCarbonFootprint IS NOT NULL')
             ->andWhere('m.totalCarbonFootprint > 0'); // Ignore les valeurs NULL et 0
 
-        $result = $qb->getQuery()->getSingleResult(); 
+        $result = $qb->getQuery()->getSingleResult();
 
         return round($result['leastConsumption'], 2);
     }
@@ -94,14 +94,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function getOrganisationLeastConsumptionCarbonFootprint(): float
     {
         $qb = $this->createQueryBuilder('m')
-            ->select('MIN(m.totalCarbonFootprint) as leastConsumption')
+            ->select('SUM(m.totalCarbonFootprint) as totalConsumption, IDENTITY(m.organisation) as organisationId')
             ->where('m.totalCarbonFootprint IS NOT NULL')
-            ->andWhere('m.totalCarbonFootprint > 0'); // Ignore les valeurs NULL et 0
+            ->andWhere('m.totalCarbonFootprint > 0')
+            ->groupBy('organisationId')
+            ->orderBy('totalConsumption', 'ASC') // Trie pour avoir le plus petit en premier
+            ->setMaxResults(1); // Récupère seulement l'organisation avec la plus petite consommation totale
 
-        $result = $qb->getQuery()->getSingleResult(); 
+        $result = $qb->getQuery()->getOneOrNullResult(); // Permet d'éviter une erreur si aucun résultat
 
-        return round($result['leastConsumption'], 2);
+        if (!$result) {
+            return 0.0;
+        }
+
+        return round($result['totalConsumption'], 2);
     }
+
 
 
     //    /**

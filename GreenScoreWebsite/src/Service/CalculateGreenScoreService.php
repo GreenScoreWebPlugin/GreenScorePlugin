@@ -16,14 +16,19 @@ class CalculateGreenScoreService
 
     public function calculateGreenScore(float $totalConsu, string $page): array
     {
-        $leastConsumption = $this->userRepository->getLeastConsumptionCarbonFootprint();
-
         $envNomination = null;
         $letterGreenScore = null;
 
         // Consommation moyenne de l'ensemble des utilisateurs du site et consommateur le plus faible
         if ($page == 'mon-organisation' || $page == 'mes-donnees') {
-            $averageConsumption = $this->userRepository->getGlobalAverageCarbonFootprint();
+            if ($page == 'mon-organisation') {
+                $averageConsumption = $this->userRepository->getOrganisationGlobalAverageCarbonFootprint();
+                $leastConsumption = $this->userRepository->getOrganisationLeastConsumptionCarbonFootprint();
+            }
+            if ($page == 'mes-donnees') {
+                $averageConsumption = $this->userRepository->getGlobalAverageCarbonFootprint();
+                $leastConsumption = $this->userRepository->getLeastConsumptionCarbonFootprint();
+            }
 
             // Vérification des valeurs nécessaires avant de calculer
             if ($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu !== null) {
