@@ -50,7 +50,7 @@ export default class extends Controller {
         }
     }
 
-    async changeOrga(event) {
+    async changeOrJoinOrga(event) {
         event.preventDefault();
 
         const codeOrganisationValue = this.codeOrganisationTarget.value;
