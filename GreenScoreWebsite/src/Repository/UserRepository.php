@@ -68,6 +68,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return round($result['leastConsumption'], 2);
     }
 
+    public function getLeastConsumptionOrganisationCarbonFootprint(): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('MIN(m.totalCarbonFootprint) as leastConsumption')
+            ->where('m.totalCarbonFootprint IS NOT NULL')
+            ->andWhere('m.totalCarbonFootprint > 0'); // Ignore les valeurs NULL et 0
+
+        $result = $qb->getQuery()->getSingleResult(); 
+
+        return round($result['leastConsumption'], 2);
+    }
+
 
     //    /**
     //     * @return User[] Returns an array of User objects
