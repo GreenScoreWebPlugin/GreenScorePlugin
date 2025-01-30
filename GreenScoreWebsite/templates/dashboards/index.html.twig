@@ -107,6 +107,7 @@
             {% if url_full is not null %}
                 <div class="flex flex-col items-center w-full">
                     <!-- Lettre stylisée -->
+                    {% if letterEcoIndex is not null %}
                     <a href="https://bff.ecoindex.fr/redirect/?url={{ url_full }}"
                         target="_blank"
                         class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 bg-grey-700 rounded-lg px-4 py-2 shadow-md"
@@ -131,6 +132,7 @@
                                 {% endif %}
                             </p>
                         </div>
+                    {% endif %}
                     </a>
 
                     <!-- Texte contextuel -->
@@ -221,32 +223,32 @@
 
         <!-- Widget 3: Badge Environnemental Impact -->
         <div class="flex flex-col bg-gradient-to-tr from-white via-blue-100 to-green-100 p-6 rounded-lg shadow-md col-span-1 order-3 sm:order-2 lg:order-3 lg:col-span-4 text-grey-950 font-outfit">
-            {% if letterEcoIndex is defined %}
                 <div class="flex flex-col items-center justify-between h-full text-center">
                     <h2 class="text-lg font-bold row-span-1">Badge d'impact environnemental</h2>
-                    <div class="flex-1 flex items-center justify-center w-full relative">
-                        <picture class="w-full h-full flex items-center justify-center">
-                            <source
-                                media="(max-width: 768px)"
-                                srcset="{{ asset('images/badges/mobile/' ~ letterEcoIndex ~ '.png') }}"
-                            >
-                            <img
-                                srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.svg') }}"
-                                alt="Badge Impact Environnemental {{ letterEcoIndex }}"
-                                class="w-[80%] h-auto object-contain"
-                                loading="lazy"
-                            >
-                        </picture>
-                    </div>
+                    {% if letterEcoIndex is not null %}
+                        <div class="flex-1 flex items-center justify-center w-full relative">
+                            <picture class="w-full h-full flex items-center justify-center">
+                                <source
+                                    media="(max-width: 768px)"
+                                    srcset="{{ asset('images/badges/mobile/' ~ letterEcoIndex ~ '.png') }}"
+                                >
+                                <img
+                                    srcset="{{ asset('images/badges/desktop/' ~ letterEcoIndex ~ '.svg') }}"
+                                    alt="Badge Impact Environnemental {{ letterEcoIndex }}"
+                                    class="w-[80%] h-auto object-contain"
+                                    loading="lazy"
+                                >
+                            </picture>
+                        </div>
+                    {% else %}
+                        <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+                    {% endif %}
                     {% if envNomination is not null %}
                         <p class="text-lg font-bold ">
                             {{ envNomination }}
                         </p>
                     {% endif %}
                 </div>
-            {% else %}
-                <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
-            {% endif %}
         </div>
 
       <!-- Widget 4: Equivalent 1 -->

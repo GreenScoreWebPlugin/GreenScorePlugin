@@ -2,8 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Organisation;
 use App\Entity\User;
 use App\Validator\ConfirmPassword;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -19,15 +21,18 @@ class MyAccountFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
+                'required' => false,
                 'attr' => [
                     'class' => 'w-full',
                 ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'required' => false,
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'required' => false,
                 'attr' => [
                     'class' => 'w-full',
                 ],
@@ -40,7 +45,7 @@ class MyAccountFormType extends AbstractType
                 'constraints' => [
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Votre mot de passe de avoir au moins {{ limit }} caractères.',
+                        'minMessage' => 'Votre mot de passe doit avoir au moins {{ limit }} caractères.',
                         'max' => 50,
                     ]),
                 ],
