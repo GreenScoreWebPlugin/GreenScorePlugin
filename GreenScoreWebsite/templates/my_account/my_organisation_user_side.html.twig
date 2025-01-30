@@ -29,56 +29,58 @@
                             <img src="{{ asset('/images/clipboard.svg') }}" alt="Copier le texte">
                         </div>
                     </div>
-                    <div data-my-account-leave-url-value="{{ path('app_remove_organisation') }}"
-                         data-my-account-change-url-value="{{ path('app_change_organisation') }}">
+                    <!-- Conteneur des boutons -->
+                    <div class="flex gap-x-4">
+                        <button data-action="click->my-account#openModal"
+                                data-my-account-modal-param="modalLeaveOrga"
+                                type="button"
+                                class="w-full h-fit rounded-lg bg-red-600 px-1 py-2 font-semibold font-outfit text-white">
+                            Quitter
+                        </button>
 
-                        <!-- Conteneur des boutons -->
-                        <div class="flex gap-x-4">
-                            <button data-action="click->my-account#openModal"
-                                    data-my-account-modal-param="modalLeaveOrga"
-                                    type="button"
-                                    class="w-full h-fit rounded-lg bg-red-600 px-1 py-2 font-semibold font-outfit text-white">
-                                Quitter
-                            </button>
+                        <button data-action="click->my-account#openModal"
+                                data-my-account-modal-param="modalChangeOrga"
+                                type="button"
+                                class="w-full h-fit rounded-lg bg-blue-600 px-1 py-2 font-semibold font-outfit text-white">
+                            Changer d'organisation
+                        </button>
+                    </div>
 
-                            <button data-action="click->my-account#openModal"
-                                    data-my-account-modal-param="modalChangeOrga"
-                                    type="button"
-                                    class="w-full h-fit rounded-lg bg-blue-600 px-1 py-2 font-semibold font-outfit text-white">
-                                Changer d'organisation
-                            </button>
-                        </div>
-
-                        <!-- Modal pour quitter l'organisation -->
-                        <div data-my-account-target="modalLeaveOrga" class="fixed inset-0 flex items-center justify-center hidden">
-                            <div class="bg-black bg-opacity-50 absolute inset-0"></div>
-                            <div class="relative z-10 bg-white rounded-lg p-2.5 w-full max-w-[344px]">
-                                <p class="text-base font-semibold">
-                                    Êtes-vous sûr de vouloir quitter l'organisation "{{ organisation.organisationName }}" ?
-                                </p>
-                                <div class="flex gap-2.5">
-                                    <button data-action="click->my-account#closeModal"
-                                            data-my-account-modal-param="modalLeaveOrga"
-                                            class="bg-red-900 font-semibold font-outfit text-white px-4 py-2 rounded-md">
-                                        Annuler
-                                    </button>
-                                    <a class="bg-gs-green-950 font-semibold font-outfit text-white px-4 py-2 rounded-md"
-                                        href="{{ path('app_remove_organisation') }}"
-                                    >
-                                        Oui quitter
-                                    </a>
-                                </div>
+                    <!-- Modal pour quitter l'organisation -->
+                    <div data-my-account-target="modalLeaveOrga" class="fixed inset-0 flex items-center justify-center hidden">
+                        <div class="bg-black bg-opacity-50 absolute inset-0"></div>
+                        <div class="relative z-10 bg-white rounded-lg p-2.5 w-full max-w-[344px]">
+                            <p class="text-base font-semibold">
+                                Êtes-vous sûr de vouloir quitter l'organisation "{{ organisation.organisationName }}" ?
+                            </p>
+                            <div class="flex gap-2.5">
+                                <button data-action="click->my-account#closeModal"
+                                        data-my-account-modal-param="modalLeaveOrga"
+                                        class="bg-red-900 font-semibold font-outfit text-white px-4 py-2 rounded-md">
+                                    Annuler
+                                </button>
+                                <a class="bg-gs-green-950 font-semibold font-outfit text-white px-4 py-2 rounded-md"
+                                    href="{{ path('app_remove_organisation') }}"
+                                >
+                                    Oui quitter
+                                </a>
                             </div>
                         </div>
-                        <!-- Modal pour changer d'organisation -->
-                        <div data-my-account-target="modalChangeOrga" class="fixed inset-0 flex items-center justify-center hidden">
-                            <div class="bg-black bg-opacity-50 absolute inset-0"></div>
-                            <div class="relative z-10 bg-white rounded-lg p-2.5 w-full max-w-[344px]">
+                    </div>
+                    <!-- Modal pour changer d'organisation -->
+                    <div data-my-account-target="modalChangeOrga" class="hidden">
+                        <!-- Conteneur principal qui prend tout l'écran -->
+                        <div class="fixed inset-0 flex items-center justify-center">
+                            <!-- Overlay qui couvre tout l'écran -->
+                            <div class="fixed inset-0 bg-black bg-opacity-50"></div>
+
+                            <!-- Modal -->
+                            <div class="z-50 bg-white rounded-lg p-2.5 w-full max-w-[344px]">
                                 <p class="text-base font-semibold">
-                                    Veuillez entrer le code qui vous a été envoyé par l’administrateur de votre organisation
+                                    Veuillez entrer le code qui vous a été envoyé par l'administrateur de votre organisation
                                 </p>
                                 <form
-                                        action="{{ path('app_change_organisation') }}"
+                                        action="{{ path('app_change_or_join_organisation') }}"
                                         method="POST"
                                         class="flex flex-col gap-4"
                                 >
@@ -93,7 +95,7 @@
                                                     data-my-account-target="codeOrganisation"
                                             />
                                             <p class="text-grey-500 text-sm mt-1" data-my-account-target="helpText">Merci d'entrer le code à 8 caractères envoyé par votre organisation</p>
-                                            <div class=" error-message items-center p-4 mt-2 text-sm text-red-900 rounded-lg bg-red-100 hidden"></div>
+                                            <div class="error-message items-center p-4 mt-2 text-sm text-red-900 rounded-lg bg-red-100 hidden"></div>
                                         </div>
                                     </div>
                                     <div class="flex gap-2.5">
@@ -108,7 +110,7 @@
                                         <button
                                                 type="button"
                                                 class="bg-gs-green-950 font-semibold font-outfit text-white px-4 py-2 rounded-md"
-                                                data-action="click->my-account#changeOrga"
+                                                data-action="click->my-account#changeOrJoinOrga"
                                         >
                                             Confirmer
                                         </button>
@@ -117,21 +119,35 @@
                             </div>
                         </div>
                     </div>
-
                 {% else %}
                     <h1 class="text-2xl font-bold py-2">Vous n’avez pas encore rejoint d’organisation !</h1>
-                    {{ form_start(form, { attr: { class: 'flex flex-col gap-4' } }) }}
-                    <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
-                        <div class="w-full">
-                            {{ form_label(form.codeOrganisation) }}
-                            {{ form_widget(form.codeOrganisation, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-                            {% for error in form.codeOrganisation.vars.errors %}
-                                <div class="text-red-700 text-sm">{{ error.message }}</div>
-                            {% endfor %}
+                    <form
+                            action="{{ path('app_change_or_join_organisation') }}"
+                            method="POST"
+                            class="flex flex-col gap-4"
+                    >
+                        <div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+                            <div class="w-full">
+                                <label for="codeOrganisation" class="block font-bold">Code Organisation</label>
+                                <input
+                                        type="text"
+                                        id="codeOrganisation"
+                                        name="codeOrganisation"
+                                        class="px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none"
+                                        data-my-account-target="codeOrganisation"
+                                />
+                                <p class="text-grey-500 text-sm mt-1" data-my-account-target="helpText">Merci d'entrer le code à 8 caractères envoyé par votre organisation</p>
+                                <div class=" error-message items-center p-4 mt-2 text-sm text-red-900 rounded-lg bg-red-100 hidden"></div>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="w-full h-fit rounded-lg bg-gs-green-950 px-1 py-2 font-semibold font-outfit text-white">Rejoindre</button>
-                    {{ form_end(form, { 'render_rest': false }) }}
+                        <button
+                                type="submit"
+                                class="w-full h-fit rounded-lg bg-gs-green-950 px-1 py-2 font-semibold font-outfit text-white"
+                                data-action="click->my-account#changeOrJoinOrga"
+                        >
+                            Rejoindre
+                        </button>
+                    </form>
                 {% endif %}
             </div>
         </div>
