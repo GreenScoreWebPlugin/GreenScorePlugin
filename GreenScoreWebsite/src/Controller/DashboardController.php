@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\MonitoredWebsiteRepository;
 use App\Repository\UserRepository;
 use App\Repository\AdviceRepository;
+use App\Repository\OrganisationRepository;
 use App\Service\EquivalentCalculatorService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,36 +30,27 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
-    public function monOrganisation(UserRepository $userRepository, AdviceRepository $adviceRepository): Response
+    public function monOrganisation(MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
         $averageFootprint = 320;
         $equivalentAverage = 20;
-        $usersIdsCharts = [5,3];
 
         $noDatas = false;
         $user = $this->getUser();
 
         if ($user){
-            $userId = $user->getId();
-
-            // Total Consumption
-            try {
-                $user = $userRepository->find($userId);
-        
-                if (!$user) {
-                    throw new Exception('Utilisateur non trouvé');
-                }
-
-                $totalConsu = $user->getTotalCarbonFootprint();
-            } catch (Exception $e) {
-                $totalConsu = null;
+            $idOrga = $user->getOrganisation()->getId();
+            $usersIdsOrga = $userRepository->getUsersOrga($idOrga);
+            if(!$usersIdsOrga)
                 $noDatas = true;
-            }
         }else{
             $noDatas = true;
         }
         
         if (!$noDatas){
+            // Total Consumption
+            $totalConsu = $monitoredWebsiteRepository->getTotalConsuOrga($usersIdsOrga);
+
             // Advices : Recuperer deux conseils aleatoire
             $adviceEntity = $adviceRepository->findRandomByIsDev(false);
             if ($adviceEntity) {
@@ -96,7 +88,7 @@ class DashboardController extends AbstractController
                 'averageFootprint' => $averageFootprint ?? null,
                 'equivalent1' => $equivalent1 ?? null,
                 'equivalent2' => $equivalent2 ?? null,
-                'usersIdsCharts' => implode(',', $usersIdsCharts ?? null) ?? null,
+                'usersIdsCharts' => implode(',', array_map(fn($user) => $user->getId(), $usersIdsOrga ?? [])) ?? null,
                 'noDatas' => $noDatas,
             ]);
         else

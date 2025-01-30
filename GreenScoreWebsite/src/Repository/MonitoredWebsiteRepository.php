@@ -127,6 +127,17 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+    
+    // Recupere la consommation totale sur un ensemble d'utilisateurs par rapport à leurs $usersIds
+    public function getTotalConsuOrga(array $usersIds): float
+    {
+        return $this->createQueryBuilder('m')
+            ->select('SUM(m.carbonFootprint) as totalFootprint')
+            ->where('m.user IN (:usersIds)')
+            ->setParameter('usersIds', $usersIds)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
 
     //    /**
