@@ -1,90 +1,139 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Popup</title>
-    <script src="https://kit.fontawesome.com/5fbdf29340.js" crossorigin="anonymous"></script>
-    <link href="./popup.css" rel="stylesheet">
+    <script
+      src="https://kit.fontawesome.com/5fbdf29340.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="./popup.css" rel="stylesheet" />
     <script src="popup.js" defer></script>
-</head>
+  </head>
 
-<body class="w-[440px] pb-4">
-    <header class="px-8 py-3 flex justify-between items-center border-b border-grey-100 h-fit">
-        <div class="flex gap-2 items-center">
-            <img src="../assets/images/logo.png" alt="GreenScore Logo" style="width: 32px; height:34px">
-            <h1 class="text-2xl font-outfit font-extrabold text-gs-green-950">GreenScore Web</h1>
-        </div>
-        <div class="cursor-pointer">
-            <img id="account-icon" src="../assets/images/account.svg" alt="Compte" >
-        </div>
+
+  <body class="w-[440px] pb-4">
+    <header
+      class="px-8 py-3 flex justify-between items-center border-b border-grey-100 h-fit"
+    >
+      <div class="flex gap-2 items-center">
+        <img
+          src="../assets/images/logo.png"
+          alt="GreenScore Logo"
+          style="width: 32px; height: 34px"
+        />
+        <h1 class="text-2xl font-outfit font-extrabold text-gs-green-950">
+          GreenScore Web
+        </h1>
+      </div>
+      <img
+        src="../assets/images/account.svg"
+        alt="Compte"
+        class="cursor-pointer"
+      />
+
     </header>
-
-    <div class="flex flex-row font-outfit w-full items-center justify-center p-2">
+    <div id="main-container">
+      <div
+        class="flex flex-row font-outfit w-full items-center justify-center p-2"
+      >
         <p class="text-grey-400 text-sm">Site actuel :&nbsp</p>
         <p id="site-url" class="text-grey-400 text-sm font-bold">*site.fr*</p>
-    </div>
+      </div>
 
-    <div class="flex flex-col gap-6 px-4">
+      <div class="flex flex-col gap-6 px-4">
         <div class="flex flex-col items-center justify-center gap-2 w-full">
-            <h2 id="site-country" class="text-xl w-2/3 text-center font-extrabold font-outfit text-grey-950">
-                Dans votre pays (*Pays*), cette page consomme
-            </h2>
-            <div class="flex flex-col justify-center items-center">
-                <div id="gCO2e-container" class="flex items-baseline font-outfit text-[#BD2525]">
-                    <span id="gCO2e-value" class="text-5xl font-extrabold">0&nbsp;</span>
-                    <div class="flex font-medium gap-0 items-baseline">
-                        <span class="text-base">gC0</span>
-                        <span class="text-xs">2</span>
-                        <span class="text-base">e</span>
-                    </div>
-                </div>
-                <div class="flex font-outfit font-light text-base text-grey-950">
-                    <span>C'est&nbsp;</span>
-                    <span class="font-bold" id="average-consumption">0</span>
-                    <span>&nbsp;à la moyenne !</span>
-                </div>
+          <h2
+            id="site-country"
+            class="text-xl w-2/3 text-center font-extrabold font-outfit text-grey-950"
+          >
+            Dans votre pays (*Pays*), cette page consomme
+          </h2>
+          <div class="flex flex-col justify-center items-center">
+            <div
+              id="gCO2e-container"
+              class="flex items-baseline font-outfit text-[#BD2525]"
+            >
+              <span id="gCO2e-value" class="text-5xl font-extrabold"
+                >0&nbsp;</span
+              >
+              <div class="flex font-medium gap-0 items-baseline">
+                <span class="text-base">gC0</span>
+                <span class="text-xs">2</span>
+                <span class="text-base">e</span>
+              </div>
             </div>
+            <div class="flex font-outfit font-light text-base text-grey-950">
+              <span>C'est&nbsp;</span>
+              <span class="font-bold" id="average-consumption">0</span>
+              <span>&nbsp;à la moyenne !</span>
+            </div>
+          </div>
         </div>
 
         <div class="flex flex-col font-outfit gap-2">
-            <p class="text-sm font-light">Cela correspond à :</p>
-            <div class="flex gap-3 items-center justify-center">
-                <!-- Carte 1 -->
-                <div class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]">
-                    <div class="flex flex-col gap-[6px]">
-                        <img src="../assets/images/account.svg" class="w-5 h-5 object-cover">
-                        <p class="text-xl font-extrabold">0.00</p>
-                    </div>
-                    <p class="text-xs">Pas de données</p>
-                </div>
-                <!-- Carte 2 -->
-                <div class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]">
-                    <div class="flex flex-col gap-[6px]">
-                        <img src="../assets/images/account.svg" class="w-5 h-5 object-cover">
-                        <p class="text-xl font-extrabold">0.00</p>
-                    </div>
-                    <p class="text-xs">Pas de données</p>
-                </div>
-                <!-- Carte 3 -->
-                <div class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]">
-                    <div class="flex flex-col gap-[6px]">
-                        <img src="../assets/images/account.svg" class="w-5 h-5 object-cover">
-                        <p class="text-xl font-extrabold">0.00</p>
-                    </div>
-                    <p class="text-xs">Pas de données</p>
-                </div>
+          <p class="text-sm font-light">Cela correspond à :</p>
+          <div class="flex gap-3 items-center justify-center">
+            <!-- Carte 1 -->
+            <div
+              class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]"
+            >
+              <div class="flex flex-col gap-[6px]">
+                <img
+                  src="../assets/images/account.svg"
+                  class="w-5 h-5 object-cover"
+                />
+                <p class="text-xl font-extrabold">0.00</p>
+              </div>
+              <p class="text-xs">Pas de données</p>
             </div>
+            <!-- Carte 2 -->
+            <div
+              class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]"
+            >
+              <div class="flex flex-col gap-[6px]">
+                <img
+                  src="../assets/images/account.svg"
+                  class="w-5 h-5 object-cover"
+                />
+                <p class="text-xl font-extrabold">0.00</p>
+              </div>
+              <p class="text-xs">Pas de données</p>
+            </div>
+            <!-- Carte 3 -->
+            <div
+              class="comparison-card flex flex-col p-2 w-[120px] h-[120px] gap-2 rounded-[4px]"
+            >
+              <div class="flex flex-col gap-[6px]">
+                <img
+                  src="../assets/images/account.svg"
+                  class="w-5 h-5 object-cover"
+                />
+                <p class="text-xl font-extrabold">0.00</p>
+              </div>
+              <p class="text-xs">Pas de données</p>
+            </div>
+          </div>
         </div>
 
         <div class="flex flex-col w-full gap-2">
-            <a id="details-button" href="#" class="flex justify-center items-center py-2 text-white font-outfit font-medium bg-gs-green-950 rounded-lg w-full h-fit">
-                Plus de détails
-            </a>
-            <div class="flex font-outfit text-sm justify-center">
-                <span class="text-sm text-grey-950">Vous souhaitez enregistrer ce résultat ?&nbsp;</span>
-                <a href="#" class="text-[#6D874B] font-bold underline">Se connecter</a>
-            </div>
+          <a
+            id="details-button"
+            href="#"
+            class="flex justify-center items-center py-2 text-white font-outfit font-medium bg-gs-green-950 rounded-lg w-full h-fit"
+          >
+            Plus de détails
+          </a>
+          <div class="flex font-outfit text-sm justify-center">
+            <span class="text-sm text-grey-950"
+              >Vous souhaitez enregistrer ce résultat ?&nbsp;</span
+            >
+            <a href="#" class="text-[#6D874B] font-bold underline"
+              >Se connecter</a
+            >
+          </div>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
