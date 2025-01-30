@@ -1,5 +1,8 @@
+import { Turbo } from "@hotwired/turbo";
+
 document.addEventListener("turbo:load", () => {
-    // Code pour afficher les graphiques
+    console.log("Turbo Drive a chargé une nouvelle page");
+    
     initCircles();
     initAnimateCounter();
 
@@ -21,7 +24,11 @@ document.addEventListener("turbo:load", () => {
 function initConsuFiltered(idsUsers) {
     const ctx = document.getElementById("co2Chart");
     if (ctx) {
-        const chart = new Chart(ctx.getContext("2d"), {
+        if (ctx.chart) {
+            ctx.chart.destroy();
+        }
+
+        ctx.chart = new Chart(ctx.getContext("2d"), {
             type: "bar",
             data: {
                 labels: [],
@@ -47,10 +54,10 @@ function initConsuFiltered(idsUsers) {
                 const data = await response.json();
                 if (!data || !data.labels || !data.data) throw new Error("Données manquantes ou mal formatées");
 
-                chart.data.labels = data.labels;
-                chart.data.datasets[0].data = data.data;
-                chart.data.datasets[0].backgroundColor = data.labels.map(() => getRandomColor());
-                chart.update();
+                ctx.chart.data.labels = data.labels;
+                ctx.chart.data.datasets[0].data = data.data;
+                ctx.chart.data.datasets[0].backgroundColor = data.labels.map(() => getRandomColor());
+                ctx.chart.update();
             } catch (error) {
                 console.error("Erreur lors de la récupération des données:", error);
             }
@@ -73,8 +80,11 @@ function initConsuFiltered(idsUsers) {
         });
 
         // Initial load
-        updateChart('mois');
-        updateDynamicText('mois');
+        if (ctx.chart){
+            updateChart('mois');
+            updateDynamicText('mois');
+        }
+        
     }
 }
 

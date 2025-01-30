@@ -33,7 +33,7 @@ class DashboardController extends AbstractController
     {
         $averageFootprint = 320;
         $equivalentAverage = 20;
-        $usersIdsCharts = [5];
+        $usersIdsCharts = [5,3];
 
         $noDatas = false;
         $user = $this->getUser();
