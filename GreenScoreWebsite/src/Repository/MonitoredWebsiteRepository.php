@@ -73,17 +73,70 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
     }
 
     // Recupere le top5 des sites les plus polluants en fonction d'une liste d'utilisateurs
-    public function getTop5PollutingSitesByUsers(array $userIds): array
+    public function getTop5PollutingSitesByUsers(array $usersIds): array
     {
         return $this->createQueryBuilder('m')
             ->select('m.urlDomain', 'SUM(m.carbonFootprint) as totalFootprint')
-            ->where('m.user IN (:userIds)')
-            ->setParameter('userIds', $userIds)
+            ->where('m.user IN (:usersIds)')
+            ->setParameter('usersIds', $usersIds)
             ->groupBy('m.urlDomain')
             ->orderBy('totalFootprint', 'DESC')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getConsuByFilter(array $usersIds, string $filter): array
+    {
+        $date = new \DateTime();
+        $startDate = clone $date;
+
+        switch ($filter) {
+            case 'jour':
+                $startDate->modify('-6 days');
+                $select = 'DATE(m.creationDate) as period, SUM(m.carbonFootprint) as total_consumption';
+                $groupBy = 'period';
+                break;
+            case 'semaine':
+                $startDate->modify('-3 weeks')->modify('monday this week');
+                $date->modify('sunday this week');
+                // On récupère simplement la date de création pour le traitement ultérieur
+                $select = 'DATE(m.creationDate) as period, SUM(m.carbonFootprint) as total_consumption';
+                $groupBy = 'period';
+                break;
+            case 'mois':
+                $startDate->modify('-11 months');
+                $select = 'MONTH(m.creationDate) as month, YEAR(m.creationDate) as year, SUM(m.carbonFootprint) as total_consumption';
+                $groupBy = 'month, year';
+                break;
+            default:
+                throw new \InvalidArgumentException('Filtre non valide');
+        }
+
+        $qb = $this->createQueryBuilder('m')
+            ->select($select)
+            ->where('m.user IN (:usersIds)')
+            ->andWhere('m.creationDate BETWEEN :startDate AND :endDate')
+            ->setParameter('usersIds', $usersIds)
+            ->setParameter('startDate', $startDate->format('Y-m-d H:i:s'))
+            ->setParameter('endDate', $date->format('Y-m-d H:i:s'));
+
+        if ($groupBy) {
+            $qb->groupBy($groupBy);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+    
+    // Recupere la consommation totale sur un ensemble d'utilisateurs par rapport à leurs $usersIds
+    public function getTotalConsuOrga(array $usersIds): float
+    {
+        return $this->createQueryBuilder('m')
+            ->select('SUM(m.carbonFootprint) as totalFootprint')
+            ->where('m.user IN (:usersIds)')
+            ->setParameter('usersIds', $usersIds)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 
