@@ -7,6 +7,8 @@ use App\Repository\UserRepository;
 use App\Repository\AdviceRepository;
 use App\Repository\OrganisationRepository;
 use App\Service\EquivalentCalculatorService;
+use App\Service\CalculateGreenScoreService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +23,14 @@ class DashboardController extends AbstractController
     private HttpClientInterface $httpClient;
     private LoggerInterface $logger;
     private EquivalentCalculatorService $equivalentCalculatorService;
+    private CalculateGreenScoreService $calculateGreenScoreService;
 
-    public function __construct(HttpClientInterface $httpClient, LoggerInterface $logger, EquivalentCalculatorService $equivalentCalculatorService)
+    public function __construct(HttpClientInterface $httpClient, LoggerInterface $logger, EquivalentCalculatorService $equivalentCalculatorService, CalculateGreenScoreService $calculateGreenScoreService)
     {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
         $this->equivalentCalculatorService = $equivalentCalculatorService;
+        $this->calculateGreenScoreService = $calculateGreenScoreService;
     }
 
     #[Route('/mon-organisation', name: 'app_mon_organisation')]
@@ -72,6 +76,17 @@ class DashboardController extends AbstractController
                 } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
+
+                try {
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'mon-organisation');
+                    if($calculateGreenScore) {
+                        $envNomination = $calculateGreenScore[0]['envNomination'];
+                        $letterGreenScore = $calculateGreenScore[0]['letterGreenScore'];
+                    }
+
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
+                }
             }
         }
 
@@ -90,6 +105,8 @@ class DashboardController extends AbstractController
                 'equivalent2' => $equivalent2 ?? null,
                 'usersIdsCharts' => implode(',', array_map(fn($user) => $user->getId(), $usersIdsOrga ?? [])) ?? null,
                 'noDatas' => $noDatas,
+                'letterGreenScore' => $letterGreenScore ?? null,
+                'envNomination' => $envNomination ?? null
             ]);
         else
             return $this->redirectToRoute('app_login');
@@ -149,6 +166,17 @@ class DashboardController extends AbstractController
                 } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
+
+                try {
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'mes-donnees');
+                    if($calculateGreenScore) {
+                        $envNomination = $calculateGreenScore[0]['envNomination'];
+                        $letterGreenScore = $calculateGreenScore[0]['letterGreenScore'];
+                    }
+
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
+                }
             }
         }
 
@@ -168,6 +196,8 @@ class DashboardController extends AbstractController
                 'messageAverageFootprint' => $messageAverageFootprint ?? null,
                 'usersIdsCharts' => implode(',', $usersIdsCharts ?? null) ?? null,
                 'noDatas' => $noDatas,
+                'letterGreenScore' => $letterGreenScore ?? null,
+                'envNomination' => $envNomination ?? null,
             ]);
         else
             return $this->redirectToRoute('app_login');
@@ -278,47 +308,17 @@ class DashboardController extends AbstractController
                 } catch (Exception $e) {
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
-            }
 
-            // Widget en fonction de l'eco index
-            try {
-                $urlSvgEcoIndex = 'https://bff.ecoindex.fr/badge/?theme=dark&url=' . $url_full;
-                $svgContent = file_get_contents($urlSvgEcoIndex);
-                $letterEcoIndex = null;
+                try {
+                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'derniere-page-consultee');
+                    if($calculateGreenScore) {
+                        $envNomination = $calculateGreenScore[0]['envNomination'];
+                        $letterGreenScore = $calculateGreenScore[0]['letterGreenScore'];
+                    }
 
-                if (preg_match('/<tspan[^>]*>([A-G])<\/tspan>/', $svgContent, $matches)) {
-                    $letterEcoIndex = $matches[1];
+                } catch (Exception $e) {
+                    $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
                 }
-                
-                switch ($letterEcoIndex) {
-                    case 'A':
-                        $envNomination = 'Maître des Forêts';
-                        break;
-                    case 'B':
-                        $envNomination = 'Protecteur des Bois';
-                        break;
-                    case 'C':
-                        $envNomination = 'Frère des Arbres';
-                        break;
-                    case 'D':
-                        $envNomination = 'Initié de la Nature';
-                        break;
-                    case 'E':
-                        $envNomination = 'Explorateur Imprudent';
-                        break;
-                    case 'F':
-                        $envNomination = 'Tempête Numérique';
-                        break;
-                    case 'G':
-                        $envNomination = 'Bouleverseur des Écosystèmes';
-                        break;
-                    default:
-                        $envNomination = null;
-                        break;
-                }
-            } catch (Exception $e) {
-                $this->logger->error('Erreur lors de la récupération du badge EcoIndex : ' . $e->getMessage());
-                $letterEcoIndex = null;
             }
 
         }
@@ -345,7 +345,7 @@ class DashboardController extends AbstractController
                 'queriesQuantity' => $queriesQuantity ?? null,
                 'url_full' => $url_full ?? null,
                 'noDatas' => $noDatas ?? null,
-                'letterEcoIndex' => $letterEcoIndex ?? null,
+                'letterGreenScore' => $letterGreenScore ?? null,
                 'envNomination' => $envNomination ?? null,
             ]);
         else

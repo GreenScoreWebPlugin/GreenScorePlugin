@@ -33,6 +33,83 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    // Récupère la moyenne de l'empreinte carbone sur l'ensemble des utilisateurs
+    public function getGlobalAverageCarbonFootprint(): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select(' AVG(m.totalCarbonFootprint) as averageConsumption')
+            ->where('m.totalCarbonFootprint IS NOT NULL')
+            ->andWhere('m.totalCarbonFootprint > 0');
+
+        $averageConsumption = $qb->getQuery()->getResult();
+
+        if (empty($averageConsumption)) {
+            return 0.0;
+        }
+
+        $sum = 0;
+        foreach ($averageConsumption as $average) {
+            $sum += $average['averageConsumption'];
+        }
+
+        return round($sum / count($averageConsumption), 2);
+    }
+
+    // Récupère la moyenne de l'empreinte carbone sur l'ensemble des entreprise
+    public function getOrganisationGlobalAverageCarbonFootprint(): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select(' AVG(m.totalCarbonFootprint) as averageConsumption, IDENTITY(m.organisation) as organisationId')
+            ->where('m.totalCarbonFootprint IS NOT NULL')
+            ->andWhere('m.totalCarbonFootprint > 0')
+            ->groupBy('organisationId');
+
+        $averageConsumption = $qb->getQuery()->getResult();
+
+        if (empty($averageConsumption)) {
+            return 0.0;
+        }
+
+        $sum = 0;
+        foreach ($averageConsumption as $average) {
+            $sum += $average['averageConsumption'];
+        }
+
+        return round($sum / count($averageConsumption), 2);
+    }
+
+    // Récupère l'utilisateur ayant le moins consommé
+    public function getLeastConsumptionCarbonFootprint(): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('MIN(m.totalCarbonFootprint) as leastConsumption')
+            ->where('m.totalCarbonFootprint IS NOT NULL')
+            ->andWhere('m.totalCarbonFootprint > 0'); // Ignore les valeurs NULL et 0
+
+        $result = $qb->getQuery()->getSingleResult();
+
+        return round($result['leastConsumption'], 2);
+    }
+
+    public function getOrganisationLeastConsumptionCarbonFootprint(): float
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('SUM(m.totalCarbonFootprint) as totalConsumption, IDENTITY(m.organisation) as organisationId')
+            ->where('m.totalCarbonFootprint IS NOT NULL')
+            ->andWhere('m.totalCarbonFootprint > 0')
+            ->groupBy('organisationId')
+            ->orderBy('totalConsumption', 'ASC') // Trie pour avoir le plus petit en premier
+            ->setMaxResults(1); // Récupère seulement l'organisation avec la plus petite consommation totale
+
+        $result = $qb->getQuery()->getOneOrNullResult(); // Permet d'éviter une erreur si aucun résultat
+
+        if (!$result) {
+            return 0.0;
+        }
+
+        return round($result['totalConsumption'], 2);
+    }
+
     // Recupere la liste des utilisateurs d'une meme entreprise selon l'idOrga
     public function getUsersOrga(int $idOrga): array
     {
@@ -43,7 +120,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
-
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
