@@ -24,6 +24,7 @@ Encore
     .addEntry('dashboard', './assets/js/dashboard.js')
     .addEntry('base', './assets/js/base.js')
     .addEntry('my_account', './assets/controllers/my_account_controller.js')
+    .addEntry('cookie_consent', './assets/js/cookie-consent.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

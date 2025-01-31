@@ -1,0 +1,16 @@
+{# templates/cookie_consent/index.html.twig #}
+{% if not app.request.cookies.get('cookie_consent') %}
+    <div id="cookieConsent" style="position: fixed; bottom: 0; left: 0; right: 0; background-color: #424E62; opacity: 0.9; z-index: 9999; transition: transform 0.5s ease-in-out;">
+        <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4">
+            <div class="text-center sm:text-left">
+                <p class="font-outfit text-white">
+                    En poursuivant votre navigation sur ce site, vous acceptez l'utilisation de cookies pour vous proposer une meilleure expérience utilisateur.
+                    <a href="{{ path('app_get_politique_de_confidentialite') }}" class="underline hover:opacity-80">En savoir plus</a>
+                </p>
+            </div>
+            <button id="acceptCookies" class="whitespace-nowrap bg-white hover:bg-white/90 px-6 py-2 rounded-md transition-colors duration-300 font-outfit text-gray-800 border border-gray-200">
+                J'ai compris
+            </button>
+        </div>
+    </div>
+{% endif %}
