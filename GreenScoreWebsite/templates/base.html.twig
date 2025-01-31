@@ -4,6 +4,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         <script src="https://kit.fontawesome.com/713704b44c.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('build/cookie_consent.js') }}"></script>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -93,6 +94,8 @@
 
         <script src="{{ asset('build/base.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        {% include 'cookie_consent/index.html.twig' %}
 
         <footer class="bg-gs-green-950 text-white py-6 font-outfit">
             <div class="container mx-auto text-center">
