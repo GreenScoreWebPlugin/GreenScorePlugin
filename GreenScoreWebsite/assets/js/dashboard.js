@@ -1,6 +1,8 @@
+import { Turbo } from "@hotwired/turbo";
+
 document.addEventListener("turbo:load", () => {
-    // Code pour afficher les graphiques
-    initCharts();
+    console.log("Turbo Drive a chargé une nouvelle page");
+    
     initCircles();
     initAnimateCounter();
 
@@ -10,23 +12,32 @@ document.addEventListener("turbo:load", () => {
             initTop5PollutionChart(canvas.id, endpoint);
         }
     });
+
+    document.querySelectorAll("[data-ids]").forEach(canvas => {
+        const idsUsers = canvas.getAttribute("data-ids");
+        if (idsUsers) {
+            initConsuFiltered(idsUsers);
+        }
+    });
 });
 
-function initCharts() {
+function initConsuFiltered(idsUsers) {
     const ctx = document.getElementById("co2Chart");
     if (ctx) {
-        const dataByMonth = {
-            labels: ["Jan", "Fev", "Mars", "Avr", "Mai", "Juin", "Juil", "Aout", "Sept", "Oct", "Nov", "Dec"],
-            datasets: [{
-                label: "Consommation (gCO2e)",
-                data: [10000, 20000, 15000, 25000, 12000, 30000, 18000, 12000, 15000, 29000, 20000, 18000],
-                backgroundColor: ["#A8E6CF", "#DCEDC1", "#FFD3B6", "#FFAAA5", "#FF8C94", "#85C1E9", "#76D7C4", "#F8C471", "#D7BDE2", "#F1948A", "#85C1E9", "#BB8FCE"]
-            }]
-        };
+        if (ctx.chart) {
+            ctx.chart.destroy();
+        }
 
-        const chart = new Chart(ctx.getContext("2d"), {
+        ctx.chart = new Chart(ctx.getContext("2d"), {
             type: "bar",
-            data: dataByMonth,
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Consommation (gCO2e)",
+                    data: [],
+                    backgroundColor: []
+                }]
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -35,36 +46,55 @@ function initCharts() {
             }
         });
 
+        async function updateChart(filter) {
+            const url = `/api/${filter}-consu?usersIds=${idsUsers}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                const data = await response.json();
+                if (!data || !data.labels || !data.data) throw new Error("Données manquantes ou mal formatées");
+
+                ctx.chart.data.labels = data.labels;
+                ctx.chart.data.datasets[0].data = data.data;
+                ctx.chart.data.datasets[0].backgroundColor = data.labels.map(() => getRandomColor());
+                ctx.chart.update();
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données:", error);
+            }
+        }
+
+        function updateDynamicText(filter) {
+            const dynamicText = document.getElementById('dynamic-text');
+            const texts = {
+                'jour': 'Vos données sur les 7 derniers jours',
+                'semaine': 'Vos données sur les 4 dernières semaines',
+                'mois': 'Vos données sur les 12 derniers mois'
+            };
+            dynamicText.textContent = texts[filter];
+        }
+
         document.getElementById("filter")?.addEventListener("change", (event) => {
             const filter = event.target.value;
-            let newData;
-
-            if (filter === "mois") {
-                newData = dataByMonth;
-            } else if (filter === "semaine") {
-                newData = {
-                    labels: ["Semaine 1", "Semaine 2", "Semaine 3", "Semaine 4"],
-                    datasets: [{
-                        label: "Consommation (gCO2e)",
-                        data: [5000, 10000, 8000, 12000],
-                        backgroundColor: ["#A8E6CF", "#DCEDC1", "#FFD3B6", "#FF8C94"]
-                    }]
-                };
-            } else if (filter === "jour") {
-                newData = {
-                    labels: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
-                    datasets: [{
-                        label: "Consommation (gCO2e)",
-                        data: [1200, 1800, 1500, 2000, 2200, 1900, 1600],
-                        backgroundColor: ["#A8E6CF", "#DCEDC1", "#FFD3B6", "#FFAAA5", "#FF8C94", "#76D7C4", "#85C1E9"]
-                    }]
-                };
-            }
-
-            chart.data = newData;
-            chart.update();
+            updateDynamicText(filter);
+            updateChart(filter);
         });
+
+        // Initial load
+        if (ctx.chart){
+            updateChart('mois');
+            updateDynamicText('mois');
+        }
+        
     }
+}
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
 function initTop5PollutionChart(canvasId, endpoint) {

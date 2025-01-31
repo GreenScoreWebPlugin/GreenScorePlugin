@@ -110,8 +110,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return round($result['totalConsumption'], 2);
     }
 
-
-
+    // Recupere la liste des utilisateurs d'une meme entreprise selon l'idOrga
+    public function getUsersOrga(int $idOrga): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.organisation = :idOrga')
+            ->setParameter('idOrga', $idOrga)
+            ->orderBy('u.id', 'ASC') 
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

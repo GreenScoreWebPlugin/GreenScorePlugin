@@ -26,6 +26,12 @@ doctrine:
                 alias: App
         controller_resolver:
             auto_mapping: false
+        dql:
+            datetime_functions:
+                month: DoctrineExtensions\Query\Mysql\Month
+                year: DoctrineExtensions\Query\Mysql\Year
+                week: DoctrineExtensions\Query\Mysql\Week
+                date: DoctrineExtensions\Query\Mysql\Date
 
 when@test:
     doctrine:

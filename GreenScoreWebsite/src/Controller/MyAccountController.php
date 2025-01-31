@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MyAccountController extends AbstractController
@@ -24,7 +25,8 @@ class MyAccountController extends AbstractController
     public function index(
         EntityManagerInterface $entityManager,
         Request $request,
-        UserPasswordHasherInterface $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher,
+        CsrfTokenManagerInterface $csrfTokenManager
     ): Response
     {
         $user = $this->getUser();
@@ -34,7 +36,6 @@ class MyAccountController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('plainPassword')->getData() !== null) {
-                /** @var string $plainPassword */
                 $plainPassword = $form->get('plainPassword')->getData();
                 $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             }
@@ -42,11 +43,12 @@ class MyAccountController extends AbstractController
             $entityManager->flush();
             $this->addFlash("success", "La modification de votre compte a bien été prise en compte.");
 
+            // Redirect to prevent form resubmission
             return $this->redirectToRoute('app_my_account');
         }
 
         return $this->render('my_account/my_account_user_side.html.twig', [
-            'MyAccountForm' => $form,
+            'MyAccountForm' => $form->createView(),
             'user' => $user,
             'showMyOrga' => false,
         ]);
@@ -58,38 +60,19 @@ class MyAccountController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
     ): Response {
+
         $user = $this->getUser();
-
-        $form = $this->createForm(MyAccountFormType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $organisation = $entityManager
-                ->getRepository(Organisation::class)
-                ->findOneBy(['organisationCode' => $form->get('codeOrganisation')->getData()]);
-            if ($organisation) {
-                $organisation->addUser($user);
-                $entityManager->persist($user);
-                $entityManager->flush();
-                $this->addFlash("success", "Vous avez bien rejoint l'organisation.");
-                return $this->redirect('app_my_account_show_organisation');
-            } else {
-                $this->addFlash("error", "Aucune organisation ne possède ce code.");
-                return $this->redirect('app_my_account_show_organisation');
-            }
-        }
 
         return $this->render('my_account/my_organisation_user_side.html.twig', [
             'user' => $user,
             'showMyOrga' => true,
             'organisation' => $user?->getOrganisation() ?? null,
-            'form' => $form->createView()
         ]);
     }
 
     #[IsGranted('ROLE_USER')]
     #[Route('/mon-compte/organisation/remove-organisation', name: 'app_remove_organisation')]
-    public function removeOrganisation(Request $request, EntityManagerInterface $entityManager)
+    public function leaveOrganisation(Request $request, EntityManagerInterface $entityManager)
     {
         $user = $this->getUser();
         $user->setOrganisation(null);
@@ -121,8 +104,8 @@ class MyAccountController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/mon-compte/organisation/change-organisation', name: 'app_change_organisation', methods: ['POST'])]
-    public function changeOrganisation(
+    #[Route('/mon-compte/organisation/change-organisation', name: 'app_change_or_join_organisation', methods: ['POST'])]
+    public function changeOrJoinOrganisation(
         Request $request,
         OrganisationRepository $organisationRepository,
         EntityManagerInterface $entityManager
