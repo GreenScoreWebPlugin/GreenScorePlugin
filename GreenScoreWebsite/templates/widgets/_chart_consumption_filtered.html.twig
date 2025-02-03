@@ -1,0 +1,17 @@
+<div class="bg-white flex flex-col p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 order-2 sm:order-3 lg:col-span-4 lg:order-2 text-grey-950">
+    <div class="flex flex-col w-full h-full justify-between gap-2">
+        <div class="flex w-full">
+            <h2 class="text-lg font-bold w-full leading-4">Votre consommation </br><span class="text-sm font-normal">(en gCO2e)</span></h2>
+            <select id="filter" class="w-fit h-fit border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                <option value="mois">Mois</option>
+                <option value="semaine">Semaine</option>
+                <option value="jour">Jour</option>
+            </select>
+        </div>
+        <!-- Phrase dynamique -->
+        <p id="dynamic-text" class="text-sm text-gray-600"></p>
+        <div class="relative w-full h-auto">
+            <canvas class="w-full h-auto" id="co2Chart" data-ids="{{ usersIdsCharts }}" data-turbo-permanent></canvas>
+        </div>
+    </div>
+</div>

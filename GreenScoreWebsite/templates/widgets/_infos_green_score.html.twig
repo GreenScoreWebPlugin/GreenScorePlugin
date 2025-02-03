@@ -1,0 +1,52 @@
+<div class="bg-white flex flex-col justify-between gap-3 p-6 rounded-lg shadow-md col-span-1 order-1 lg:col-span-4 text-grey-950 font-outfit">
+    <h2 class="text-lg font-bold mb-4 row-span-1">L'impact environnemental</h2>
+    {% if letterGreenScore is not null %}
+        <div class="flex flex-col items-center w-full">
+            <!-- Lettre stylisée -->
+            <div class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 bg-grey-700 rounded-lg px-4 py-2 shadow-md">
+                <h1 class="text-xl font-medium text-white">
+                    EcoIndex
+                </h1>
+                <div class="w-10 h-10 flex items-center justify-center rounded-full {% if letterGreenScore == 'A' %} bg-[#2e9b43] text-white
+                    {% elseif letterGreenScore == 'B' %} bg-[#347851] text-white
+                    {% elseif letterGreenScore == 'C' %} bg-[#cadd00] text-black
+                    {% elseif letterGreenScore == 'D' %} bg-[#f7ed00] text-black
+                    {% elseif letterGreenScore == 'E' %} bg-[#ffce00] text-white
+                    {% elseif letterGreenScore == 'F' %} bg-[#fb9929] text-white
+                    {% elseif letterGreenScore == 'G' %} bg-[#f01c16] text-white
+                    {% else %} bg-gray-300 text-gray-800
+                    {% endif %}">
+                    <p>
+                        {{ letterGreenScore }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Texte contextuel -->
+            <p class="mt-2 text-xl text-center font-bold w-3/4">
+                {% if letterGreenScore == 'A' %}
+                    Ce site est exemplaire 🌱
+                {% elseif letterGreenScore == 'B' %}
+                    Très bien, mais le site peut encore être amélioré 👍
+                {% elseif letterGreenScore == 'C' %}
+                    Encore un effort pour optimiser ! 🚀
+                {% elseif letterGreenScore == 'D' %}
+                    Cette page est gourmande ! 🤔
+                {% elseif letterGreenScore == 'E' %}
+                    Les ressources ont besoin d'être optimisées ! ⚡
+                {% elseif letterGreenScore == 'F' %}
+                    Impact élevé ! Ce site doit être revu pour être optimum ❗
+                {% elseif letterGreenScore == 'G' %}
+                    Outch.
+                {% else %}
+                    Pas d'informations disponibles pour ce score.
+                {% endif %}
+            </p>
+        </div>
+        <p class="text-sm mt-4">
+            La <b>performance environnementale</b> prend en compte la complexité de la page, le poids des données transférées et le nombre de requêtes HTTP.
+        </p>
+    {% else %}
+        <p class="text-center text-gray-500 flex items-center justify-center h-full">Pas de données</p>
+    {% endif %}
+</div>
