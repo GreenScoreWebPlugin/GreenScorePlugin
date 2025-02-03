@@ -1,19 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Cookie consent script loaded');
-    
     function setupCookieConsent() {
-        console.log('Setting up cookie consent');
         const acceptButton = document.getElementById('acceptCookies');
-        
-        console.log('Accept button:', acceptButton);
-        
+
         if (acceptButton) {
             // Supprimer les écouteurs existants
             const newButton = acceptButton.cloneNode(true);
             acceptButton.parentNode.replaceChild(newButton, acceptButton);
             
             newButton.addEventListener('click', function(e) {
-                console.log('Cookie consent button clicked');
                 
                 e.preventDefault();
                 e.stopPropagation();
@@ -25,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .then(response => {
-                    console.log('Consent response received');
                     const cookieConsent = document.getElementById('cookieConsent');
                     if (cookieConsent) {
                         cookieConsent.style.transform = 'translateY(100%)';
@@ -38,8 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Cookie consent error:', error);
                 });
             });
-        } else {
-            console.log('No accept button found');
         }
     }
     
