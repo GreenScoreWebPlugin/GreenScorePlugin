@@ -6,6 +6,7 @@ use App\Repository\OrganisationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use RuntimeException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints\Unique;
 
@@ -117,15 +118,21 @@ class Organisation
 
     public function removeUser(User $user): static
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getOrganisation() === $this) {
-                $user->setOrganisation(null);
+        if ($this->users->contains($user)) {
+            if ($this->users->removeElement($user)) {
+                if ($user->getOrganisation() === $this) {
+                    $user->setOrganisation(null);
+                }
+            } else {
+                throw new RuntimeException("Impossible de supprimer l'utilisateur de l'organisation.");
             }
+        } else {
+            throw new RuntimeException("L'utilisateur ne fait pas partie de cette organisation.");
         }
 
         return $this;
     }
+
 
     public function getOrganisationAdmin(): ?User
     {

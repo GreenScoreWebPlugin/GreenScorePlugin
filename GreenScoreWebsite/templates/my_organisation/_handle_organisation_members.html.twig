@@ -1,0 +1,126 @@
+{# my_organisation_handle_members.html.twig #}
+<div class="flex flex-col gap-4" data-controller="copy-clipboard">
+    <h1 class="font-outfit text-2xl font-semibold">Membres</h1>
+
+    {% if members is empty and searchTerm is empty %}
+        <div class="flex flex-col gap-4">
+            <p class="text-sm text-gray-500">Vous n'avez pas encore ajouté de membres à votre organisation. Envoyez leur le code suivant afin qu'ils puissent rejoindre votre organisation.</p>
+            <div class="flex rounded-2xl border border-grey-100 items-center w-full">
+                <div class="border-r border-grey-100 w-full items-center justify-center py-4">
+                    <p data-copy-clipboard-target="codeText" id="code-text" class="text-grey-950 text-center text-3xl font-outfit font-semibold tracking-widest">{{ organisation.organisationCode }}</p>
+                </div>
+                <div class="px-4 py-4 flex flex-col items-center justify-center relative">
+                    <img data-copy-clipboard-target="clipboard" data-action="click->copy-clipboard#handleCopy" src="{{ asset('/images/clipboard.svg') }}" alt="Copier le texte" class="scale-105 cursor-pointer transition-transform duration-200 hover:scale-110"/>
+                    <i data-copy-clipboard-target="checkIcon" class="fa-solid fa-check text-gs-green-950 absolute text-2xl animate-pulse invisible" id="check-icon"></i>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div data-controller="members-search" data-members-search-url-value="{{ path('app_handle_organisation_members') }}">
+            <div class="flex gap-4 items-center justify-between w-full font-outfit mb-4">
+                <div class="flex w-full">
+                    <input
+                            type="search"
+                            data-members-search-target="input"
+                            name="search"
+                            placeholder="Rechercher un membre"
+                            value="{{ searchTerm ?? '' }}"
+                            class="w-full px-3 py-2 border border-grey-200 rounded-l-lg focus:outline-none focus:ring-gs-green-950"
+                    >
+                    <button
+                            data-action="click->members-search#handleSearch"
+                            class="px-4 py-2 bg-gs-green-950 text-white rounded-r-lg hover:bg-gs-green-800 transition-colors duration-200">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="members-container" data-members-search-target="membersContainer">
+                {% if members is empty and searchTerm is not empty %}
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <p class="text-gray-500">Aucun résultat pour la recherche "{{ searchTerm }}"</p>
+                    </div>
+                {% else %}
+                    <div data-controller="member-delete" data-reload-url="{{ path('app_handle_organisation_members') }}">
+                        {% include 'my_organisation/_my_organisation_members_list.html.twig' with {
+                            members: members,
+                            page: page
+                        } %}
+                    </div>
+
+                    {% if maxPage > 1 %}
+                        <div class="flex gap-1 items-center w-full justify-center mt-4">
+                            {% if page > 1 %}
+                                <a href="{{ path('app_handle_organisation_members', {
+                                    'page': page-1,
+                                    'search': searchTerm
+                                }) }}"
+                                   class="flex items-center justify-center w-fit min-w-6 h-6 rounded-lg bg-white border-2 border-grey-200 font-semibold font-outfit text-grey-200">
+                                    <
+                                </a>
+                            {% endif %}
+
+                            <a href="{{ path('app_handle_organisation_members', {'page': 1, 'search': searchTerm}) }}"
+                               class="flex items-center justify-center w-fit min-w-6 h-6 rounded-lg {% if page == 1 %}bg-gs-green-950 text-white{% else %}bg-white border-2 border-grey-200 text-grey-200{% endif %} font-semibold font-outfit">
+                                1
+                            </a>
+
+                            {% if maxPage > 3 %}
+                                {% set leftLimit = page - 1 %}
+                                {% set rightLimit = page + 1 %}
+
+                                {% if leftLimit > 2 %}
+                                    <span class="flex items-center justify-center w-fit min-w-6 h-6">...</span>
+                                {% endif %}
+
+                                {% for i in max(2, leftLimit)..min(maxPage - 1, rightLimit) %}
+                                    {% if i > 1 and i < maxPage %}
+                                        <a href="{{ path('app_handle_organisation_members', {
+                                            'page': i,
+                                            'search': searchTerm
+                                        }) }}"
+                                           class="flex items-center justify-center w-fit min-w-6 h-6 rounded-lg {% if i == page %}bg-gs-green-950 text-white{% else %}bg-white border-2 border-grey-200 text-grey-200{% endif %} font-semibold font-outfit">
+                                            {{ i }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if rightLimit < maxPage - 1 %}
+                                    <span class="flex items-center justify-center w-fit min-w-6 h-6">...</span>
+                                {% endif %}
+
+                                <a href="{{ path('app_handle_organisation_members', {
+                                    'page': maxPage,
+                                    'search': searchTerm
+                                }) }}"
+                                   class="flex items-center justify-center w-fit min-w-6 h-6 rounded-lg {% if page == maxPage %}bg-gs-green-950 text-white{% else %}bg-white border-2 border-grey-200 text-grey-200{% endif %} font-semibold font-outfit">
+                                    {{ maxPage }}
+                                </a>
+                            {% else %}
+                                {% for i in 2..maxPage %}
+                                    <a href="{{ path('app_handle_organisation_members', {
+                                        'page': i,
+                                        'search': searchTerm
+                                    }) }}"
+                                       class="flex items-center justify-center w-fit min-w-6 h-6 rounded-lg {% if i == page %}bg-gs-green-950 text-white{% else %}bg-white border-2 border-grey-200 text-grey-200{% endif %} font-semibold font-outfit">
+                                        {{ i }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if page < maxPage %}
+                                <a href="{{ path('app_handle_organisation_members', {
+                                    'page': page+1,
+                                    'search': searchTerm
+                                }) }}"
+                                   class="flex items-center justify-center w-fit min-w-6 h-6 rounded-lg bg-white border-2 border-grey-200 font-semibold font-outfit text-grey-200">
+                                    >
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
