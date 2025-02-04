@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Organisation;
 use App\Entity\User;
 use App\Form\MyAccountFormType;
 
@@ -77,11 +78,69 @@ class MyAccountController extends AbstractController
     {
         $user = $this->getUser();
 
-        return $this->render('my_account/my_organisation_handle_members.html.twig', [
+        return $this->render('my_account/my_organisation_user_side.html.twig', [
             'user' => $user,
             'showMyOrga' => true,
             'organisation' => $user?->getOrganisation() ?? null,
         ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/mon-compte/organisation/remove-organisation', name: 'app_remove_organisation')]
+    public function leaveOrganisation(Request $request, EntityManagerInterface $entityManager)
+    {
+        $user = $this->getUser();
+        $user->setOrganisation(null);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous avez quitté l\'organisation avec succès');
+
+        return $this->redirectToRoute('app_my_account_show_organisation');
+    }
+
+    #[Route('/mon-compte/organisation/exist', name: 'app_check_if_organisation_exist')]
+    public function checkCodeOrganisationExists(Request $request, EntityManagerInterface $entityManager)
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $this->getUser();
+
+        if (!preg_match('/^[0-9A-Z]{8}$/', $data['code'])) {
+            return new JsonResponse(['success' => false, 'errorMessage' => 'Code invalide'], 400);
+        }
+
+        $code = $data['code'];
+
+        if ($entityManager->getRepository(Organisation::class)->findOneBy(['organisationCode' => $code]) === null) {
+            return new JsonResponse(['success' => false, 'errorMessage' => 'Ce code n\'est pas valide'], 400);
+        }
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/mon-compte/organisation/change-organisation', name: 'app_change_or_join_organisation', methods: ['POST'])]
+    public function changeOrJoinOrganisation(
+        Request $request,
+        OrganisationRepository $organisationRepository,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        // Rechercher l'organisation avec ce code
+        $organisation = $organisationRepository->findOneBy(['organisationCode' => $request->get('codeOrganisation')]);
+
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        $organisation->addUser($user);
+
+        // Sauvegarder en base de données
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous avez bien rejoint l\'organisation nommée ' . $organisation->getOrganisationName());
+
+        return $this->redirectToRoute('app_my_account_show_organisation');
     }
 
     #[IsGranted('ROLE_ORGANISATION')]
