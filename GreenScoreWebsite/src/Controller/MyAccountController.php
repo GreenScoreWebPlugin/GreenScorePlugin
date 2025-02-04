@@ -19,10 +19,12 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -126,21 +128,47 @@ class MyAccountController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response
     {
-        // Rechercher l'organisation avec ce code
+        // Rechercher l'organisation avec le code
         $organisation = $organisationRepository->findOneBy(['organisationCode' => $request->get('codeOrganisation')]);
 
-        // Récupérer l'utilisateur connecté
         $user = $this->getUser();
 
         $organisation->addUser($user);
 
-        // Sauvegarder en base de données
         $entityManager->persist($user);
         $entityManager->flush();
 
         $this->addFlash('success', 'Vous avez bien rejoint l\'organisation nommée ' . $organisation->getOrganisationName());
 
         return $this->redirectToRoute('app_my_account_show_organisation');
+    }
+
+    #[Route('/api/user/delete', name: 'api_delete_user', methods: ['DELETE'])]
+    public function deleteUser(
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        TokenStorageInterface $tokenStorage,
+        SessionInterface $session
+    ): JsonResponse {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+
+        try {
+            // Supprimer l'utilisateur
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $tokenStorage->setToken(null);
+            // Supprimer la session de manière sécurisée
+            $session->invalidate();
+
+            return new JsonResponse(['success' => true, 'redirect' => '/inscription']);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => 'An error occurred'], 500);
+        }
     }
 
     #[IsGranted('ROLE_ORGANISATION')]
