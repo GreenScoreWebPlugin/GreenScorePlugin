@@ -5,13 +5,13 @@
 {% block body %}
     {{ include('my_account/_message.html.twig') }}
 
-    <div class="px-52 flex flex-col mb-16">
-        <div class="px-16 py-8 flex items-center gap-x-4">
+    <div class="xl:px-52 flex flex-col mb-16">
+        <div class="px-4 lg:px-16 py-8 flex justify-center lg:justify-start items-center gap-x-4">
             <img class="w-[54px] h-auto" src="{{ asset('images/salutation.png') }}" alt="Salutation">
             <h1 class="text-2xl font-bold">Bonjour {{ organisation.organisationName }}!</h1>
         </div>
-        <div class="flex px-16 gap-x-16">
-            <div class="shadow-lg bg-white flex w-fit h-fit">
+        <div class="flex flex-col lg:flex-row px-4 lg:px-16 gap-8 lg:gap-16 mb-2">
+            <div class="flex-grid shadow-lg bg-white w-full lg:w-fit h-fit">
                 {{ include('my_organisation/_left_menu_my_organisation.html.twig') }}
             </div>
             <div class="grid gap-y-4 drop-shadow-lg bg-white py-4 px-6 w-full">
