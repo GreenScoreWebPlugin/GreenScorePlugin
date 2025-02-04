@@ -23,7 +23,7 @@
     </div>
 </div>
 
-<div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
+<div class="flex flex-col md:flex-row gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
     <div class="w-full">
         {{ form_label(MyAccountForm.plainPassword) }}
         {{ form_widget(MyAccountForm.plainPassword, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
