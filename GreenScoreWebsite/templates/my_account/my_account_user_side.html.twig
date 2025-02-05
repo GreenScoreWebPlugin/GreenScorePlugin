@@ -6,7 +6,7 @@
 
 {{ include('my_account/_message.html.twig') }}
 
-<div class="xl:px-52 flex flex-col">
+<div data-controller="my-account" class="xl:px-52 flex flex-col">
     <div class="px-4 lg:px-16 py-8 flex justify-center lg:justify-start items-center gap-x-4">
         <img class="w-[54px] h-auto" src="{{ asset('images/salutation.png') }}" alt="Salutation">
         <h1 class="text-2xl font-bold">Bonjour {{ user.firstName }}!</h1>
@@ -19,5 +19,6 @@
             {{ include('my_account/_form_my_account_user.html.twig') }}
         </div>
     </div>
+    {{ include('my_account/_delete_modal.html.twig') }}
 </div>
 {% endblock %}
