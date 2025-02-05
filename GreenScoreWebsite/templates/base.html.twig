@@ -18,12 +18,14 @@
         <header class="flex w-full bg-white py-5 border-b border-grey-100 items-center">
             <div class="flex items-center w-full justify-between px-8">
                 <!-- Logo -->
-                <img width="55px" height="auto" src="{{ asset('/images/greenscore-logo.png') }}" alt="Logo">
+                <a href="{{ path('app_home') }}">
+                    <img width="55px" height="auto" src="{{ asset('/images/greenscore-logo.png') }}" alt="Logo">
+                </a>
                 <!-- Menu desktop -->
                 <div class="hidden lg:flex gap-8 items-center">
                     <ul class="flex font-outfit text-grey-950 items-center gap-8 text-lg">
                         <!-- Liens de navigation -->
-                        <li><a href="#">Informations</a></li>
+                        <li><a href="{{ path('app_home') }}">Accueil</a></li>
                         <li><a href="{{ path('app_mes_donnees') }}">Mes données</a></li>
                         <li><a href="{{ path('app_mon_organisation') }}">Mon organisation</a></li>
                         <li><a href="{{ path('app_derniere_page_web_consultee') }}">Dernière page consultée</a></li>
