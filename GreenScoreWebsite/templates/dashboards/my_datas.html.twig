@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{title}} | GreenScore Web{% endblock %}
+
+{% block body %}
+
+<div class="w-full bg-green-bg min-h-screen">
+    <!-- Top -->
+    <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
+        <h1 class="text-4xl font-bold">{{title}}</h1>
+        {% if not noDatas %}
+            <p class="text-base w-fit">
+                {{ description }}
+                {% if page == 'derniere-page-web-consultee' and link is not null %}
+                    <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
+                        {{ link }}
+                    </span>
+                {% endif %}
+            </p>
+        {% endif %}
+    </div>
+
+    {% if not noDatas %}
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
+        {% include 'widgets/_user_average_daily_carbon_footprint.html.twig' with {myAverageDailyCarbonFootprint: myAverageDailyCarbonFootprint, averageDailyCarbonFootprint: averageDailyCarbonFootprint, messageAverageFootprint: messageAverageFootprint} %} 
+        {% include 'widgets/_chart_consumption_filtered.html.twig' with {usersIdsCharts: usersIdsCharts} %}
+        {% include 'widgets/_badge_green_score.html.twig' with {letterGreenScore: letterGreenScore, envNomination: envNomination} %}
+        {% include 'widgets/_equivalent.html.twig' with {equivalent: equivalent1, order: 1} %}
+        {% include 'widgets/_total_consumption.html.twig' with {totalConsu: totalConsu, totalConsuUnit: totalConsuUnit} %}
+        {% include 'widgets/_equivalent.html.twig' with {equivalent: equivalent2, order: 2} %}
+        {% include 'widgets/_chart_top5_polluting_sites.html.twig' with {usersIdsCharts: usersIdsCharts} %}
+        {% include 'widgets/_advice.html.twig' with {type: "lambda", advice: advice} %}
+        {% include 'widgets/_advice.html.twig' with {type: "dev", advice: adviceDev} %}
+    </div>
+    {% else %}
+        <div class="w-full h-screen flex items-center justify-center font-outfit">
+            <p class="text-2xl text-gray-600 font-medium">Vous n'êtes pas connecté !</p>
+        </div>
+    {% endif %}
+</div>
+
+<script src="{{ asset('build/dashboard.js') }}?v={{ random() }}"></script>
+
+{% endblock %}
