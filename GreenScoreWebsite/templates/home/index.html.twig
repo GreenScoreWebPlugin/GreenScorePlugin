@@ -5,14 +5,13 @@
 {% endblock %}
 
 
-
 {% block body %}
 	<div class="min-h-screen bg-gs-green-950 text-white font-['Ovo']">
 		<div class="container mx-auto px-16 py-12">
 			<div class="grid md:grid-cols-2 gap-8">
 				<div class="bg-white rounded-lg overflow-hidden">
 					<div class="text-black font-outfit font-regular px-4 py-2 flex items-center gap-2">
-						<div class="w-4 h-4 bg-green-500 rounded-full"></div>
+						<div class="w-4 h-4 bg-[#6D874B] rounded-full"></div>
 						<span class="text-xs font-bold">Web</span>
 					</div>
 					<div class="h-[400px] flex items-center justify-center">
@@ -23,66 +22,83 @@
 					<h1 class="text-4xl mb-6">Installer. Analyser. Économiser.</h1>
 					<p class="text-xl mb-6 px-28 font-outfit font-extralight">Réduire l'impact de votre site, c'est aussi réduire son empreinte sur la planète. Utilisez GreenScore Web !</p>
 
-                    <div id='browser-plugin-container'>
-					    <a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black ">
-						    <img src="{{ asset('/images/firefox.png') }}" alt="Firefox" class="mr-2 h-6 w-6">
-						    Ajouter à Firefox
-					    </a>
-                    </div>
+					<div id='browser-plugin-container'>
+						<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black ">
+							<img src="{{ asset('/images/firefox.png') }}" alt="Firefox" class="mr-2 h-6 w-6">
+							Ajouter à Firefox
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="bg-white text-gs-green-950 py-16">
-			<div class="container mx-auto px-4 text-center h-[500px]">
-				<h2 class="text-6xl font-regular mb-12 relative px-96">
+		<div
+			class="bg-white text-gs-green-950 py-16 relative">
+			<div class="absolute px-8 inset-0 -z-0 opacity-100">
+				<img src="{{ asset('/images/citation.svg') }}" class="w-full h-full object-contain" alt="Background">
+			</div>
+
+			<div class="container mx-auto text-center  relative z-1">
+				<h2 class="text-6xl font-regular mb-12 relative px-96 font-outfit">
 					Des chiffres qui parlent d'eux-mêmes!
 					<div class="absolute left-1/2 transform -translate-x-1/2 -bottom-2 w-16 h-1 bg-gs-green-950"></div>
 				</h2>
 
-				<div class="grid md:grid-cols-3 gap-8 mb-12">
-					<div class="text-center">
-						<div class="flex flex-row items-baseline justify-center mb-4">
-							<h3 class="text-8xl text-gs-green-950 mr-2">5.5</h3>
-							<p class="text-3xl">milliards</p>
+				<div
+					class="justify-center">
+					<div class="flex flex-row justify-center items-center gap-8 mb-12">
+						<div class="text-center">
+							<div class="flex flex-row items-baseline justify-center mb-4">
+								<h3 class="text-8xl text-gs-green-950 mr-2">5.5</h3>
+								<p class="text-3xl">milliards</p>
+							</div>
+							<p class="max-w-56">C'est le nombre d'utilisateurs d'internet en 2025</p>
 						</div>
-						<p>C'est le nombre d'utilisateurs d'internet en 2025</p>
-					</div>
-					<div class="text-center">
-						<div class="flex flex-row items-baseline justify-center mb-4">
-							<h3 class="text-8xl text-gs-green-950 mr-2">34</h3>
-							<p class="text-3xl">milliards</p>
-						</div>
-						<p>d'équipements informatiques en 2019</p>
-					</div>
-					<div class="text-center">
-						<div class="flex flex-row items-baseline justify-center mb-4">
-							<h3 class="text-8xl text-gs-green-950 mr-2">47</h3>
-							<p class="text-3xl">%</p>
-						</div>
-						<p>C'est le pourcentage du poids des images sur un site web</p>
-					</div>
-				</div>
 
-				<div class="grid md:grid-cols-2 gap-8">
-					<div class="text-center">
-						<div class="flex flex-row items-baseline justify-center mb-4">
-							<h3 class="text-8xl text-gs-green-950 mr-2">300</h3>
-							<p class="text-3xl">K</p>
+						<div class="w-12 border-t border-dashed border-gray-500"></div>
+
+						<div class="text-center">
+							<div class="flex flex-row items-baseline justify-center mb-4">
+								<h3 class="text-8xl text-gs-green-950 mr-2">34</h3>
+								<p class="text-3xl">milliards</p>
+							</div>
+							<p class="max-w-56">d'équipements informatiques en 2019</p>
 						</div>
-						<p>tonnes de CO2 générées par le format vidéo à lui seul</p>
+
+						<div class="w-12 border-t border-dashed border-gray-500"></div>
+
+						<div class="text-center">
+							<div class="flex flex-row items-baseline justify-center mb-4">
+								<h3 class="text-8xl text-gs-green-950 mr-2">47</h3>
+								<p class="text-3xl">%</p>
+							</div>
+							<p class="max-w-56">C'est le pourcentage du poids des images sur un site web</p>
+						</div>
 					</div>
-					<div class="text-center">
-						<div class="flex flex-row items-baseline justify-center mb-4">
-							<h3 class="text-8xl text-gs-green-950 mr-2">15</h3>
-							<p class="text-3xl">%</p>
+
+					<div class="flex flex-row justify-center items-center gap-8">
+						<div class="text-center">
+							<div class="flex flex-row items-baseline justify-center mb-4">
+								<h3 class="text-8xl text-gs-green-950 mr-2">300</h3>
+								<p class="text-3xl">K</p>
+							</div>
+							<p class="max-w-56">tonnes de CO2 générées par le format vidéo à lui seul</p>
 						</div>
-						<p>de réduction possible des émissions CO2 en<br>appliquant les bonnes pratiques d'éco-conception !</p>
+
+						<div class="w-12 border-t border-dashed border-gray-500"></div>
+
+						<div class="text-center">
+							<div class="flex flex-row items-baseline justify-center mb-4">
+								<h3 class="text-8xl text-gs-green-950 mr-2">15</h3>
+								<p class="text-3xl">%</p>
+							</div>
+							<p class="max-w-64">de réduction possible des émissions CO2 en appliquant les bonnes pratiques d'éco-conception !</p>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-    <script src="{{ asset('build/home.js') }}"></script>
-{% endblock %}
+
+		<script src="{{ asset('build/home.js') }}"></script>
+	{% endblock %}
