@@ -1,6 +1,6 @@
 {% set userSvgBorderColor = 'black' %}
 <a href="{{ path('app_my_account') }}">
-    <div class="flex items-center gap-x-2 px-8 py-4 {% if showMyOrga == false %}bg-gs-green-950 text-white {% set userSvgBorderColor = 'white' %}{% endif %}">
+    <div class="flex justify-center items-center gap-x-2 px-8 py-4 {% if showMyOrga == false %}bg-gs-green-950 text-white {% set userSvgBorderColor = 'white' %}{% endif %}">
         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12.5" cy="12" r="11.5" stroke="{{ userSvgBorderColor }}"/>
             <circle cx="12.5" cy="9" r="2.5" stroke="{{ userSvgBorderColor }}"/>
@@ -11,7 +11,7 @@
     </div>
 </a>
 <a href="{{ path('app_my_account_show_organisation') }}">
-    <div class="flex items-center gap-x-2 px-8 py-4 {% if showMyOrga %}bg-gs-green-950 text-white{% endif %}">
+    <div class="flex justify-center items-center gap-x-2 px-8 py-4 {% if showMyOrga %}bg-gs-green-950 text-white{% endif %}">
     <svg width="23" height="26" viewBox="0 0 23 26" fill="none" xmlns="http://www.w3.org/2000/svg">
         <mask id="path-1-inside-1_180_1116" fill="white">
             <path d="M14.7969 6.59302H20.8549C21.9595 6.59302 22.8549 7.48845 22.8549 8.59302V23.6393C22.8549 24.7438 21.9595 25.6393 20.8549 25.6393H14.7969V6.59302Z"/>
@@ -34,3 +34,14 @@
     <p class="text-base">Mon organisation</p>
     </div>
 </a>
+
+<button
+        data-action="click->my-account#openModal"
+        data-my-account-modal-param="modalDeleteAccount"
+        class="flex items-center gap-x-2 px-8 py-4 text-red-600 hover:bg-red-50 transition-colors w-full justify-center"
+>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+    </svg>
+    <span class="text-base whitespace-nowrap">Supprimer le compte</span>
+</button>

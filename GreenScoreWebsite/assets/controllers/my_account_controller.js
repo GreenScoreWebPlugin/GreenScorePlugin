@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = ["modalLeaveOrga", "modalChangeOrga", "codeOrganisation", "helpText"]
+    static targets = ["modalLeaveOrga", "modalChangeOrga", "modalDeleteAccount", "codeOrganisation", "helpText"]
     static values = {
         leaveUrl: String,
         changeUrl: String,
@@ -99,6 +99,29 @@ export default class extends Controller {
                 errorContainer.classList.remove('hidden');
                 this.helpTextTarget.classList.add('hidden');
             }
+        }
+    }
+
+    async deleteAccount() {
+        try {
+            const response = await fetch('/api/user/delete', {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.redirect) {
+                    window.location.href = result.redirect;
+                }
+            } else {
+                const error = await response.json();
+                console.error('Erreur:', error);
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
         }
     }
 }

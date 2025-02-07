@@ -5,13 +5,13 @@
 {% block body %}
     {{ include('my_account/_message.html.twig') }}
 
-    <div data-controller="my-account" class="px-52 flex flex-col">
-        <div class="px-16 py-8 flex items-center gap-x-4">
+    <div data-controller="my-account" class="xl:px-52 flex flex-col">
+        <div class="px-4 lg:px-16 py-8 flex justify-center lg:justify-start items-center gap-x-4">
             <img class="w-[54px] h-auto" src="{{ asset('images/salutation.png') }}" alt="Salutation">
             <h1 class="text-2xl font-bold">Bonjour {{ user.firstName }}!</h1>
         </div>
-        <div class="flex px-16 gap-x-16">
-            <div class=" flex-grid h-28 min-w-60 drop-shadow-lg bg-white justify-center">
+        <div class="flex flex-col lg:flex-row px-4 lg:px-16 gap-8 lg:gap-16 mb-2">
+            <div class=" flex-grid h-fit min-w-60 drop-shadow-lg bg-white">
                 {{ include('my_account/_left_menu_my_account.html.twig') }}
             </div>
             <div class="grid gap-y-4 drop-shadow-lg bg-white py-4 px-6 w-full">
@@ -35,14 +35,14 @@
                         <button data-action="click->my-account#openModal"
                                 data-my-account-modal-param="modalLeaveOrga"
                                 type="button"
-                                class="w-full h-fit rounded-lg bg-red-600 px-1 py-2 font-semibold font-outfit text-white">
+                                class="sm:w-full h-fit rounded-lg bg-red-600 px-5 py-2 font-semibold font-outfit text-white">
                             Quitter
                         </button>
 
                         <button data-action="click->my-account#openModal"
                                 data-my-account-modal-param="modalChangeOrga"
                                 type="button"
-                                class="w-full h-fit rounded-lg bg-blue-600 px-1 py-2 font-semibold font-outfit text-white">
+                                class="w-full h-fit rounded-lg bg-blue-600 px-5 py-2 font-semibold font-outfit text-white">
                             Changer d'organisation
                         </button>
                     </div>
@@ -81,5 +81,6 @@
         {% if organisation %}
             {{ include('my_account/_modal_my_account.html.twig') }}
         {% endif %}
+        {{ include('my_account/_delete_modal.html.twig') }}
     </div>
 {% endblock %}

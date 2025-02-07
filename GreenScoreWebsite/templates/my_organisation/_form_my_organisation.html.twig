@@ -13,30 +13,18 @@
     </div>
 </div>
 
-<div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
-    <div class="w-full">
-        {{ form_label(MyAccountForm.email) }}
-        {{ form_widget(MyAccountForm.email, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-        {% for error in MyAccountForm.email.vars.errors %}
-            <div class="text-red-700 text-sm">{{ error.message }}</div>
-        {% endfor %}
-    </div>
-</div>
-
-<div class="flex gap-4 w-full text-grey-700 font-outfit font-semibold text-sm sm:flex-row">
-    <div class="w-full">
-        {{ form_label(MyAccountForm.plainPassword) }}
-        {{ form_widget(MyAccountForm.plainPassword, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-        {% for error in MyAccountForm.plainPassword.vars.errors %}
-            <div class="text-red-700 text-sm">{{ error.message }}</div>
-        {% endfor %}
-    </div>
-    <div class="w-full">
-        {{ form_label(MyAccountForm.passwordConfirmation) }}
-        {{ form_widget(MyAccountForm.passwordConfirmation, { attr: { class: 'px-4 py-2 border border-grey-200 rounded-lg text-grey-700 w-full focus:outline-none' } }) }}
-        {% for error in MyAccountForm.passwordConfirmation.vars.errors %}
-            <div class="text-red-700 text-sm">{{ error.message }}</div>
-        {% endfor %}
+<div class="flex flex-col gap-4" data-controller="copy-clipboard">
+    <h1 class="font-outfit text-2xl font-semibold">Code de l'organisation</h1>
+    <div class="flex flex-col gap-4">
+        <div class="flex rounded-2xl border border-grey-100 items-center w-full">
+            <div class="border-r border-grey-100 w-full items-center justify-center py-4">
+                <p data-copy-clipboard-target="codeText" id="code-text" class="text-grey-950 text-center text-3xl font-outfit font-semibold tracking-widest">{{ organisation.organisationCode }}</p>
+            </div>
+            <div class="px-4 py-4 flex flex-col items-center justify-center relative">
+                <img data-copy-clipboard-target="clipboard" data-action="click->copy-clipboard#handleCopy" src="{{ asset('/images/clipboard.svg') }}" alt="Copier le texte" class="scale-105 cursor-pointer transition-transform duration-200 hover:scale-110"/>
+                <i data-copy-clipboard-target="checkIcon" class="fa-solid fa-check text-gs-green-950 absolute text-2xl animate-pulse invisible" id="check-icon"></i>
+            </div>
+        </div>
     </div>
 </div>
 

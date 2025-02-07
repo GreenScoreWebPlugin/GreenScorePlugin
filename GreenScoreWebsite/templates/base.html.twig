@@ -20,7 +20,7 @@
                 <!-- Logo -->
                 <img width="55px" height="auto" src="{{ asset('/images/greenscore-logo.png') }}" alt="Logo">
                 <!-- Menu desktop -->
-                <div class="hidden xl:flex gap-8 items-center">
+                <div class="hidden lg:flex gap-8 items-center">
                     <ul class="flex font-outfit text-grey-950 items-center gap-8 text-lg">
                         <!-- Liens de navigation -->
                         <li><a href="#">Informations</a></li>
@@ -39,22 +39,17 @@
                                         <circle cx="17" cy="11.5" r="4.5" stroke="#233430" />
                                     </svg>
                                 </button>
+
                                 <!-- Menu déroulant du profil -->
                                 <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                                    <a href="{{ path('app_my_account') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
+                                    {% if app.user.roles[0] == 'ROLE_ORGANISATION' %}
+                                        <a href="{{ path('app_handle_organisation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon organisation</a>
+                                    {% else %}
+                                        <a href="{{ path('app_my_account') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
+                                    {% endif %}
                                     <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
                                 </div>
                             </li>
-
-                            <!-- Menu déroulant du profil -->
-                            <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                                {% if app.user.roles[0] == 'ROLE_ORGANISATION' %}
-                                    <a href="{{ path('app_my_organisation') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon organisation</a>
-                                {% else %}
-                                    <a href="{{ path('app_my_account') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Gérer mon compte</a>
-                                {% endif %}
-                                <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"> Se déconnecter</a>
-                            </div>
                         {% else %}
                             <!-- Lien pour se connecter -->
                             <li>
@@ -65,7 +60,7 @@
                 </div>
 
                 <!-- Menu burger -->
-                <div class="xl:hidden flex items-center">
+                <div class="lg:hidden flex items-center">
                     <button id="burger-button" class="focus:outline-none">
                         <!-- Icône menu burger -->
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -75,7 +70,7 @@
                 </div>
             </div>
             <!-- Menu déroulant pour mobile -->
-            <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white py-5">
+            <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white py-5 z-10">
                 <ul class="flex flex-col font-outfit font-medium text-grey-950 items-center gap-4 text-lg">
                     <li><a href="#">Informations</a></li>
                     <li><a href="{{ path('app_my_datas') }}">Mes données</a></li>

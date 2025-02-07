@@ -1,0 +1,18 @@
+{% for member in members %}
+    <div class="flex py-3 items-center justify-between w-full border-b border-grey-200 last:border-b-0 font-outfit">
+        <div class="flex flex-col">
+            {% if member.firstName and member.lastName %}
+                <p class="text-sm font-medium text-gray-950">{{ member.firstName }} {{ member.lastName }}</p>
+            {% endif %}
+            <p class="text-xs text-gray-500">{{ member.email }}</p>
+        </div>
+        <button
+                data-action="click->member-delete#openModal"
+                data-member-delete-target="deleteButton"
+                data-member-id="{{ member.id }}"
+                class="hover:scale-110 transition-transform duration-200"
+        >
+            <i class="fa-solid fa-minus text-red-600 text-xl"></i>
+        </button>
+    </div>
+{% endfor %}
