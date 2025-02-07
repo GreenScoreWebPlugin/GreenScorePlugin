@@ -11,7 +11,7 @@
                 <img src="{{ images_url ~ 'equivalents/' ~ equivalent.icon }}" alt="{{equivalent.name}}" class="w-full h-auto object-contain" loading="lazy">
             </picture>
         {% endif %}
-        <p class="text-center mt-2 text-lg font-medium font-outfit"><span class="animate-counter" data-value="{{equivalent.value}}">0</span> {{equivalent1.name}}</p>
+        <p class="text-center mt-2 text-lg font-medium font-outfit"><span class="animate-counter" data-value="{{equivalent.value}}">0</span> {{equivalent.name}}</p>
     {% else %}
         <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
     {% endif %}
