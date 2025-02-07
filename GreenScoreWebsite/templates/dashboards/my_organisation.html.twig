@@ -6,19 +6,7 @@
 
 <div class="w-full bg-green-bg min-h-screen">
     <!-- Top -->
-    <div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
-        <h1 class="text-4xl font-bold">{{title}}</h1>
-        {% if not noDatas %}
-            <p class="text-base w-fit">
-                {{ description }}
-                {% if page == 'derniere-page-web-consultee' and link is not null %}
-                    <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
-                        {{ link }}
-                    </span>
-                {% endif %}
-            </p>
-        {% endif %}
-    </div>
+    {% include 'dashboards/_top.html.twig' with {title: title, description: description, link: null } %}
 
     {% if not noDatas %}
     <!-- Main Content Grid -->
@@ -38,8 +26,6 @@
             <p class="text-2xl text-gray-600 font-medium">Vous n'êtes pas connecté ou n'êtes pas relié à une organisation</p>
         </div>
     {% endif %}
-    </div>
-
-<script src="{{ asset('build/dashboard.js') }}?v={{ random() }}"></script>
+</div>
 
 {% endblock %}

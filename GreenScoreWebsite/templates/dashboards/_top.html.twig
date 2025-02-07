@@ -1,0 +1,13 @@
+<div class="w-full text-center px-10 lg:px-0 pt-10 font-outfit flex items-center justify-center flex-col text-grey-950">
+    <h1 class="text-4xl font-bold">{{title}}</h1>
+    {% if not noDatas %}
+        <p class="text-base w-fit">
+            {{ description }}
+            {% if link is not null %}
+                <span class="text-base ml-1 w-52 truncate inline-block align-bottom">
+                    {{ link }}
+                </span>
+            {% endif %}
+        </p>
+    {% endif %}
+</div>

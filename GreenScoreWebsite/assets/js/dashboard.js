@@ -1,5 +1,5 @@
-alert("dashboard.js est exécuté !");
-console.log("test")
+import Chart from 'chart.js/auto';
+
 document.addEventListener("DOMContentLoaded", () => {
     initCircles();
     initAnimateCounter();
