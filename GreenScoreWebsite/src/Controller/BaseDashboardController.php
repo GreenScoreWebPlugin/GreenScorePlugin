@@ -111,7 +111,7 @@ class BaseDashboardController extends AbstractController
     }
 
     #[Route('/api/{filter}-consu', name: 'consu_user')]
-    protected function getConsuByUser(Request $request, MonitoredWebsiteRepository $repository, string $filter): JsonResponse
+    public function getConsuByUser(Request $request, MonitoredWebsiteRepository $repository, string $filter): JsonResponse
     {
         $usersIdsString = $request->query->get('usersIds', '');
         $usersIds = array_filter(explode(',', $usersIdsString), fn($id) => is_numeric($id));
@@ -232,7 +232,7 @@ class BaseDashboardController extends AbstractController
     }
 
     #[Route('/api/top-sites', name: 'top_sites_organisation')]
-    protected function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
+    public function getTopSitesByOrganisation(Request $request, MonitoredWebsiteRepository $repository): JsonResponse
     {
         $usersIdsString = $request->query->get('usersIds', '');
 
@@ -251,7 +251,7 @@ class BaseDashboardController extends AbstractController
     }
 
     #[Route('/api/equivalent', name: 'get_equivalent', methods: ['GET'])]
-    protected function getEquivalent(Request $request): JsonResponse
+    public function getEquivalent(Request $request): JsonResponse
     {
         try {
             $gCo2 = $request->query->get('gCO2');
