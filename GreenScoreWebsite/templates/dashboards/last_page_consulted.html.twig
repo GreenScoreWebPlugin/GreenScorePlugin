@@ -15,7 +15,7 @@
         {% include 'widgets/_country_carbon_intensity.html.twig' with {country: country, carbonIntensity: carbonIntensity, flagUrl: flagUrl} %}
         {% include 'widgets/_badge_green_score.html.twig' with {letterGreenScore: letterGreenScore, envNomination: envNomination} %}
         {% include 'widgets/_equivalent.html.twig' with {equivalent: equivalent1, order: 1} %}
-        {% include 'widgets/_total_consumption.html.twig' with {totalConsu: totalConsu, totalConsuUnit: totalConsuUnit} %}
+        {% include 'widgets/_total_consumption.html.twig' with {totalConsu: totalConsu, totalConsuUnit: totalConsuUnit, label:'Emission carbone de la page :'} %}
         {% include 'widgets/_equivalent.html.twig' with {equivalent: equivalent2, order: 2} %}
         {% include 'widgets/_page_in_numbers.html.twig' with {pageSize: pageSize,loadingTime: loadingTime, queriesQuantity: queriesQuantity, pageSizeUnit: pageSizeUnit} %}
         {% include 'widgets/_advice.html.twig' with {type: "lambda", advice: advice} %}
