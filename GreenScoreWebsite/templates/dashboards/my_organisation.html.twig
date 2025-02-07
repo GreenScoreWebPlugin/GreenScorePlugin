@@ -11,7 +11,7 @@
     {% if not noDatas %}
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 gap-6 p-10 sm:grid-cols-2 lg:grid-cols-12">
-        {% include 'widgets/_user_average_daily_carbon_footprint.html.twig' with {myAverageDailyCarbonFootprint: myAverageDailyCarbonFootprint, averageDailyCarbonFootprint: averageDailyCarbonFootprint, messageAverageFootprint: messageAverageFootprint} %}
+        {% include 'widgets/_organisation_average_daily_carbon_footprint.html.twig' with {averageFootprint: averageFootprint} %}
         {% include 'widgets/_chart_consumption_filtered.html.twig' with {usersIdsCharts: usersIdsCharts} %}
         {% include 'widgets/_badge_green_score.html.twig' with {letterGreenScore: letterGreenScore, envNomination: envNomination} %}
         {% include 'widgets/_equivalent.html.twig' with {equivalent: equivalent1, order: 1} %}
