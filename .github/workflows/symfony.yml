@@ -1,0 +1,42 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Symfony CI
+
+on:
+  push:
+    branches:
+        - main
+  pull_request:
+    branches:
+        - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout le code source
+      
+       - name: Checkout code
+         uses: actions/checkout@v3
+        
+              # 2. Installer PHP
+       - name: Set up PHP
+         uses: shivammathur/setup-php@v2
+         with:
+          php-version: '8.3'
+          coverage: xdebug 
+        
+              # 3. Installer les dépendances avec Composer
+              
+       - name: Install dependencies
+         run: |
+                composer install --no-interaction --prefer-dist
+        
+              # 4. Exécuter les tests avec PHPUnit
+              
+       - name: Run PHPUnit tests
+         run: |
+                vendor/bin/phpunit --configuration phpunit.xml.dist --strict
