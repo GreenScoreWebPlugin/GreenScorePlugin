@@ -19,7 +19,7 @@ class EquivalentCalculatorService
 
         // On calcule combien de fois notre consommation contient 100kg
         $ratio = $kgCo2 / $baseKgCo2;
-        
+
         $equivalents = $this->equivalentRepository->findRandomEquivalents($count, $ratio);
         
         $response = [];
@@ -33,7 +33,7 @@ class EquivalentCalculatorService
                 'icon' => $equivalent->getIconThumbnail(),
             ];
         }
-
+        
         return $response;
     }
 }

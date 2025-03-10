@@ -105,8 +105,8 @@ class LPCDashboardController extends BaseDashboardController
                 $adviceDev = $adviceDevEntity->getAdvice();
             }
 
-            // Equivalents : Recuperer deux equivalents aleatoires
             if ($totalConsu) {
+                // Equivalents : Recuperer deux equivalents aleatoires
                 try {
                     $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
                     if (count($equivalents) >= 2) {
@@ -117,6 +117,7 @@ class LPCDashboardController extends BaseDashboardController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
 
+                // Environmental Impact Badge : Recuperer les donnees du badge GreenScore
                 try {
                     $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'derniere-page-consultee');
                     if($calculateGreenScore) {

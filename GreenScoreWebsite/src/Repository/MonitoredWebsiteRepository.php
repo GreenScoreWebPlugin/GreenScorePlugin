@@ -29,12 +29,12 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
     }
 
     // Recupere la moyenne de l'empreinte carbone sur une journée en fonction de userId
-    public function getAverageDailyCarbonFootprint(int $userId): float
+    public function getAverageDailyCarbonFootprint(array $usersIds): float
     {
         $qb = $this->createQueryBuilder('m')
             ->select('SUBSTRING(m.creationDate, 1, 10) as day, AVG(m.carbonFootprint) as dailyAverage')
-            ->where('m.user = :userId')
-            ->setParameter('userId', $userId)
+            ->where('m.user IN (:usersIds)')
+            ->setParameter('usersIds', $usersIds)
             ->groupBy('day');
 
         $dailyAverages = $qb->getQuery()->getResult();

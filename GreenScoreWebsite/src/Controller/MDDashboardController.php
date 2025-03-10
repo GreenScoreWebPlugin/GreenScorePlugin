@@ -42,7 +42,7 @@ class MDDashboardController extends BaseDashboardController
 
         if (!$noDatas){
             // AverageDailyCarbonFootprint
-            $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint($userId);
+            $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint([$userId]);
             $averageDailyCarbonFootprint = $monitoredWebsiteRepository->getGlobalAverageDailyCarbonFootprint();
 
             // Advices : Recuperer deux conseils aleatoire
@@ -55,8 +55,8 @@ class MDDashboardController extends BaseDashboardController
                 $adviceDev = $adviceDevEntity->getAdvice();
             }
 
-            // Equivalents : Recuperer deux equivalents aleatoires
             if ($totalConsu) {
+                // Equivalents : Recuperer deux equivalents aleatoires
                 try {
                     $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
                     if (count($equivalents) >= 2) {
@@ -67,6 +67,7 @@ class MDDashboardController extends BaseDashboardController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
 
+                // Environmental Impact Badge : Recuperer les donnees du badge GreenScore
                 try {
                     $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'mes-donnees');
                     if($calculateGreenScore) {

@@ -10,15 +10,22 @@
                     <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple animate-counter" data-value="{{averageFootprint}}">0</p>
                 </div>
             </div>
-            {% if equivalentAverage is not null %}
+            {% if equivalentAverage is not null and equivalentAverage.name is not null and equivalentAverage.value is not null %}
                 <div class="flex flex-col justify-center">
-                    <div class="flex justify-center gap-2">
+                    <div class="flex justify-center items-center gap-2">
                         <picture class="bg-green-300 w-8 h-8 flex items-center justify-center rounded-full">
                             <img src="{{ asset('/images/equivalent.png') }}" alt="Equivalent" class="w-4 h-4">
                         </picture>
                         <h2 class="text-lg font-bold">Equivalent</h2>
                     </div>
-                    <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage}}">0</span> douches</p>
+                    {% if equivalentAverage.icon is not null %}
+                        <div class="flex justify-center items-center w-full mt-4">
+                            <picture class="w-12 h-12 flex items-center justify-center">
+                                <img src="{{ images_url ~ 'equivalents/' ~ equivalentAverage.icon }}" alt="{{equivalentAverage.name}}" class="w-full h-auto object-contain" loading="lazy">
+                            </picture>
+                        </div>
+                    {% endif %}
+                    <p class="text-center mt-2 text-lg font-medium"><span class="animate-counter" data-value="{{equivalentAverage.value}}">0</span> {{equivalentAverage.name}}</p>
                 </div>
             {% else %}
                 <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
