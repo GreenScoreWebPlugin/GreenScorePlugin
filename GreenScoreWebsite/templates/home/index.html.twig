@@ -4,26 +4,26 @@
 	{{ encore_entry_link_tags('app') }}
 {% endblock %}
 
-
 {% block body %}
 	<div class="min-h-screen bg-gs-green-950 text-white font-['Ovo']">
-		<div class="container mx-auto px-16 py-12">
-			<div class="grid md:grid-cols-2 gap-8">
-				<div class="bg-white rounded-lg overflow-hidden">
+		<div class="container mx-auto px-4 md:px-16 py-12">
+			<div class="grid lg:grid-cols-2 gap-8">
+				<div class="bg-white rounded-lg overflow-hidden hidden lg:block">
 					<div class="text-black font-outfit font-regular px-4 py-2 flex items-center gap-2">
 						<div class="w-4 h-4 bg-[#6D874B] rounded-full"></div>
 						<span class="text-xs font-bold">Web</span>
 					</div>
-					<div class="h-[400px] flex items-center justify-center">
+					<div class="h-[200px] lg:h-[400px] flex items-center justify-center">
 						<iframe width="100%" height="100%" src="https://www.youtube.com/embed/lAYfNt7web8?autoplay=1&controls=0&mute=1&loop=1&playlist=lAYfNt7web8" title="GreenScore Web Vidéo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen class="object-cover pointer-events-none"></iframe>
 					</div>
 				</div>
-				<div class="flex flex-col text-center justify-center">
-					<h1 class="text-4xl mb-6">Installer. Analyser. Économiser.</h1>
-					<p class="text-xl mb-6 px-28 font-outfit font-extralight">Réduire l'impact de votre site, c'est aussi réduire son empreinte sur la planète. Utilisez GreenScore Web !</p>
 
-					<div id='browser-plugin-container'>
-						<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black ">
+				<div class="flex flex-col text-center justify-center">
+					<h1 class="text-3xl md:text-4xl mb-6">Installer. Analyser. Économiser.</h1>
+					<p class="text-lg md:text-xl mb-6 px-4 md:px-28 font-outfit font-extralight">Réduire l'impact de votre site, c'est aussi réduire son empreinte sur la planète. Utilisez GreenScore Web !</p>
+
+					<div id='browser-plugin-container' class="hidden lg:block">
+						<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
 							<img src="{{ asset('/images/firefox.png') }}" alt="Firefox" class="mr-2 h-6 w-6">
 							Ajouter à Firefox
 						</a>
@@ -32,73 +32,244 @@
 			</div>
 		</div>
 
-		<div
-			class="bg-white text-gs-green-950 py-16 relative">
-			<div class="absolute px-24 inset-0 -z-0 opacity-100">
+		<div class="bg-white text-gs-green-950 py-16 relative">
+			<div class="absolute px-4 lg:px-24 inset-0 -z-0 opacity-100 hidden lg:block">
 				<img src="{{ asset('/images/citation.svg') }}" class="w-full h-full object-contain" alt="Background">
 			</div>
 
-			<div class="container mx-auto text-center  relative z-1">
-				<h2 class="text-6xl font-regular mb-12 relative px-96 font-outfit">
+			<div class="container mx-auto text-center relative z-1">
+				<h2 class="text-3xl md:text-5xl font-regular mb-12 relative px-4 md:px-[40px] font-outfit">
 					Des chiffres qui parlent d'eux-mêmes!
-					<div class="absolute left-1/2 transform -translate-x-1/2 -bottom-2 w-16 h-1 bg-gs-green-950"></div>
 				</h2>
 
-				<div
-					class="justify-center">
-					<div class="flex flex-row justify-center items-center gap-8 mb-12">
-						<div class="text-center">
-							<div class="flex flex-row items-baseline justify-center mb-4">
-								<h3 class="text-8xl text-gs-green-950 mr-2">5.5</h3>
-								<p class="text-3xl">milliards</p>
-							</div>
-							<p class="max-w-56">C'est le nombre d'utilisateurs d'internet en 2025</p>
+				<div class="flex flex-col md:flex-row justify-center items-center gap-8 mb-12">
+					<div class="text-center">
+						<div class="flex flex-row items-baseline justify-center">
+							<h3 class="text-6xl md:text-8xl text-gs-green-950 mr-2">5.5</h3>
+							<p class="text-2xl md:text-3xl">milliards</p>
 						</div>
-
-						<div class="w-12 border-t border-dashed border-gray-500"></div>
-
-						<div class="text-center">
-							<div class="flex flex-row items-baseline justify-center mb-4">
-								<h3 class="text-8xl text-gs-green-950 mr-2">34</h3>
-								<p class="text-3xl">milliards</p>
-							</div>
-							<p class="max-w-56">d'équipements informatiques en 2019</p>
-						</div>
-
-						<div class="w-12 border-t border-dashed border-gray-500"></div>
-
-						<div class="text-center">
-							<div class="flex flex-row items-baseline justify-center mb-4">
-								<h3 class="text-8xl text-gs-green-950 mr-2">47</h3>
-								<p class="text-3xl">%</p>
-							</div>
-							<p class="max-w-56">C'est le pourcentage du poids des images sur un site web</p>
-						</div>
+						<p class="max-w-70 text-[13px]">C'est le nombre d'utilisateurs d'internet en 2025</p>
 					</div>
 
-					<div class="flex flex-row justify-center items-center gap-8">
-						<div class="text-center">
-							<div class="flex flex-row items-baseline justify-center mb-4">
-								<h3 class="text-8xl text-gs-green-950 mr-2">300</h3>
-								<p class="text-3xl">K</p>
-							</div>
-							<p class="max-w-56">tonnes de CO2 générées par le format vidéo à lui seul</p>
-						</div>
+					<div class="hidden md:block w-12 border-t border-dashed border-gray-500"></div>
 
-						<div class="w-12 border-t border-dashed border-gray-500"></div>
-
-						<div class="text-center">
-							<div class="flex flex-row items-baseline justify-center mb-4">
-								<h3 class="text-8xl text-gs-green-950 mr-2">15</h3>
-								<p class="text-3xl">%</p>
-							</div>
-							<p class="max-w-64">de réduction possible des émissions CO2 en appliquant les bonnes pratiques d'éco-conception !</p>
+					<div class="text-center">
+						<div class="flex flex-row items-baseline justify-center">
+							<h3 class="text-6xl md:text-8xl text-gs-green-950 mr-2">34</h3>
+							<p class="text-2xl md:text-3xl">milliards</p>
 						</div>
+						<p class="max-w-56 text-[13px]">d'équipements informatiques en 2019</p>
+					</div>
+
+					<div class="hidden md:block w-12 border-t border-dashed border-gray-500"></div>
+
+					<div class="text-center">
+						<div class="flex flex-row items-baseline justify-center">
+							<h3 class="text-6xl md:text-8xl text-gs-green-950 mr-2">47</h3>
+							<p class="text-2xl md:text-3xl">%</p>
+						</div>
+						<p class="max-w-56 text-[13px]">C'est le pourcentage du poids des images sur un site web</p>
+					</div>
+				</div>
+
+				<div class="flex flex-col md:flex-row justify-center items-center gap-8">
+					<div class="text-center">
+						<div class="flex flex-row items-baseline justify-center">
+							<h3 class="text-6xl md:text-8xl text-gs-green-950 mr-2">300</h3>
+							<p class="text-2xl md:text-3xl">K</p>
+						</div>
+						<p class="max-w-70 text-[13px]">tonnes de CO2 générées par le format vidéo à lui seul</p>
+					</div>
+
+					<div class="hidden md:block w-12 border-t border-dashed border-gray-500"></div>
+
+					<div class="text-center">
+						<div class="flex flex-row items-baseline justify-center">
+							<h3 class="text-6xl md:text-8xl text-gs-green-950 mr-2">15</h3>
+							<p class="text-2xl md:text-3xl">%</p>
+						</div>
+						<p class="max-w-64 text-[13px]">de réduction possible des émissions CO2 en appliquant les bonnes pratiques d'éco-conception !</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
+		<div class="bg-[#F5F7FF] text-gs-green-950 py-12">
+			<div class="container mx-auto px-4 md:px-16">
+				<div class="flex justify-center items-center mb-8">
+					<h2 class="text-3xl font-outfit font-regular text-center mr-4">Quelques conseils</h2>
+					<button class="bg-black text-white text-xs rounded-full px-4 py-2 flex items-center">
+						<span class="mr-2">&lt;/&gt;</span>
+						Pour les développeurs
+					</button>
+				</div>
+
+				<div class="relative px-8 md:px-12">
+					<div class="swiper-container advice-swiper">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+									<div class="flex items-start">
+										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
+											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
+												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
+											</svg>
+										</div>
+										<div>
+											<h3 class="font-outfit font-semibold mb-1">Optimisez vos requêtes</h3>
+											<p class="text-sm text-gray-600">Optimisez vos requêtes SQL pour éviter les opérations inutiles.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="swiper-slide">
+								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+									<div class="flex items-start">
+										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
+											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
+												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
+											</svg>
+										</div>
+										<div>
+											<h3 class="font-outfit font-semibold mb-1">Optimisez vos requêtes</h3>
+											<p class="text-sm text-gray-600">Optimisez vos requêtes SQL pour éviter les opérations inutiles.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="swiper-slide">
+								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+									<div class="flex items-start">
+										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
+											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
+												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
+											</svg>
+										</div>
+										<div>
+											<h3 class="font-outfit font-semibold mb-1">Optimisez vos requêtes</h3>
+											<p class="text-sm text-gray-600">Optimisez vos requêtes SQL pour éviter les opérations inutiles.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="swiper-slide">
+								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+									<div class="flex items-start">
+										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
+											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
+												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
+											</svg>
+										</div>
+										<div>
+											<h3 class="font-outfit font-semibold mb-1">Compressez vos images</h3>
+											<p class="text-sm text-gray-600">Réduisez le poids de vos images pour améliorer le temps de chargement.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="swiper-slide">
+								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+									<div class="flex items-start">
+										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
+											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
+												<path d="M14,3L6,21H9L11,15H16.5L18.5,21H21.5L13.5,3H14M14.5,5.5L16.5,12H11L14.5,5.5Z"></path>
+											</svg>
+										</div>
+										<div>
+											<h3 class="font-outfit font-semibold mb-1">Minimisez vos fichiers</h3>
+											<p class="text-sm text-gray-600">Réduisez la taille de vos fichiers CSS et JavaScript pour des chargements plus rapides.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-button-prev custom-nav-btn absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
+					<div class="swiper-button-next custom-nav-btn absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
+				</div>
+
+				<div class="swiper-pagination mt-4"></div>
+			</div>
+		</div>
+
+		<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+		<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+		<style>
+			.custom-nav-btn:after {
+				font-size: 18px;
+				color: #1E293B;
+			}
+			.swiper-button-prev.custom-nav-btn:after,
+			.swiper-button-next.custom-nav-btn:after {
+				font-weight: bold;
+				transform: scale(0.7);
+			}
+			.custom-nav-btn {
+				border-radius: 9999px;
+				width: 36px;
+				height: 36px;
+			}
+			.swiper-pagination {
+				position: relative;
+				bottom: 0;
+			}
+			.swiper-pagination-bullet-active {
+				background-color: #6D874B;
+			}
+			.advice-swiper {
+				overflow: hidden;
+                padding: 5px 0;
+				max-width: 95%;
+				margin: 0 auto;
+			}
+			.advice-swiper .swiper-slide {
+				opacity: 1;
+				visibility: visible;
+				width: 90%;
+			}
+            .advice-swiper .swiper-wrapper {
+                margin: 0 10px;
+            }
+		</style>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+                var swiper = new Swiper('.advice-swiper', {
+                    slidesPerView: 1,
+                    spaceBetween: 25,
+                    loop: true,
+                    loopFillGroupWithBlank: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev'
+                    },
+                    breakpoints: {
+                        640: {
+                            slidesPerView: 2,
+                            spaceBetween: 25
+                        },
+                        1024: {
+                            slidesPerView: 3,
+                            spaceBetween: 25,
+                            slidesPerGroup: 1
+                        }
+                    },
+                    speed: 400,
+                    watchSlidesProgress: true,
+                    watchSlidesVisibility: true
+                });
+            });
+		</script>
 
 		<script src="{{ asset('build/home.js') }}"></script>
 	{% endblock %}
