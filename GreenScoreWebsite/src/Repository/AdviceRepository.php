@@ -35,6 +35,21 @@ class AdviceRepository extends ServiceEntityRepository
         return $this->find($randomId);
     }
 
+    public function getAllAdvice(): ?Advice
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('a');
+
+        
+        $advices = $qb->getQuery()->getResult();
+
+        if (empty($advices)) {
+            return null;
+        }
+
+        return $advices;
+    }
+
 
     //    /**
     //     * @return Advice[] Returns an array of Advice objects
