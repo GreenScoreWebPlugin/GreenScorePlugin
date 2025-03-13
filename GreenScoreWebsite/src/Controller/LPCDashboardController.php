@@ -8,11 +8,12 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class LPCDashboardController extends BaseDashboardController
 {
     #[Route('/derniere-page-web-consultee', name: 'app_last_page_consulted')]
-    public function monitoredWebsite(Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, AdviceRepository $adviceRepository): Response
+    public function monitoredWebsite(ParameterBagInterface $params, Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, AdviceRepository $adviceRepository): Response
     {
         // dd($userId);
         // dump($toto);
@@ -78,11 +79,11 @@ class LPCDashboardController extends BaseDashboardController
                 $error = 'Impossible de récupérer les informations pour ce pays.';
             }
             if($contryCode){
-                $apiToken = 'R1oPkUx8UdRnx';
+                $apiToken = $_ENV['API_ELECTRICITY_MAP_KEY'];
                 try {
-                    $response = $this->httpClient->request('GET', 'https://api.electricitymap.org/v3/carbon-intensity/latest', [
+                    $response = $this->httpClient->request('GET', 'https://api.electricitymap.org/v3/carbon-intensity/latest?', [
                         'headers' => [
-                            'Authorization' => 'Bearer ' . $apiToken,
+                            'auth-token' => $apiToken,
                         ],
                         'query' => [
                             'zone' => $contryCode,
@@ -131,7 +132,7 @@ class LPCDashboardController extends BaseDashboardController
             }
 
         }
-        
+
         if($showDatas || $userId)
             return $this->render('dashboards/last_page_consulted.html.twig', [
                 'page' => 'derniere-page-web-consultee',
