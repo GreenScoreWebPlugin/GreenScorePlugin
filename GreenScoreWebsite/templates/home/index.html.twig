@@ -107,85 +107,23 @@
 				<div class="relative px-8 md:px-12">
 					<div class="swiper-container advice-swiper">
 						<div class="swiper-wrapper">
-							<div class="swiper-slide">
-								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-									<div class="flex items-start">
-										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
-											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
-												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
-											</svg>
-										</div>
-										<div>
-											<h3 class="font-outfit font-semibold mb-1">Optimisez vos requêtes</h3>
-											<p class="text-sm text-gray-600">Optimisez vos requêtes SQL pour éviter les opérations inutiles.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="swiper-slide">
-								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-									<div class="flex items-start">
-										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
-											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
-												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
-											</svg>
-										</div>
-										<div>
-											<h3 class="font-outfit font-semibold mb-1">Optimisez vos requêtes</h3>
-											<p class="text-sm text-gray-600">Optimisez vos requêtes SQL pour éviter les opérations inutiles.</p>
+							{% for item in advice %}
+								{% if item.isDev == 0 %}
+									<div class="swiper-slide">
+										<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+											<div class="flex items-start">
+												<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
+													<i class="{{ item.icon }} text-white text-2xl"></i>
+												</div>
+												<div>
+													<h3 class="font-outfit font-semibold mb-1">{{ item.title }}</h3>
+													<p class="text-sm text-gray-600">{{ item.advice }}</p>
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-
-							<div class="swiper-slide">
-								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-									<div class="flex items-start">
-										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
-											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
-												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
-											</svg>
-										</div>
-										<div>
-											<h3 class="font-outfit font-semibold mb-1">Optimisez vos requêtes</h3>
-											<p class="text-sm text-gray-600">Optimisez vos requêtes SQL pour éviter les opérations inutiles.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="swiper-slide">
-								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-									<div class="flex items-start">
-										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
-											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
-												<path d="M4,5V7H21V5M4,11H21V9H4M4,19H21V17H4M4,15H21V13H4V15Z"></path>
-											</svg>
-										</div>
-										<div>
-											<h3 class="font-outfit font-semibold mb-1">Compressez vos images</h3>
-											<p class="text-sm text-gray-600">Réduisez le poids de vos images pour améliorer le temps de chargement.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="swiper-slide">
-								<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-									<div class="flex items-start">
-										<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
-											<svg class="w-8 h-8 text-white" viewbox="0 0 24 24" fill="currentColor">
-												<path d="M14,3L6,21H9L11,15H16.5L18.5,21H21.5L13.5,3H14M14.5,5.5L16.5,12H11L14.5,5.5Z"></path>
-											</svg>
-										</div>
-										<div>
-											<h3 class="font-outfit font-semibold mb-1">Minimisez vos fichiers</h3>
-											<p class="text-sm text-gray-600">Réduisez la taille de vos fichiers CSS et JavaScript pour des chargements plus rapides.</p>
-										</div>
-									</div>
-								</div>
-							</div>
+								{% endif %}
+							{% endfor %}
 						</div>
 					</div>
 
@@ -201,122 +139,117 @@
 		<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 		<style>
-    .custom-nav-btn:after {
-        font-size: 18px;
-        color: #1E293B;
-    }
-    .swiper-button-prev.custom-nav-btn:after,
-    .swiper-button-next.custom-nav-btn:after {
-        font-weight: bold;
-        transform: scale(0.7);
-    }
-    .custom-nav-btn {
-        border-radius: 9999px;
-        width: 36px;
-        height: 36px;
-    }
-    .swiper-pagination {
-        position: relative;
-        bottom: 0;
-    }
-    .swiper-pagination-bullet-active {
-        background-color: #6D874B;
-    }
-    .advice-swiper {
-        overflow: hidden; /* Retour à hidden pour masquer les slides non actives */
-        padding: 5px 0;
-        max-width: 100%;
-        margin: 0 auto;
-    }
-    .advice-swiper .swiper-slide {
-        opacity: 1;
-        visibility: visible;
-        width: 100%; /* Utiliser 100% pour que chaque slide prenne toute la largeur disponible */
-    }
-    .advice-swiper .swiper-wrapper {
-        margin: 0;
-        padding: 0;
-    }
-    /* Ajuster le positionnement des boutons de navigation */
-    .swiper-button-prev.custom-nav-btn {
-        left: 5px;
-    }
-    .swiper-button-next.custom-nav-btn {
-        right: 5px;
-    }
-    /* Assurer que le conteneur est centré */
-    .relative.px-8.md\:px-12 {
-        display: flex;
-        justify-content: center;
-    }
-</style>
+			.custom-nav-btn:after {
+				font-size: 18px;
+				color: #1E293B;
+			}
+			.swiper-button-prev.custom-nav-btn:after,
+			.swiper-button-next.custom-nav-btn:after {
+				font-weight: bold;
+				transform: scale(0.7);
+			}
+			.custom-nav-btn {
+				border-radius: 9999px;
+				width: 36px;
+				height: 36px;
+			}
+			.swiper-pagination {
+				position: relative;
+				bottom: 0;
+			}
+			.swiper-pagination-bullet-active {
+				background-color: #6D874B;
+			}
+			.advice-swiper {
+				overflow: hidden; /* Retour à hidden pour masquer les slides non actives */
+				padding: 5px 0;
+				max-width: 100%;
+				margin: 0 auto;
+			}
+			.advice-swiper .swiper-slide {
+				opacity: 1;
+				visibility: visible;
+				width: 100%; /* Utiliser 100% pour que chaque slide prenne toute la largeur disponible */
+			}
+			.advice-swiper .swiper-wrapper {
+				margin: 0;
+				padding: 0;
+			}
+			/* Ajuster le positionnement des boutons de navigation */
+			.swiper-button-prev.custom-nav-btn {
+				left: 5px;
+			}
+			.swiper-button-next.custom-nav-btn {
+				right: 5px;
+			}
+			/* Assurer que le conteneur est centré */
+			.relative.px-8.md\:px-12 {
+				display: flex;
+				justify-content: center;
+			}
+		</style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Fonction pour masquer/afficher les flèches selon la taille d'écran
-    function updateNavVisibility() {
-        const prevButton = document.querySelector('.swiper-button-prev');
-        const nextButton = document.querySelector('.swiper-button-next');
-        
-        if (window.innerWidth < 1024) {
-            // Masquer les flèches sur mobile/tablette
-            prevButton.classList.add('swiper-button-hidden');
-            nextButton.classList.add('swiper-button-hidden');
-        } else {
-            // Afficher les flèches sur desktop
-            prevButton.classList.remove('swiper-button-hidden');
-            nextButton.classList.remove('swiper-button-hidden');
-        }
-    }
+		<script>
+			document.addEventListener('DOMContentLoaded', function () { // Fonction pour masquer/afficher les flèches selon la taille d'écran
+function updateNavVisibility() {
+const prevButton = document.querySelector('.swiper-button-prev');
+const nextButton = document.querySelector('.swiper-button-next');
 
-    var swiper = new Swiper('.advice-swiper', {
-        slidesPerView: 1,
-        spaceBetween: 25,
-        loop: true,
-        loopFillGroupWithBlank: true,
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true
-        },
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
-        },
-        breakpoints: {
-            640: {
-                slidesPerView: 1,
-                spaceBetween: 25
-            },
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 25,
-                slidesPerGroup: 1
-            }
-        },
-        speed: 400,
-        watchSlidesProgress: true,
-        watchSlidesVisibility: true,
-        centeredSlides: true,
-        initialSlide: 0,
-        on: {
-            init: function () {
-                // Vérifier la visibilité des flèches lors de l'initialisation
-                updateNavVisibility();
-            },
-            resize: function () {
-                // Mettre à jour la visibilité des flèches lors du redimensionnement
-                updateNavVisibility();
-            }
-        }
-    });
+if (window.innerWidth < 1024) { // Masquer les flèches sur mobile/tablette
+prevButton.classList.add('swiper-button-hidden');
+nextButton.classList.add('swiper-button-hidden');
+} else { // Afficher les flèches sur desktop
+prevButton.classList.remove('swiper-button-hidden');
+nextButton.classList.remove('swiper-button-hidden');
+}
+}
 
-    // Vérifier également la visibilité au chargement initial de la page
-    updateNavVisibility();
-
-    // Ajouter un écouteur d'événement pour les changements de taille d'écran
-    window.addEventListener('resize', updateNavVisibility);
+var swiper = new Swiper('.advice-swiper', {
+slidesPerView: 1,
+spaceBetween: 25,
+loop: true,
+loopFillGroupWithBlank: true,
+pagination: {
+el: '.swiper-pagination',
+clickable: true
+},
+navigation: {
+nextEl: '.swiper-button-next',
+prevEl: '.swiper-button-prev'
+},
+breakpoints: {
+640: {
+slidesPerView: 1,
+spaceBetween: 25
+},
+1024: {
+slidesPerView: 3,
+spaceBetween: 25,
+slidesPerGroup: 1
+}
+},
+speed: 400,
+watchSlidesProgress: true,
+watchSlidesVisibility: true,
+centeredSlides: true,
+initialSlide: 0,
+on: {
+init: function () { // Vérifier la visibilité des flèches lors de l'initialisation
+updateNavVisibility();
+},
+resize: function () { // Mettre à jour la visibilité des flèches lors du redimensionnement
+updateNavVisibility();
+}
+}
 });
-</script>
+
+// Vérifier également la visibilité au chargement initial de la page
+updateNavVisibility();
+
+// Ajouter un écouteur d'événement pour les changements de taille d'écran
+window.addEventListener('resize', updateNavVisibility);
+});
+		</script>
 
 		<script src="{{ asset('build/home.js') }}"></script>
 	{% endblock %}
