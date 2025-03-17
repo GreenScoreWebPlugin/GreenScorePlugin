@@ -20,7 +20,8 @@
 
 				<div class="flex flex-col text-center justify-center">
 					<h1 class="text-3xl md:text-4xl mb-6">Installer. Analyser. Économiser.</h1>
-					<p class="text-lg md:text-xl mb-6 px-4 md:px-28 font-outfit font-extralight">Réduire l'impact de votre site, c'est aussi réduire son empreinte sur la planète. Utilisez GreenScore Web !</p>
+					<p class="text-lg md:text-xl mb-6 px-4 md:px-28 font-outfit font-extralight">Réduire l'impact de votre
+											site, c'est aussi réduire son empreinte sur la planète. Utilisez GreenScore Web !</p>
 
 					<div id='browser-plugin-container' class="hidden lg:block">
 						<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
@@ -88,7 +89,8 @@
 							<h3 class="text-6xl md:text-8xl text-gs-green-950 mr-2">15</h3>
 							<p class="text-2xl md:text-3xl">%</p>
 						</div>
-						<p class="max-w-64 text-[13px]">de réduction possible des émissions CO2 en appliquant les bonnes pratiques d'éco-conception !</p>
+						<p class="max-w-64 text-[13px]">de réduction possible des émissions CO2 en appliquant les bonnes
+													pratiques d'éco-conception !</p>
 					</div>
 				</div>
 			</div>
@@ -98,7 +100,7 @@
 			<div class="container mx-auto px-4 md:px-16">
 				<div class="flex justify-center items-center mb-8">
 					<h2 class="text-3xl font-outfit font-regular text-center mr-4">Quelques conseils</h2>
-					<button class="bg-black text-white text-xs rounded-full px-4 py-2 flex items-center">
+					<button id="toggleDevButton" class="bg-black text-white text-xs rounded-full px-4 py-2 flex items-center">
 						<span class="mr-2">&lt;/&gt;</span>
 						Pour les développeurs
 					</button>
@@ -108,21 +110,19 @@
 					<div class="swiper-container advice-swiper">
 						<div class="swiper-wrapper">
 							{% for item in advice %}
-								{% if item.isDev == 0 %}
-									<div class="swiper-slide">
-										<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-											<div class="flex items-start">
-												<div class="bg-gs-green-950 p-3 rounded-lg mr-4">
-													<i class="{{ item.icon }} text-white text-2xl"></i>
-												</div>
-												<div>
-													<h3 class="font-outfit font-semibold mb-1">{{ item.title }}</h3>
-													<p class="text-sm text-gray-600">{{ item.advice }}</p>
-												</div>
+								<div class="swiper-slide" data-isdev="{{ item.isDev }}">
+									<div class="bg-white rounded-lg shadow-md p-6 mx-1">
+										<div class="flex items-start">
+											<div class="bg-gs-green-950 p-3 rounded-lg icon-square mr-4">
+												<i class="{{ item.icon }} text-white text-2xl"></i>
+											</div>
+											<div>
+												<h3 class="font-outfit font-semibold mb-1">{{ item.title }}</h3>
+												<p class="text-sm text-gray-600">{{ item.advice }}</p>
 											</div>
 										</div>
 									</div>
-								{% endif %}
+								</div>
 							{% endfor %}
 						</div>
 					</div>
@@ -143,112 +143,182 @@
 				font-size: 18px;
 				color: #1E293B;
 			}
+
 			.swiper-button-prev.custom-nav-btn:after,
 			.swiper-button-next.custom-nav-btn:after {
 				font-weight: bold;
 				transform: scale(0.7);
 			}
+
 			.custom-nav-btn {
 				border-radius: 9999px;
 				width: 36px;
 				height: 36px;
 			}
+
 			.swiper-pagination {
 				position: relative;
 				bottom: 0;
 			}
+
 			.swiper-pagination-bullet-active {
 				background-color: #6D874B;
 			}
+
 			.advice-swiper {
-				overflow: hidden; /* Retour à hidden pour masquer les slides non actives */
+				overflow: hidden;
 				padding: 5px 0;
 				max-width: 100%;
 				margin: 0 auto;
 			}
+
 			.advice-swiper .swiper-slide {
 				opacity: 1;
 				visibility: visible;
-				width: 100%; /* Utiliser 100% pour que chaque slide prenne toute la largeur disponible */
+				width: 100%;
 			}
+
 			.advice-swiper .swiper-wrapper {
 				margin: 0;
 				padding: 0;
 			}
-			/* Ajuster le positionnement des boutons de navigation */
+
 			.swiper-button-prev.custom-nav-btn {
 				left: 5px;
 			}
+
 			.swiper-button-next.custom-nav-btn {
 				right: 5px;
 			}
-			/* Assurer que le conteneur est centré */
+
 			.relative.px-8.md\:px-12 {
 				display: flex;
+				justify-content: center;
+			}
+
+			.icon-square {
+				width: 50px;
+				height: 50px;
+				display: flex;
+				align-items: center;
 				justify-content: center;
 			}
 		</style>
 
 		<script>
-			document.addEventListener('DOMContentLoaded', function () { // Fonction pour masquer/afficher les flèches selon la taille d'écran
-function updateNavVisibility() {
-const prevButton = document.querySelector('.swiper-button-prev');
-const nextButton = document.querySelector('.swiper-button-next');
+			let isDevMode = false;
+			document.addEventListener('DOMContentLoaded', function () {
+				let swiper = null;
 
-if (window.innerWidth < 1024) { // Masquer les flèches sur mobile/tablette
-prevButton.classList.add('swiper-button-hidden');
-nextButton.classList.add('swiper-button-hidden');
-} else { // Afficher les flèches sur desktop
-prevButton.classList.remove('swiper-button-hidden');
-nextButton.classList.remove('swiper-button-hidden');
-}
-}
+				function filterSlides() {
+					const slides = document.querySelectorAll('.swiper-slide');
+					let visibleSlidesCount = 0;
 
-var swiper = new Swiper('.advice-swiper', {
-slidesPerView: 1,
-spaceBetween: 25,
-loop: true,
-loopFillGroupWithBlank: true,
-pagination: {
-el: '.swiper-pagination',
-clickable: true
-},
-navigation: {
-nextEl: '.swiper-button-next',
-prevEl: '.swiper-button-prev'
-},
-breakpoints: {
-640: {
-slidesPerView: 1,
-spaceBetween: 25
-},
-1024: {
-slidesPerView: 3,
-spaceBetween: 25,
-slidesPerGroup: 1
-}
-},
-speed: 400,
-watchSlidesProgress: true,
-watchSlidesVisibility: true,
-centeredSlides: true,
-initialSlide: 0,
-on: {
-init: function () { // Vérifier la visibilité des flèches lors de l'initialisation
-updateNavVisibility();
-},
-resize: function () { // Mettre à jour la visibilité des flèches lors du redimensionnement
-updateNavVisibility();
-}
-}
-});
+					slides.forEach(slide => {
+						const isDev = slide.getAttribute('data-isdev') === '1';
+						if ((isDevMode && !isDev) || (!isDevMode && isDev)) {
+							slide.style.display = 'none';
+						} else {
+							slide.style.display = 'block';
+							visibleSlidesCount++;
+						}
+					});
 
-// Vérifier également la visibilité au chargement initial de la page
-updateNavVisibility();
+					if (swiper) {
+						if (visibleSlidesCount < slides.length) {
+							swiper.loopDestroy();
+						} else {
+							swiper.loopCreate();
+						} swiper.pagination.update();
+						swiper.update();
+					}
+				}
 
-// Ajouter un écouteur d'événement pour les changements de taille d'écran
-window.addEventListener('resize', updateNavVisibility);
-});
+				function initializeSwiper() {
+					if (swiper) {
+						return;
+					}
+
+					swiper = new Swiper('.advice-swiper', {
+						slidesPerView: 1,
+						spaceBetween: 25,
+						loop: false,
+						loopFillGroupWithBlank: true,
+						pagination: {
+							el: '.swiper-pagination',
+							clickable: true,
+							dynamicBullets: true,
+							dynamicMainBullets: 1,
+							renderBullet: function (index, className) {
+								return '<span class="' + className + '"></span>';
+							}
+						},
+						navigation: {
+							nextEl: '.swiper-button-next',
+							prevEl: '.swiper-button-prev'
+						},
+						breakpoints: {
+							640: {
+								slidesPerView: 1,
+								spaceBetween: 25,
+								slidesPerGroup: 1
+							},
+							1024: {
+								slidesPerView: 3,
+								spaceBetween: 25,
+								slidesPerGroup: 3
+							}
+						},
+						speed: 400,
+						watchSlidesProgress: true,
+						watchSlidesVisibility: true,
+						centeredSlides: false,
+						initialSlide: 1,
+						rewind: true,
+						on: {
+							init: function () {
+								updateNavVisibility();
+							},
+							resize: function () {
+								updateNavVisibility();
+							}
+						}
+					});
+
+					swiper.update();
+					swiper.pagination.update();
+				}
+
+				function updateNavVisibility() {
+					const prevButton = document.querySelector('.swiper-button-prev');
+					const nextButton = document.querySelector('.swiper-button-next');
+					if (window.innerWidth <= 1024) {
+						prevButton.classList.add('swiper-button-hidden');
+						nextButton.classList.add('swiper-button-hidden');
+					} else {
+						prevButton.classList.remove('swiper-button-hidden');
+						nextButton.classList.remove('swiper-button-hidden');
+					}
+				}
+
+				initializeSwiper();
+				filterSlides();
+
+				document.querySelector('#toggleDevButton').addEventListener('click', function () {
+					isDevMode = !isDevMode;
+					this.innerHTML = isDevMode ? '<span class="mr-2">&lt;/&gt;</span> Pour les utilisateurs' : '<span class="mr-2">&lt;/&gt;</span> Pour les développeurs';
+
+					filterSlides();
+
+					if (swiper) {
+						swiper.update();
+						swiper.pagination.update();
+					}
+				});
+
+				updateNavVisibility();
+				window.addEventListener('resize', updateNavVisibility);
+			});
 		</script>
 
 		<script src="{{ asset('build/home.js') }}"></script>
