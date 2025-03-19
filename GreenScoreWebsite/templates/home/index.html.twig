@@ -6,6 +6,108 @@
 
 {% block body %}
 	<div class="min-h-screen bg-gs-green-950 text-white font-['Ovo']">
+		<div class="bg-[url(../../public/images/background.png)] bg-cover flex flex-col items-center pt-12 pb-0 px-4 sm:px-6 lg:px-8 h-[calc(100vh-96px)] overflow-hidden md:justify-between">
+			<div class="max-w-4xl w-full text-center md:w-[703px]">
+				<h1 class="text-4xl text-gray-800 mb-4 font-outfit font-extrabold sm:text-5xl">Mesurez votre empreinte carbone sur le web !</h1>
+				
+				<p class="text-xl text-gray-600 mb-8 font-outfit font-regular">
+					Chaque page que vous chargez consomme de l'énergie. Mesurez votre empreinte et agissez pour un internet plus vert.
+				</p>
+				
+				<div id='browser-plugin-container' class="hidden lg:block">
+					<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
+						<img src="{{ asset('/images/firefox.png') }}" alt="Firefox" class="mr-2 h-6 w-6">
+						Ajouter à Firefox
+					</a>
+				</div>
+				
+				<div id='browser-plugin-container' class="mt-8 lg:hidden flex justify-center">
+					<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
+						<img src="{{ asset('/images/firefox.png') }}" alt="Firefox" class="mr-2 h-6 w-6">
+						Ajouter à Firefox
+					</a>
+				</div>
+			</div>
+			
+			<div class="w-full mt-12 md:mt-8">
+				<div class="flex justify-between space-x-2 md:hidden">
+					<div class="w-[106px] h-[300px] rounded-2xl overflow-hidden mt-3">
+						<img 
+							src="{{ asset('/images/home-image-mobile1.png') }}" 
+							alt="image"
+							class="w-full h-full"
+						>
+					</div>
+					<div class="w-[106px] h-[300px] rounded-2xl overflow-hidden">
+						<img 
+							src="{{ asset('/images/home-image-mobile2.png') }}" 
+							alt="image"
+							class="w-full h-full"
+						>
+					</div>
+					<div class="w-[106px] h-[300px] rounded-2xl overflow-hidden mt-3">
+						<img 
+							src="{{ asset('/images/home-image-mobile3.png') }}" 
+							alt="image"
+							class="w-full h-full"
+						>
+					</div>
+				</div>
+				
+				<div class="hidden md:flex flex-wrap justify-center md:justify-between lg:justify-between gap-2 md:gap-3 lg:gap-4 max-w-7xl mx-auto px-2 mb-0">
+					<div class="hidden lg:block">
+						<div class="overflow-hidden rounded-2xl w-[180px] lg:w-[230px] h-[414px]">
+							<img 
+								src="{{ asset('/images/home-image1.png') }}" 
+								alt="image" 
+								class="w-full h-full object-fill"
+							>
+						</div>
+					</div>
+					
+					<div class="hidden md:block pt-8">
+						<div class="overflow-hidden rounded-2xl w-[180px] lg:w-[230px] h-[414px]">
+							<img 
+								src="{{ asset('/images/home-image2.png') }}" 
+								alt="image"
+								class="w-full h-full object-fill"
+							>
+						</div>
+					</div>
+					
+					<div class="block">
+						<div class="overflow-hidden rounded-2xl w-[140px] md:w-[180px] lg:w-[230px] h-[270px] md:h-[414px]">
+							<img 
+								src="{{ asset('/images/home-image3.png') }}" 
+								alt="image"
+								class="w-full h-full object-fill"
+							>
+						</div>
+					</div>
+					
+					<div class="block pt-8">
+						<div class="overflow-hidden rounded-2xl w-[140px] md:w-[180px] lg:w-[230px] h-[270px] md:h-[414px]">
+							<img 
+								src="{{ asset('/images/home-image4.png') }}" 
+								alt="image" 
+								class="w-full h-full object-fill"
+							>
+						</div>
+					</div>
+					
+					<div class="block mb-0 md:hidden lg:block">
+						<div class="overflow-hidden rounded-2xl w-[140px] md:w-[180px] lg:w-[230px] h-[270px] md:h-[414px]">
+							<img 
+								src="{{ asset('/images/home-image5.png') }}" 
+								alt="image" 
+								class="w-full h-full object-fill"
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container mx-auto px-4 md:px-16 py-12">
 			<div class="grid lg:grid-cols-2 gap-8">
 				<div class="bg-white rounded-lg overflow-hidden hidden lg:block">
@@ -34,9 +136,12 @@
 		</div>
 
 		<div class="bg-white text-gs-green-950 py-16 relative">
-			<div class="absolute px-4 lg:px-24 inset-0 -z-0 opacity-100 hidden lg:block">
-				<img src="{{ asset('/images/citation.svg') }}" class="w-full h-full object-contain" alt="Background">
+			<div class="absolute inset-0 -z-0 hidden lg:block overflow-hidden">
+				<img src="{{ asset('/images/citation.svg') }}" 
+					 class="w-full h-full object-cover md:object-contain"
+					 alt="Background">
 			</div>
+			
 
 			<div class="container mx-auto text-center relative z-1">
 				<h2 class="text-3xl md:text-5xl font-regular mb-12 relative px-4 md:px-[40px] font-outfit">
@@ -306,7 +411,7 @@
 
 				document.querySelector('#toggleDevButton').addEventListener('click', function () {
 					isDevMode = !isDevMode;
-					this.innerHTML = isDevMode ? '<span class="mr-2">&lt;/&gt;</span> Pour les utilisateurs' : '<span class="mr-2">&lt;/&gt;</span> Pour les développeurs';
+					this.innerHTML = isDevMode ? '<span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75A3.75 3.75 0 1 1 12 3a3.75 3.75 0 0 1 3.75 3.75ZM19.5 21v-1.5a6 6 0 0 0-6-6h-3a6 6 0 0 0-6 6V21"/></svg></span> Pour les utilisateurs' : '<span class="mr-2">&lt;/&gt;</span> Pour les développeurs';
 
 					filterSlides();
 
