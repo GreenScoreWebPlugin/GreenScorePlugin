@@ -25,6 +25,12 @@ class MODashboardController extends BaseDashboardController
             if ($orga && ($idOrga = $orga->getId())) {
                 $usersIdsOrga = $userRepository->getUsersOrga($idOrga);
                 $noDatas = !$usersIdsOrga;
+            } else {
+                $orga = $user->getIsAdminOf();
+                if ($orga && ($idOrga = $orga->getId())) {
+                    $usersIdsOrga = $userRepository->getUsersOrga($idOrga);
+                    $noDatas = !$usersIdsOrga;
+                }
             }
         }
 
@@ -86,7 +92,7 @@ class MODashboardController extends BaseDashboardController
             return $this->render('dashboards/my_organisation.html.twig', [
                 'page' => 'mon-organisation',
                 'title' => 'Mon Organisation',
-                'description' => 'bla bla bla',
+                'description' => 'Toutes les données sur les membres de : ' . $orga->getOrganisationName(),
                 'equivalentAverage' => $equivalentAverage ?? null,
                 'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
                 'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,

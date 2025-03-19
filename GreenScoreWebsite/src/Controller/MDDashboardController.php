@@ -87,7 +87,7 @@ class MDDashboardController extends BaseDashboardController
             return $this->render('dashboards/my_datas.html.twig', [
                 'page' => 'mes-donnees',
                 'title' => 'Mes Données',
-                'description' => 'bla bla bla',
+                'description' => 'Votre analyse de consommation à partir des sites que vous avez consulté',
                 'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
                 'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,
