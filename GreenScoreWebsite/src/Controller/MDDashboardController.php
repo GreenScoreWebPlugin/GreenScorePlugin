@@ -15,8 +15,6 @@ class MDDashboardController extends BaseDashboardController
     #[Route('/mes-donnees', name: 'app_my_datas')]
     public function myDatas(UserRepository $userRepository, AdviceRepository $adviceRepository, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
-        $messageAverageFootprint = "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!";
-
         $noDatas = false;
         $user = $this->getUser();
 
@@ -45,6 +43,10 @@ class MDDashboardController extends BaseDashboardController
             $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint([$userId]);
             $averageDailyCarbonFootprint = $monitoredWebsiteRepository->getGlobalAverageDailyCarbonFootprint();
 
+            if($myAverageDailyCarbonFootprint && $averageDailyCarbonFootprint){
+                $messageAverageFootprint = $myAverageDailyCarbonFootprint <= $averageDailyCarbonFootprint ? "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!"
+                                        : "Aïe aïe aïe ! Votre empreinte carbone journalière est au-dessus de la moyenne. Vous pouvez encore l'améliorer !";
+            }
             // Advices : Recuperer deux conseils aleatoire
             $adviceEntity = $adviceRepository->findRandomByIsDev(false);
             if ($adviceEntity) {
