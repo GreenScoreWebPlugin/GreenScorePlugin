@@ -126,15 +126,26 @@
                         Réduire l'impact de votre site, c'est aussi réduire son empreinte sur la planète. 
                         Utilisez GreenScore Web ! 
                         <span class="hidden md:inline">En vous inscrivant, vous pourrez consulter des tableaux de bords de votre consommation.</span>
-                    </p>                    
-					<div id='browser-plugin-container' class="hidden lg:block">
-						<a href="{{ path('app_login')}}" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
-                            <span class="mr-4">S'inscrire</span>
-                            <span class="bg-gray-200 px-3 py-1.5 rounded-full flex items-center justify-center">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </span>
-                        </a>
-					</div>
+                    </p>
+                    {% if app.user %}
+                        <div id='browser-plugin-container' class="hidden lg:block">
+                            <div class="inline-flex items-center bg-gray-300 text-gray-500 font-outfit font-regular p-3 rounded-full mx-auto shadow-md cursor-not-allowed">
+                                <span class="mr-4">S'inscrire</span>
+                                <span class="bg-gray-400 px-3 py-1.5 rounded-full flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div id='browser-plugin-container' class="hidden lg:block">
+                            <a href="{{ path('app_login')}}" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
+                                <span class="mr-4">S'inscrire</span>
+                                <span class="bg-gray-200 px-3 py-1.5 rounded-full flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    {% endif %}
 				</div>
 			</div>
 		</div>
