@@ -121,7 +121,7 @@ class MyAccountController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/mon-compte/organisation/change-organisation', name: 'app_change_or_join_organisation', methods: ['POST'])]
+    #[Route('/mon-compte/organisation/change-or-join-organisation', name: 'app_change_or_join_organisation', methods: ['POST'])]
     public function changeOrJoinOrganisation(
         Request $request,
         OrganisationRepository $organisationRepository,
