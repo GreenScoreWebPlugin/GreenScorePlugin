@@ -29,7 +29,7 @@
 				</div>
 			</div>
 			
-			<div class="w-full mt-12 md:mt-8">
+			<div class="w-full mt-12 md:mt-20">
 				<div class="flex justify-between space-x-2 md:hidden">
 					<div class="w-[106px] h-[300px] rounded-2xl overflow-hidden mt-3">
 						<img 
@@ -122,14 +122,18 @@
 
 				<div class="flex flex-col text-center justify-center">
 					<h1 class="text-3xl md:text-4xl mb-6">Installer. Analyser. Économiser.</h1>
-					<p class="text-lg md:text-xl mb-6 px-4 md:px-28 font-outfit font-extralight">Réduire l'impact de votre
-											site, c'est aussi réduire son empreinte sur la planète. Utilisez GreenScore Web !</p>
-
+					<p class="text-lg md:text-xl mb-6 px-4 md:px-28 font-outfit font-extralight">
+                        Réduire l'impact de votre site, c'est aussi réduire son empreinte sur la planète. 
+                        Utilisez GreenScore Web ! 
+                        <span class="hidden md:inline">En vous inscrivant, vous pourrez consulter des tableaux de bords de votre consommation.</span>
+                    </p>                    
 					<div id='browser-plugin-container' class="hidden lg:block">
-						<a href="#" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
-							<img src="{{ asset('/images/firefox.png') }}" alt="Firefox" class="mr-2 h-6 w-6">
-							Ajouter à Firefox
-						</a>
+						<a href="{{ path('app_login')}}" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
+                            <span class="mr-4">S'inscrire</span>
+                            <span class="bg-gray-200 px-3 py-1.5 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </a>
 					</div>
 				</div>
 			</div>
@@ -212,25 +216,25 @@
 				</div>
 
 				<div class="relative px-8 md:px-12">
-					<div class="swiper-container advice-swiper">
-						<div class="swiper-wrapper">
-							{% for item in advice %}
-								<div class="swiper-slide" data-isdev="{{ item.isDev }}">
-									<div class="bg-white rounded-lg shadow-md p-6 mx-1">
-										<div class="flex items-start">
-											<div class="bg-gs-green-950 p-3 rounded-lg icon-square mr-4">
-												<i class="{{ item.icon }} text-white text-2xl"></i>
-											</div>
-											<div>
-												<h3 class="font-outfit font-semibold mb-1">{{ item.title }}</h3>
-												<p class="text-sm text-gray-600">{{ item.advice }}</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							{% endfor %}
-						</div>
-					</div>
+                    <div class="swiper-container advice-swiper">
+                        <div class="swiper-wrapper">
+                            {% for item in advice %}
+                                <div class="swiper-slide h-full" data-isdev="{{ item.isDev }}">
+                                    <div class="bg-white rounded-lg shadow-md p-6 mx-1 h-full flex flex-col">
+                                        <div class="flex items-start h-full">
+                                            <div class="bg-gs-green-950 p-3 rounded-lg icon-square mr-4 flex-shrink-0">
+                                                <i class="{{ item.icon }} text-white text-2xl"></i>
+                                            </div>
+                                            <div class="flex-grow">
+                                                <h3 class="font-outfit font-semibold mb-1">{{ item.title }}</h3>
+                                                <p class="text-sm text-gray-600">{{ item.advice }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
 
 					<div class="swiper-button-prev custom-nav-btn absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
 					<div class="swiper-button-next custom-nav-btn absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
