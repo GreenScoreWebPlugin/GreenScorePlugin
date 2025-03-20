@@ -1,20 +1,23 @@
 <?php
 
-namespace App\Tests\Functionnal;
+namespace App\Tests;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class MyAccountTest extends RegistrationLoginTest
+class MyAccountTest extends WebTestCase
 {
     private static User $user;
 
+    /**
+     * @depends App\Tests\RegistrationLoginTest::testSuccessfulRegistration
+     */
     public function testSuccessGetMyAccount()
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(UserRepository::class);
-        self::$user = $userRepository->findOneByEmail('test@test.fr');
+        self::$user = $userRepository->findOneByEmail('test@example.com');
         $client->loginUser(self::$user);
         $client->request('GET', '/mon-compte');
 
@@ -149,6 +152,22 @@ class MyAccountTest extends RegistrationLoginTest
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.text-green-800 div span', 'Vous avez quitté l\'organisation avec succès');
+    }
 
+    /**
+     * @depends testSuccessLeaveOrga
+     */
+    public function testSuccessDeleteAccount()
+    {
+        $client = static::createClient();
+        $client->loginUser(self::$user);
+        $client->request('DELETE', '/api/user/delete');
+
+        $this->assertJsonStringEqualsJsonString(
+            json_encode(['success' => true, 'redirect' => '/inscription']),
+            $client->getResponse()->getContent()
+        );
+        // Vérifier la redirection après inscription
+        //$this->assertResponseRedirects('/inscription');
     }
 }

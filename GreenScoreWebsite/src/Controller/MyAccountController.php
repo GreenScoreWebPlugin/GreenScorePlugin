@@ -30,14 +30,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MyAccountController extends AbstractController
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-        LoggerInterface                $logger
-    )
-    {
-        $this->logger = $logger;
-    }
-
     #[IsGranted('ROLE_USER')]
     #[Route('/mon-compte', name: 'app_my_account')]
     public function index(
