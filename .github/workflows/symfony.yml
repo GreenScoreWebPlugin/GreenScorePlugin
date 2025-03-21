@@ -1,20 +1,20 @@
- name: CI Build / Merge
+name: CI Build / Merge
 
 on:
   push:
     branches:
-      - 'feature/**' # toutes les branches doivent commencer par feature/
+      - feature/**  # Pas de guillemets ici
   pull_request:
     branches:
       - master
 
 jobs:
   build_merge:
-    runs-on: ubuntu-latest  # tester sur un environnement stable
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout le code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Version plus récente
 
     - name: Paramétrer PHP 8.3
       uses: shivammathur/setup-php@v2
@@ -27,21 +27,18 @@ jobs:
         php composer.phar install
 
     - name: Paramétrer Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3  # Version plus récente
       with:
         node-version: '20' 
 
     - name: Installer les dépendances npm
-      run: |
-        npm install
+      run: npm install
 
     - name: Build Tailwind CSS
-      run: |
-        npx tailwindcss -o public/css/tailwind.css  # Compile Tailwind CSS dans public/css/tailwind.css
+      run: npx tailwindcss -o public/css/tailwind.css
 
-    - name: Lancer PHP Lint pour vérifier les erreurs de syntaxe PHP
-      run: |
-        find . -name "*.php" -exec php -l {} \;
+    - name: Lancer PHP Lint
+      run: find . -name "*.php" -exec php -l {} \;
 
     - name: Commit si succès
       run: |
