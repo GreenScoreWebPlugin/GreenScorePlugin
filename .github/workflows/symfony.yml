@@ -37,7 +37,9 @@ jobs:
         node-version: '20' 
 
     - name: Installer les dépendances npm
-      run: npm install
+      run: |
+        cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
+        npm install
 
     - name: Build Tailwind CSS
       run: npx tailwindcss -o public/css/tailwind.css
