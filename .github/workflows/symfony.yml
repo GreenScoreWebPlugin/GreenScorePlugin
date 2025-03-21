@@ -42,7 +42,9 @@ jobs:
         npm install
 
     - name: Build Tailwind CSS
-      run: npx tailwindcss -o public/css/tailwind.css
+      run: |
+        cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
+        npx tailwindcss -o public/css/tailwind.css
 
     - name: Lancer PHP Lint
       run: find . -name "*.php" -exec php -l {} \;
