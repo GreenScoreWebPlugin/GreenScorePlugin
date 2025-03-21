@@ -24,8 +24,8 @@ jobs:
 
     - name: Installer les dépendances composer
       run: |
-        curl -sS https://getcomposer.org/installer | php
-        php composer.phar install
+        composer self-update  # Met à jour Composer
+        composer install --no-interaction --prefer-dist
 
     - name: Paramétrer Node.js
       uses: actions/setup-node@v3  # Version plus récente
