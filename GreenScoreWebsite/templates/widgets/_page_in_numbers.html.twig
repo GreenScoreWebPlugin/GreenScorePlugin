@@ -1,6 +1,6 @@
 <div class="bg-white grid grid-row-3 p-6 rounded-lg shadow-md col-span-1 sm:col-span-2 lg:col-span-6 flex-col flex-wrap min-h-[300px] order-7 lg:order-7">
     <h2 class="text-lg font-bold mb-4 row-span-1 font-outfit">La page en quelques chiffres</h2>
-    <div class="flex flex-row flex-wrap justify-center w-full h-fit row-span-2 gap-3">
+    <div class="flex flex-col sm:flex-row sm:flex-wrap justify-center w-full h-fit row-span-2 gap-3">
         {% if pageSize is null and loadingTime is null and queriesQuantity is null %}
             <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
         {% else %}
@@ -12,7 +12,7 @@
                         </svg>
                         <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple"><span class="animate-counter" data-value="{{pageSize}}">0</span>{{pageSizeUnit}}</p>
                     </div>
-                    <p class="text-sm text-gray-500">Taille</p>
+                    <p class="text-sm text-gray-500 text-center">Taille</p>
                 </div>
             {% endif %}
             {% if loadingTime is not null %}
@@ -23,7 +23,7 @@
                         </svg>
                         <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple"><span class="animate-counter" data-value="{{loadingTime}}">0</span> s</p>
                     </div>
-                    <p class="text-sm text-gray-500">Temps de chargement</p>
+                    <p class="text-sm text-gray-500 text-center">Temps de chargement</p>
                 </div>
             {% endif %}
             {% if queriesQuantity is not null %}
@@ -34,7 +34,7 @@
                         </svg>
                         <p class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gradient-purple"><span class="animate-counter" data-value="{{queriesQuantity}}">0</span></p>
                     </div>
-                    <p class="text-sm text-gray-500">Nombre de requêtes</p>
+                    <p class="text-sm text-gray-500 text-center">Nombre de requêtes</p>
                 </div>
             {% endif %}
         {% endif %}

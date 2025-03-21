@@ -3,7 +3,7 @@ const tabNetworkData = new Map();
 const lastSentData = new Map();
 
 // Information nécessaire pour appeler les APIs
-const token = "R1oPkUx8UdRnx";
+const token = "t6MlBacdjBPFv";
 const carbonIntensityUrl =
   "https://api.electricitymap.org/v3/carbon-intensity/latest";
 
@@ -22,7 +22,7 @@ function getTabData(tabId) {
       carbonIntensity: 0,
       lastDataSent: null,
       isProcessing: false,
-      requestSizes: new Map(), // Pour tracker la taille des requêtes individuelles
+      requestSizes: new Map(),
     });
   }
   return tabNetworkData.get(tabId);

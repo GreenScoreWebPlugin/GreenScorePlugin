@@ -15,9 +15,6 @@ class MODashboardController extends BaseDashboardController
     #[Route('/mon-organisation', name: 'app_my_organisation')]
     public function myOrganisation(MonitoredWebsiteRepository $monitoredWebsiteRepository, UserRepository $userRepository, AdviceRepository $adviceRepository): Response
     {
-        $averageFootprint = 320;
-        $equivalentAverage = 20;
-
         $noDatas = false;
         $user = $this->getUser();
 
@@ -28,11 +25,30 @@ class MODashboardController extends BaseDashboardController
             if ($orga && ($idOrga = $orga->getId())) {
                 $usersIdsOrga = $userRepository->getUsersOrga($idOrga);
                 $noDatas = !$usersIdsOrga;
+            } else {
+                $orga = $user->getIsAdminOf();
+                if ($orga && ($idOrga = $orga->getId())) {
+                    $usersIdsOrga = $userRepository->getUsersOrga($idOrga);
+                    $noDatas = !$usersIdsOrga;
+                }
             }
         }
 
         
         if (!$noDatas){
+            // AverageDailyCarbonFootprint 
+            $averageFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint($usersIdsOrga);
+            // Equivalent : Recuperer un equivalent aleatoire
+            try {
+                $equivalentsAverage = $this->equivalentCalculatorService->calculateEquivalents($averageFootprint, 1);
+                
+                if (count($equivalentsAverage) >= 1) {
+                    $equivalentAverage = $equivalentsAverage[0];
+                }
+            } catch (Exception $e) {
+                $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+            }
+
             // Total Consumption
             $totalConsu = $monitoredWebsiteRepository->getTotalConsuOrga($usersIdsOrga);
 
@@ -46,8 +62,8 @@ class MODashboardController extends BaseDashboardController
                 $adviceDev = $adviceDevEntity->getAdvice();
             }
 
-            // Equivalents : Recuperer deux equivalents aleatoires
             if ($totalConsu) {
+                // Equivalents : Recuperer deux equivalents aleatoires
                 try {
                     $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
                     if (count($equivalents) >= 2) {
@@ -58,6 +74,7 @@ class MODashboardController extends BaseDashboardController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
 
+                // Environmental Impact Badge : Recuperer les donnees du badge GreenScore
                 try {
                     $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'mon-organisation');
                     if($calculateGreenScore) {
@@ -75,8 +92,8 @@ class MODashboardController extends BaseDashboardController
             return $this->render('dashboards/my_organisation.html.twig', [
                 'page' => 'mon-organisation',
                 'title' => 'Mon Organisation',
-                'description' => 'bla bla bla',
-                'equivalentAverage' => $equivalentAverage,
+                'description' => 'Toutes les données sur les membres de : ' . $orga->getOrganisationName(),
+                'equivalentAverage' => $equivalentAverage ?? null,
                 'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
                 'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,

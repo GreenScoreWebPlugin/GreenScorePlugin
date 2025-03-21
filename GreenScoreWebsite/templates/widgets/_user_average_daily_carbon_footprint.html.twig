@@ -28,7 +28,7 @@
             </div>
 
             {% if myAverageDailyCarbonFootprint is not null and averageDailyCarbonFootprint is not null and messageAverageFootprint is not null %}
-                <p class="text-sm text-center text-green-700 font-medium mt-4">
+                <p class="text-sm text-center {{ myAverageDailyCarbonFootprint > averageDailyCarbonFootprint ? 'text-red-700' : 'text-green-700' }} font-medium mt-2">
                     {{messageAverageFootprint}}
                 </p>
             {% endif %}

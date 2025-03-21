@@ -15,8 +15,6 @@ class MDDashboardController extends BaseDashboardController
     #[Route('/mes-donnees', name: 'app_my_datas')]
     public function myDatas(UserRepository $userRepository, AdviceRepository $adviceRepository, MonitoredWebsiteRepository $monitoredWebsiteRepository): Response
     {
-        $messageAverageFootprint = "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!";
-
         $noDatas = false;
         $user = $this->getUser();
 
@@ -42,9 +40,13 @@ class MDDashboardController extends BaseDashboardController
 
         if (!$noDatas){
             // AverageDailyCarbonFootprint
-            $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint($userId);
+            $myAverageDailyCarbonFootprint = $monitoredWebsiteRepository->getAverageDailyCarbonFootprint([$userId]);
             $averageDailyCarbonFootprint = $monitoredWebsiteRepository->getGlobalAverageDailyCarbonFootprint();
 
+            if($myAverageDailyCarbonFootprint && $averageDailyCarbonFootprint){
+                $messageAverageFootprint = $myAverageDailyCarbonFootprint <= $averageDailyCarbonFootprint ? "Bravo ! Votre empreinte carbone journalière est plus basse que la moyenne !!"
+                                        : "Aïe aïe aïe ! Votre empreinte carbone journalière est au-dessus de la moyenne. Vous pouvez encore l'améliorer !";
+            }
             // Advices : Recuperer deux conseils aleatoire
             $adviceEntity = $adviceRepository->findRandomByIsDev(false);
             if ($adviceEntity) {
@@ -55,8 +57,8 @@ class MDDashboardController extends BaseDashboardController
                 $adviceDev = $adviceDevEntity->getAdvice();
             }
 
-            // Equivalents : Recuperer deux equivalents aleatoires
             if ($totalConsu) {
+                // Equivalents : Recuperer deux equivalents aleatoires
                 try {
                     $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
                     if (count($equivalents) >= 2) {
@@ -67,6 +69,7 @@ class MDDashboardController extends BaseDashboardController
                     $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
                 }
 
+                // Environmental Impact Badge : Recuperer les donnees du badge GreenScore
                 try {
                     $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'mes-donnees');
                     if($calculateGreenScore) {
@@ -84,7 +87,7 @@ class MDDashboardController extends BaseDashboardController
             return $this->render('dashboards/my_datas.html.twig', [
                 'page' => 'mes-donnees',
                 'title' => 'Mes Données',
-                'description' => 'bla bla bla',
+                'description' => 'Votre analyse de consommation à partir des sites que vous avez consulté',
                 'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
                 'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
                 'advice' => $advice ?? null,
