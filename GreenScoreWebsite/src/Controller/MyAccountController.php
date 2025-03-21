@@ -30,14 +30,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MyAccountController extends AbstractController
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-        LoggerInterface                $logger
-    )
-    {
-        $this->logger = $logger;
-    }
-
     #[IsGranted('ROLE_USER')]
     #[Route('/mon-compte', name: 'app_my_account')]
     public function index(
@@ -121,7 +113,7 @@ class MyAccountController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/mon-compte/organisation/change-organisation', name: 'app_change_or_join_organisation', methods: ['POST'])]
+    #[Route('/mon-compte/organisation/change-or-join-organisation', name: 'app_change_or_join_organisation', methods: ['POST'])]
     public function changeOrJoinOrganisation(
         Request $request,
         OrganisationRepository $organisationRepository,
