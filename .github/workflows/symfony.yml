@@ -58,6 +58,7 @@ jobs:
 
     - name: Merge vers master
       run: |
+        git remote set-url origin https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/GreenScoreWebPlugin/GreenScorePlugin.git
         git checkout master
         git pull origin master
         git merge ${{ github.head_ref }} --no-ff -m "Merge la branche dans master"
