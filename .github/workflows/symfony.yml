@@ -3,7 +3,7 @@
 on:
   push:
     branches:
-      - feature/* # toutes les branches doivent commencer par feature/
+      - 'feature/**' # toutes les branches doivent commencer par feature/
   pull_request:
     branches:
       - master
