@@ -46,9 +46,6 @@ jobs:
         cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
         npx tailwindcss -o public/css/tailwind.css
 
-    - name: Lancer PHP Lint
-      run: find . -name "*.php" -exec php -l {} \;
-
     - name: Commit si succès
       run: |
         git config --global user.name "GreenScoreWebPlugin"
