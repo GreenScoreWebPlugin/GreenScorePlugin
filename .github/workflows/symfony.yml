@@ -17,6 +17,9 @@ jobs:
     - name: Checkout le code
       uses: actions/checkout@v3  # Version plus récente
 
+    - name: Vérifier où est le projet
+      run: pwd && ls -la
+
     - name: Paramétrer PHP 8.3
       uses: shivammathur/setup-php@v2
       with:
