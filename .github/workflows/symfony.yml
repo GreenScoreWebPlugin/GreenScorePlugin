@@ -25,8 +25,7 @@ jobs:
     - name: Installer les dépendances composer
       run: |
         cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
-        IMAGES_URL=""
-        DATABASE_URL="" composer update
+        IMAGES_URL="" DATABASE_URL="" composer update
         composer self-update  # Met à jour Composer
         composer install --no-interaction --prefer-dist
 
