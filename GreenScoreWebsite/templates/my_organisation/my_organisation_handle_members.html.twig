@@ -5,7 +5,7 @@
 {% block body %}
     {{ include('my_account/_message.html.twig') }}
 
-    <div class="xl:px-52 flex flex-col mb-16">
+    <div data-controller="member-delete" class="xl:px-52 flex flex-col mb-16">
         <div class="px-4 lg:px-16 py-8 flex justify-center lg:justify-start items-center gap-x-4">
             <img class="w-[54px] h-auto" src="{{ asset('images/salutation.png') }}" alt="Salutation">
             <h1 class="text-2xl font-bold">Bonjour {{ organisation.organisationName }}!</h1>
@@ -21,5 +21,6 @@
                 } %}
             </div>
         </div>
+        {{ include('my_organisation/_modal_delete_member.html.twig') }}
     </div>
 {% endblock %}

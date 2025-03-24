@@ -1,0 +1,20 @@
+<div class="{% if type == 'dev' %} bg-[#92BFFF]{% else %} bg-[#94E9B8]{% endif %} p-6 rounded-lg shadow-md col-span-1 lg:col-span-3 flex flex-col justify-between order-8 lg:order-8 font-outfit">
+    {% if advice is not null and type is not null %}
+        <div class="flex gap-3 items-start">
+            <div class="bg-white w-8 h-8 min-w-8 min-h-8 flex items-center justify-center rounded-lg">
+                <i class="fa-solid fa-circle-question {% if type == 'dev' %} text-[#263346]{% else %} text-gs-green-800{% endif %}"></i>
+            </div>
+            <h2 class="text-lg font-bold text-white">
+                Des conseils pour {% if type == 'dev' %}le développement ?{% else %}la navigation ?{% endif %}
+            </h2>
+        </div>
+        <p class="text-sm mt-2 text-white">
+            {{advice}}
+        </p>
+        <div class="flex w-full justify-end">
+            <button class="{% if type == 'dev' %} bg-[#455a79]{% else %} bg-[#4b7d60]{% endif %} text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+        </div>
+    {% else %}
+        <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>
+    {% endif %}
+</div>

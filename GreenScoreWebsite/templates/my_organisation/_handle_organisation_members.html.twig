@@ -41,7 +41,7 @@
                         <p class="text-gray-500">Aucun résultat pour la recherche "{{ searchTerm }}"</p>
                     </div>
                 {% else %}
-                    <div data-controller="member-delete" data-reload-url="{{ path('app_handle_organisation_members') }}">
+                    <div data-reload-url="{{ path('app_handle_organisation_members') }}">
                         {% include 'my_organisation/_my_organisation_members_list.html.twig' with {
                             members: members,
                             page: page

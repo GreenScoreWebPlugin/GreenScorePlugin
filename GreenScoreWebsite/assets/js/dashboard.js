@@ -1,8 +1,6 @@
-import { Turbo } from "@hotwired/turbo";
+import Chart from 'chart.js/auto';
 
-document.addEventListener("turbo:load", () => {
-    console.log("Turbo Drive a chargé une nouvelle page");
-    
+document.addEventListener("DOMContentLoaded", () => {
     initCircles();
     initAnimateCounter();
 
@@ -20,6 +18,7 @@ document.addEventListener("turbo:load", () => {
         }
     });
 });
+
 
 function initConsuFiltered(idsUsers) {
     const ctx = document.getElementById("co2Chart");

@@ -1,0 +1,71 @@
+name: CI Build / Merge
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout le code
+      uses: actions/checkout@v3  # Version plus récente
+
+    - name: Paramétrer PHP 8.3
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+
+    - name: Installer les dépendances composer
+      run: |
+        cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
+        export IMAGES_URL=""
+        export DATABASE_URL=""
+        composer update
+        composer self-update  # Met à jour Composer
+        composer install --no-interaction --prefer-dist
+
+    - name: Paramétrer Node.js
+      uses: actions/setup-node@v3  # Version plus récente
+      with:
+        node-version: '20' 
+
+    - name: Installer les dépendances npm
+      run: |
+        cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
+        npm install
+
+    - name: Build Tailwind CSS
+      run: |
+        cd /home/runner/work/GreenScorePlugin/GreenScorePlugin/GreenScoreWebsite
+        npx tailwindcss -o public/css/tailwind.css
+
+    - name: Commit si succès
+      run: |
+        git config --global user.name "GreenScoreWebPlugin"
+        git config --global user.email "greenscore.plugin@gmail.com"
+        git add .
+        git commit -m "Commit automatique réussi" || echo "No changes to commit"
+
+    - name: Merge vers master
+      run: |
+        git remote set-url origin https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/GreenScoreWebPlugin/GreenScorePlugin.git
+        git checkout master
+        git pull origin master
+        git merge ${{ github.head_ref }} --no-ff -m "Merge la branche dans master"
+        git push origin master
+
+    - name: Créer une erreur si fail
+      if: failure()
+      run: |
+        echo "Build failed. Exiting."
+        exit 1

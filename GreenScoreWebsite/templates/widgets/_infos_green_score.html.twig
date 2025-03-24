@@ -1,0 +1,61 @@
+<div class="bg-white flex flex-col justify-between gap-4 p-6 rounded-lg shadow-lg col-span-1 order-1 lg:col-span-4 text-gray-900 font-outfit">
+    <h2 class="text-lg font-bold mb-4">L'impact environnemental</h2>
+    
+    {% if letterGreenScore is not null %}
+        <div class="flex flex-col items-center w-full gap-4">
+            <!-- Bouton interactif avec couleur dynamique -->
+            <div class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 rounded-lg px-4 py-2 shadow-md 
+                {% if letterGreenScore == 'A' %} bg-[#2e9b43]
+                {% elseif letterGreenScore == 'B' %} bg-[#347851]
+                {% elseif letterGreenScore == 'C' %} bg-[#cadd00]
+                {% elseif letterGreenScore == 'D' %} bg-[#f7ed00]
+                {% elseif letterGreenScore == 'E' %} bg-[#ffce00]
+                {% elseif letterGreenScore == 'F' %} bg-[#fb9929]
+                {% elseif letterGreenScore == 'G' %} bg-[#f01c16]
+                {% else %} bg-gray-300
+                {% endif %} text-white">
+                <h1 class="text-xl font-medium text-white">GreenScore</h1>
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-2xl font-bold 
+                    {% if letterGreenScore == 'A' %} text-[#2e9b43]
+                    {% elseif letterGreenScore == 'B' %} text-[#347851]
+                    {% elseif letterGreenScore == 'C' %} text-[#cadd00]
+                    {% elseif letterGreenScore == 'D' %} text-[#f7ed00]
+                    {% elseif letterGreenScore == 'E' %} text-[#ffce00]
+                    {% elseif letterGreenScore == 'F' %} text-[#fb9929]
+                    {% elseif letterGreenScore == 'G' %} text-[#f01c16]
+                    {% else %} text-gray-800
+                    {% endif %}">
+                    {{ letterGreenScore }}
+                </div>
+            </div>
+
+            <!-- Texte contextuel -->
+            <p class="text-center text-lg font-medium w-4/5">
+                {% if letterGreenScore == 'A' %}
+                    Bravo ! Ce site est un modèle de durabilité 🌿
+                {% elseif letterGreenScore == 'B' %}
+                    Pas mal du tout ! Ce site a un bon score, mais il pourrait encore mieux protéger la planète 🌍
+                {% elseif letterGreenScore == 'C' %}
+                    Ce site est sur la bonne voie, mais l'impact environnemental reste présent 🌱
+                {% elseif letterGreenScore == 'D' %}
+                    Attention, ce site consomme pas mal de ressources ⚡
+                {% elseif letterGreenScore == 'E' %}
+                    Ce site a un impact environnemental considérable ♻️
+                {% elseif letterGreenScore == 'F' %}
+                    Ce site est très énergivore, c'est un vrai défi pour la planète 🔥
+                {% elseif letterGreenScore == 'G' %}
+                    Alerte ! Ce site a un impact environnemental majeur 🚨
+                {% else %}
+                    Le score environnemental n'est pas disponible pour ce site.
+                {% endif %}
+            </p>
+
+        </div>
+        
+        <p class="text-sm mt-4 text-gray-600">
+            L'impact environnemental est évalué en fonction de la complexité de la page, du poids des données et du nombre de requêtes.
+        </p>
+    {% else %}
+        <p class="text-center text-gray-500 flex items-center justify-center h-full">Données indisponibles</p>
+    {% endif %}
+</div>
