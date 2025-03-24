@@ -1,9 +1,9 @@
- name: CI Build / Merge
+name: CI Build / Merge
 
 on:
   push:
     branches:
-      - feature/* # toutes les branches doivent commencer par feature/
+      - '*' 
   pull_request:
     branches:
       - master
