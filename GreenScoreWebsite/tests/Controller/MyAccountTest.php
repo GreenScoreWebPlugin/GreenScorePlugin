@@ -36,7 +36,10 @@ class MyAccountTest extends WebTestCase
         $client->request('GET', '/mon-compte/organisation');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('div.grid h1', 'Vous n’avez pas encore rejoint d’organisation !');
+        $this->assertSelectorTextContains(
+            'div.grid h1',
+            'Vous n’avez pas encore rejoint d’organisation !'
+        );
     }
 
     /**
@@ -46,7 +49,14 @@ class MyAccountTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser(self::$user);
-        $client->request('POST', '/mon-compte/organisation/exist', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['code' => 'TEST']));
+        $client->request(
+            'POST',
+            '/mon-compte/organisation/exist',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['code' => 'TEST'])
+        );
 
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonStringEqualsJsonString(
@@ -62,7 +72,14 @@ class MyAccountTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser(self::$user);
-        $client->request('POST', '/mon-compte/organisation/exist', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['code' => 'TESTTEST']));
+        $client->request(
+            'POST',
+            '/mon-compte/organisation/exist',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['code' => 'TESTTEST'])
+        );
 
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonStringEqualsJsonString(
@@ -83,7 +100,10 @@ class MyAccountTest extends WebTestCase
         $client->request('GET', '/gerer-organisation');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Bonjour test!');
+        $this->assertSelectorTextContains(
+            'h1',
+            'Bonjour ' . self::$orga->getIsAdminOf()->getOrganisationName() . '!'
+        );
     }
 
     /**
@@ -93,7 +113,14 @@ class MyAccountTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser(self::$user);
-        $client->request('POST', '/mon-compte/organisation/exist', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['code' => self::$orga->getIsAdminOf()->getOrganisationCode()]));
+        $client->request(
+            'POST',
+            '/mon-compte/organisation/exist',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['code' => self::$orga->getIsAdminOf()->getOrganisationCode()])
+        );
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonStringEqualsJsonString(
@@ -124,7 +151,10 @@ class MyAccountTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('div.text-green-800 div span', 'Vous avez bien rejoint l\'organisation nommée ' . self::$orga->getIsAdminOf()->getOrganisationName());
+        $this->assertSelectorTextContains(
+            'div.text-green-800 div span',
+            'Vous avez bien rejoint l\'organisation nommée ' . self::$orga->getIsAdminOf()->getOrganisationName()
+        );
 
     }
 
@@ -147,7 +177,10 @@ class MyAccountTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertSelectorTextContains('div.text-green-800 div span', 'Vous avez bien rejoint l\'organisation nommée leclerc');
+        $this->assertSelectorTextContains(
+            'div.text-green-800 div span',
+            'Vous avez bien rejoint l\'organisation nommée leclerc'
+        );
 
     }
 
@@ -167,7 +200,10 @@ class MyAccountTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('div.text-green-800 div span', 'Vous avez quitté l\'organisation avec succès');
+        $this->assertSelectorTextContains(
+            'div.text-green-800 div span',
+            'Vous avez quitté l\'organisation avec succès'
+        );
     }
 
     /**
