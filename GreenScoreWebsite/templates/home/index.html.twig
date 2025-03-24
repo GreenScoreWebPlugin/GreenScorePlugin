@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="min-h-screen bg-gs-green-950 text-white font-['Ovo']">
-		<div class="bg-[url(../../public/images/background.png)] bg-cover flex flex-col items-center pt-12 pb-0 px-4 sm:px-6 lg:px-8 h-[calc(100vh-96px)] overflow-hidden md:justify-between">
+		<div class="bg-[url(../../public/images/background.png)] bg-cover flex flex-col items-center pt-16 pb-0 px-4 sm:px-6 lg:px-8 h-[calc(100vh-96px)] overflow-hidden md:justify-between">
 			<div class="max-w-4xl w-full text-center md:w-[703px]">
 				<h1 class="text-4xl text-gs-green-950 mb-4 font-outfit font-extrabold sm:text-5xl">Mesurez votre empreinte carbone sur le web !</h1>
 				
@@ -29,7 +29,7 @@
 				</div>
 			</div>
 			
-			<div class="w-full mt-12 md:mt-20">
+			<div class="w-full mt-12 md:mt-18">
 				<div class="flex justify-between space-x-2 md:hidden">
 					<div class="w-[106px] h-[300px] rounded-2xl overflow-hidden mt-3">
 						<img 
@@ -138,7 +138,7 @@
                         </div>
                     {% else %}
                         <div id='browser-plugin-container' class="hidden lg:block">
-                            <a href="{{ path('app_login')}}" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular p-3 rounded-full mx-auto shadow-md shadow-black">
+                            <a href="{{ path('app_login')}}" class="inline-flex items-center bg-white text-gs-green-950 font-outfit font-regular py-3 px-5 rounded-full mx-auto shadow-md shadow-black">
                                 <span class="mr-4">S'inscrire</span>
                                 <span class="bg-gray-200 px-3 py-1.5 rounded-full flex items-center justify-center">
                                     <i class="fa-solid fa-arrow-right"></i>
@@ -151,9 +151,9 @@
 		</div>
 
 		<div class="bg-white text-gs-green-950 py-16 relative">
-			<div class="absolute inset-0 -z-0 hidden lg:block overflow-hidden">
+			<div class="absolute inset-0 -z-0 hidden xl:block overflow-hidden items-center justify-center">
 				<img src="{{ asset('/images/citation.svg') }}" 
-					 class="w-full h-full object-cover md:object-contain"
+					 class="w-10/12 mx-auto h-full object-cover md:object-contain"
 					 alt="Background">
 			</div>
 			
@@ -219,7 +219,7 @@
 		<div class="bg-[#F5F7FF] text-gs-green-950 py-12">
 			<div class="container mx-auto px-4 md:px-16">
 				<div class="flex justify-center items-center mb-8">
-					<h2 class="text-3xl font-outfit font-regular text-center mr-4">Quelques conseils</h2>
+					<h2 id='titleAdvice' class="text-3xl font-ovo font-regular text-center mr-4">Quelques conseils</h2>
 					<button id="toggleDevButton" class="bg-black text-white text-xs rounded-full px-4 py-2 flex items-center">
 						<span class="mr-2">&lt;/&gt;</span>
 						Pour les développeurs
@@ -231,14 +231,14 @@
                         <div class="swiper-wrapper">
                             {% for item in advice %}
                                 <div class="swiper-slide h-full" data-isdev="{{ item.isDev }}">
-                                    <div class="bg-white rounded-lg shadow-md p-6 mx-1 h-full flex flex-col">
+                                    <div class="bg-white rounded-xl shadow-md p-6 mx-1 h-full flex flex-col">
                                         <div class="flex items-start h-full">
-                                            <div class="bg-gs-green-950 p-3 rounded-lg icon-square mr-4 flex-shrink-0">
-                                                <i class="{{ item.icon }} text-white text-2xl"></i>
+                                            <div class="bg-[#F5F7FF] p-3 rounded-lg icon-square mr-4 flex-shrink-0">
+                                                <i class="{{ item.icon }} text-black text-4xl"></i>
                                             </div>
-                                            <div class="flex-grow">
-                                                <h3 class="font-outfit font-semibold mb-1">{{ item.title }}</h3>
-                                                <p class="text-sm text-gray-600">{{ item.advice }}</p>
+                                            <div class="flex-grow align-middle">
+                                                <h3 class="font-outfit font-regular mb-1">{{ item.title }}</h3>
+                                                <p class="text-sm font-extralight text-gray-600">{{ item.advice }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -247,8 +247,8 @@
                         </div>
                     </div>
 
-					<div class="swiper-button-prev custom-nav-btn absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
-					<div class="swiper-button-next custom-nav-btn absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
+					<div class="swiper-button-prev custom-nav-btn absolute left-0 top-1/2 transform  z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
+					<div class="swiper-button-next custom-nav-btn absolute right-0 top-1/2 transform z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
 				</div>
 
 				<div class="swiper-pagination mt-4"></div>
@@ -425,10 +425,10 @@
 												<span class="font-bold text-white text-xl">G</span>
 											</div>
 										</div>
-										<div class="absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white rounded-lg shadow-lg p-3 ml-0 w-48 z-20" style="top: 100%; margin-top: 8px;">
+										<div class="absolute pointer-events-none opacity-0 right-3 md:right-auto sm:right-0 group-hover:opacity-100 transition-opacity duration-200 bg-white rounded-lg shadow-lg p-3 ml-0 w-48 z-20" style="top: 100%; margin-top: 8px;">
 											<h3 class="font-bold text-gray-800">G (≤ 1,75 gCO<sub>2</sub>e)</h3>
 											<p class="text-gray-700">Très mauvais, impact critique.</p>
-										</div>
+										</div>										
 									</div>
 								</div>
                             </div>
@@ -447,32 +447,6 @@
 		<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 		<style>
-            .clip-path-chevron {
-                clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
-            }
-
-			.clip-path-chevron {
-    clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
-}
-
-/* Version responsive */
-@media screen and (max-width: 768px) {
-    .clip-path-chevron {
-        clip-path: polygon(0% 0%, 75% 0%, 90% 50%, 75% 100%, 0% 100%);
-    }
-}
-
-/* Pour les écrans très petits */
-@media screen and (max-width: 480px) {
-    .clip-path-chevron {
-        clip-path: polygon(0% 0%, 70% 0%, 85% 50%, 70% 100%, 0% 100%);
-    }
-}
-            
-            .w-1\/7 {
-                width: 14.285%;
-            }
-
 			.custom-nav-btn:after {
 				font-size: 18px;
 				color: #1E293B;
@@ -531,8 +505,8 @@
 			}
 
 			.icon-square {
-				width: 50px;
-				height: 50px;
+				width: 80px;
+				height: 80px;
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -598,6 +572,11 @@
 								slidesPerGroup: 1
 							},
 							1024: {
+								slidesPerView: 2,
+								spaceBetween: 25,
+								slidesPerGroup: 2
+							},
+							1280: {
 								slidesPerView: 3,
 								spaceBetween: 25,
 								slidesPerGroup: 3
@@ -640,6 +619,7 @@
 
 				document.querySelector('#toggleDevButton').addEventListener('click', function () {
 					isDevMode = !isDevMode;
+					document.querySelector('#titleAdvice').innerHTML = isDevMode ? 'Conseils développeurs' : 'Quelques conseils';
 					this.innerHTML = isDevMode ? '<span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75A3.75 3.75 0 1 1 12 3a3.75 3.75 0 0 1 3.75 3.75ZM19.5 21v-1.5a6 6 0 0 0-6-6h-3a6 6 0 0 0-6 6V21"/></svg></span> Pour les utilisateurs' : '<span class="mr-2">&lt;/&gt;</span> Pour les développeurs';
 
 					filterSlides();
