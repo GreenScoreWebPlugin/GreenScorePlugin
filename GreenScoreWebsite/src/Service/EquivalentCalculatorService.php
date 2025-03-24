@@ -13,27 +13,42 @@ class EquivalentCalculatorService
 
     public function calculateEquivalents(float $gCo2, int $count): array
     {
-        // Conversion en kg
+        // Conversion des grammes en kilogrammes (1 kg = 1000 g)
         $kgCo2 = $gCo2 / 1000;
+
+        // Base de comparaison : 100 kg de CO2
         $baseKgCo2 = 100;
 
-        // On calcule combien de fois notre consommation contient 100kg
+        // Calcul du ratio de consommation par rapport à 100 kg de CO2
         $ratio = $kgCo2 / $baseKgCo2;
 
-        $equivalents = $this->equivalentRepository->findRandomEquivalents($count, $ratio);
-        
-        $response = [];
-        foreach ($equivalents as $equivalent) {
-            // On multiplie la valeur d'équivalence par ce ratio
-            $equivalentValue = $ratio * $equivalent->getEquivalent();
-            
-            $response[] = [
-                'name' => $equivalent->getName(),
-                'value' => round($equivalentValue, 2),
-                'icon' => $equivalent->getIconThumbnail(),
-            ];
+        // Récupération d'un nombre aléatoire d'équivalents, selon le ratio
+        try {
+            $equivalents = $this->equivalentRepository->findRandomEquivalents($count, $ratio);
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur lors de la récupération des équivalents : ' . $e->getMessage());
+            return ['error' => 'Impossible de récupérer les équivalents à ce moment.'];
         }
         
+
+        // Initialisation du tableau de réponse
+        $response = [];
+
+        // Parcours des équivalents récupérés pour calculer la valeur en fonction du ratio
+        foreach ($equivalents as $equivalent) {
+            // Multiplie la valeur d'équivalence par le ratio de consommation
+            $equivalentValue = $ratio * $equivalent->getEquivalent();
+            
+            // Ajout du résultat dans le tableau de réponse avec le nom, la valeur et l'icône
+            $response[] = [
+                'name' => $equivalent->getName(), // Nom de l'équivalent (par exemple, "Arbre planté")
+                'value' => round($equivalentValue, 2), // Valeur arrondie à 2 décimales
+                'icon' => $equivalent->getIconThumbnail(), // Icône associée à l'équivalent
+            ];
+        }
+
+        // Retourne le tableau avec tous les équivalents calculés
         return $response;
     }
+
 }

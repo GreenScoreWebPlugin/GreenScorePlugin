@@ -16,36 +16,35 @@ class EquivalentRepository extends ServiceEntityRepository
         parent::__construct($registry, Equivalent::class);
     }
 
-    // Recuperer un seul equivalent aleatoire
+    // Récupère un certain nombre d'équivalents aléatoires en fonction du ratio
     public function findRandomEquivalents(int $count, float $ratio): array
     {
-        // 1. Récupérer les IDs et leurs valeurs
+        // 1. Récupère les IDs des équivalents dont la valeur ajustée par le ratio est dans un certain intervalle
         $qb = $this->createQueryBuilder('e')
             ->select('e.id, e.equivalent')
-            ->andWhere('e.equivalent * :ratio > 0.1')
-            ->andWhere('e.equivalent * :ratio < 500')
+            ->andWhere('e.equivalent * :ratio > 0.1') // Limite la valeur minimale après ajustement
+            ->andWhere('e.equivalent * :ratio < 500') // Limite la valeur maximale après ajustement
             ->setParameter('ratio', $ratio);
 
+        // Exécute la requête et extrait les IDs des résultats
         $ids = array_column($qb->getQuery()->getArrayResult(), 'id');
 
+        // Si aucun ID n'est trouvé, retourne un tableau vide
         if (empty($ids)) {
             return [];
         }
 
-        // 2. Sélectionner aléatoirement le nombre d'IDs demandé
+        // 2. Sélectionne aléatoirement les IDs demandés
         shuffle($ids);
         $selectedIds = array_slice($ids, 0, min($count, count($ids)));
 
-        // 3. Récupérer les entités correspondantes
+        // 3. Récupère les entités correspondant aux IDs sélectionnés
         return $this->createQueryBuilder('e')
             ->where('e.id IN (:ids)')
             ->setParameter('ids', $selectedIds)
             ->getQuery()
             ->getResult();
     }
-
-
-
 
 
     //    /**

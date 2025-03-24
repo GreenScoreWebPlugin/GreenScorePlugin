@@ -13,152 +13,149 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class LPCDashboardController extends BaseDashboardController
 {
     #[Route('/derniere-page-web-consultee', name: 'app_last_page_consulted')]
-    public function monitoredWebsite(ParameterBagInterface $params, Request $request, ?int $userId, MonitoredWebsiteRepository $monitoredWebsiteRepository, AdviceRepository $adviceRepository): Response
-    {
-        // dd($userId);
-        // dump($toto);
+    public function monitoredWebsite(
+        ParameterBagInterface $params,
+        Request $request,
+        ?int $userId,
+        MonitoredWebsiteRepository $monitoredWebsiteRepository,
+        AdviceRepository $adviceRepository
+    ): Response {
 
-        $showDatas = false;
-        $noDatas = false;
+        $noData = false;
         $user = $this->getUser();
 
-        if ($user){
-            $userId = $user->getId();
-            $country = null;
+        $data = $this->retrieveWebsiteData($user, $request, $monitoredWebsiteRepository);
 
-            // Recuperation du dernier site web consulte
-            $lastMonitoredWebsite = $monitoredWebsiteRepository->findLastAddedByUser($userId);
-            if ($lastMonitoredWebsite) {
-                // Website
-                $url_full = $lastMonitoredWebsite->getUrlFull();
-
-                // Country
-                $country = $lastMonitoredWebsite->getCountry();
-
-                // Page in numbers
-                $pageSize = $lastMonitoredWebsite->getResources();
-                $loadingTime = $lastMonitoredWebsite->getLoadingTime();
-                $queriesQuantity = $lastMonitoredWebsite->getQueriesQuantity(); 
-
-                // Total Consumption
-                $totalConsu = $lastMonitoredWebsite->getCarbonFootprint(); 
-                
-                $showDatas = true;
-            } else {
-                $showDatas = false;
-                $noDatas = true;
-            }
-            
+        if (!$data) {
+            $noData = true;
         }
-        else if($request->query->has('url_full'))
-        {
-            // dump($request->get('country'));
-            
-            $country = is_string($request->get('country')) ? $request->get('country') : null;
-            $url_full = is_string($request->get('url_full')) ? $request->get('url_full') : null;
-            $totalConsu = is_numeric($request->get('totalConsu')) ? (float)$request->get('totalConsu') : null;
-            $pageSize = is_numeric($request->get('pageSize')) ? (float)$request->get('pageSize') : null;
-            $loadingTime = is_numeric($request->get('loadingTime')) ? (float)$request->get('loadingTime') : null;
-            $queriesQuantity = is_numeric($request->get('queriesQuantity')) ? (int)$request->get('queriesQuantity') : null;
 
-            $showDatas = true;
-        }else{
-            $showDatas = false;
-        }
-        
-        if ($showDatas) {
-            $contryCode = null;
+        $carbonIntensity = null;
+        $flagUrl = null;
+        $error = null;
 
-            // Flag Carbon Intensity
+        if (!$noData && $user) {
             try {
-                $response = $this->httpClient->request('GET', 'https://restcountries.com/v3.1/name/' . strtolower($country));
-                $data = $response->toArray();
-                $flagUrl = $data[0]['flags']['svg'] ?? null;
-                $contryCode = $data[0]['cca2'] ?? null;
+                // Récupération du drapeau et du code pays
+                [$flagUrl, $countryCode] = $this->getCountryData($data['country']);
+                
+                // Récupération de l'intensité carbone
+                $carbonIntensity = $this->getCarbonIntensity($countryCode);
+
             } catch (Exception $e) {
-                $error = 'Impossible de récupérer les informations pour ce pays.';
+                $error = $e->getMessage();
             }
-            if($contryCode){
-                $apiToken = $_ENV['API_ELECTRICITY_MAP_KEY'];
-                try {
-                    $response = $this->httpClient->request('GET', 'https://api.electricitymap.org/v3/carbon-intensity/latest?', [
-                        'headers' => [
-                            'auth-token' => $apiToken,
-                        ],
-                        'query' => [
-                            'zone' => $contryCode,
-                        ],
-                    ]);
-                    $data = $response->toArray();
-                    $carbonIntensity = $data['carbonIntensity'] ?? null;
-                } catch (Exception $e) {
-                    $error = 'Impossible de récupérer l intensité carbone pour ce pays.';
+
+            // Conseils
+            $advice = $adviceRepository->findRandomByIsDev(false)?->getAdvice();
+            $adviceDev = $adviceRepository->findRandomByIsDev(true)?->getAdvice();
+
+            // Équivalents
+            $equivalent1 = $equivalent2 = null;
+            try {
+                $equivalents = $this->equivalentCalculatorService->calculateEquivalents($data['totalConsu'], 2);
+                if (count($equivalents) >= 2) {
+                    [$equivalent1, $equivalent2] = $equivalents;
                 }
+            } catch (Exception $e) {
+                $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
             }
 
-            // Advices : Recuperer deux conseils aleatoire
-            $adviceEntity = $adviceRepository->findRandomByIsDev(false);
-            if ($adviceEntity) {
-                $advice = $adviceEntity->getAdvice();
-            }
-            $adviceDevEntity = $adviceRepository->findRandomByIsDev(true);
-            if ($adviceDevEntity) {
-                $adviceDev = $adviceDevEntity->getAdvice();
-            }
-
-            if ($totalConsu) {
-                // Equivalents : Recuperer deux equivalents aleatoires
-                try {
-                    $equivalents = $this->equivalentCalculatorService->calculateEquivalents($totalConsu, 2);
-                    if (count($equivalents) >= 2) {
-                        $equivalent1 = $equivalents[0];
-                        $equivalent2 = $equivalents[1];
-                    }
-                } catch (Exception $e) {
-                    $this->logger->error('Erreur lors du calcul des équivalents : ' . $e->getMessage());
+            // Badge GreenScore
+            $envNomination = $letterGreenScore = null;
+            try {
+                $greenScore = $this->calculateGreenScoreService->calculateGreenScore($data['totalConsu'], 'derniere-page-consultee');
+                if ($greenScore) {
+                    $envNomination = $greenScore[0]['envNomination'] ?? null;
+                    $letterGreenScore = $greenScore[0]['letterGreenScore'] ?? null;
                 }
-
-                // Environmental Impact Badge : Recuperer les donnees du badge GreenScore
-                try {
-                    $calculateGreenScore = $this->calculateGreenScoreService->calculateGreenScore($totalConsu, 'derniere-page-consultee');
-                    if($calculateGreenScore) {
-                        $envNomination = $calculateGreenScore[0]['envNomination'];
-                        $letterGreenScore = $calculateGreenScore[0]['letterGreenScore'];
-                    }
-
-                } catch (Exception $e) {
-                    $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
-                }
+            } catch (Exception $e) {
+                $this->logger->error('Erreur lors de la récupération du GreenScore : ' . $e->getMessage());
             }
-
         }
 
-        if($showDatas || $userId)
+        if ($user) {
             return $this->render('dashboards/last_page_consulted.html.twig', [
                 'page' => 'derniere-page-web-consultee',
                 'title' => 'Dernière page web consultée',
-                'link' => $url_full ?? null,
+                'link' => $data['url_full'] ?? null,
                 'description' => 'Voici une analyse détaillée de votre dernière page consultée : ',
-                'country' => $country ?? null,
+                'country' => $data['country'] ?? null,
                 'flagUrl' => $flagUrl ?? null,
                 'error' => $error ?? null,
-                'totalConsu' => $this->formatConsumption($totalConsu ?? null) ?? null,
-                'totalConsuUnit' => $this->formatUnitConsumption($totalConsu ?? null) ?? null,
+                'totalConsu' => $this->formatConsumption($data['totalConsu'] ?? null),
+                'totalConsuUnit' => $this->formatUnitConsumption($data['totalConsu'] ?? null),
                 'advice' => $advice ?? null,
                 'adviceDev' => $adviceDev ?? null,
                 'equivalent1' => $equivalent1 ?? null,
                 'equivalent2' => $equivalent2 ?? null,
                 'carbonIntensity' => $carbonIntensity ?? null,
-                'pageSize' => $this->formatSize($pageSize ?? null) ?? null,
-                'pageSizeUnit' => $this->formatUnitSize($pageSize ?? null) ?? null,
-                'loadingTime' => round($loadingTime ?? null, 1) ?? null,
-                'queriesQuantity' => $queriesQuantity ?? null,
-                'url_full' => $url_full ?? null,
-                'noDatas' => $noDatas ?? null,
+                'pageSize' => $this->formatSize($data['pageSize'] ?? null),
+                'pageSizeUnit' => $this->formatUnitSize($data['pageSize'] ?? null),
+                'loadingTime' => round($data['loadingTime'] ?? 0, 1),
+                'queriesQuantity' => $data['queriesQuantity'] ?? null,
+                'url_full' => $data['url_full'] ?? null,
+                'noDatas' => $noData,
                 'letterGreenScore' => $letterGreenScore ?? null,
                 'envNomination' => $envNomination ?? null,
             ]);
-        else
+        } else {
             return $this->redirectToRoute('app_login');
+        }
+    }
+
+    // Fonction pour récupérer les données du site
+    private function retrieveWebsiteData($user, Request $request, MonitoredWebsiteRepository $repository): ?array
+    {
+        if ($user) {
+            $lastWebsite = $repository->findLastAddedByUser($user->getId());
+            if ($lastWebsite) {
+                return [
+                    'url_full' => $lastWebsite->getUrlFull(),
+                    'country' => $lastWebsite->getCountry(),
+                    'pageSize' => $lastWebsite->getResources(),
+                    'loadingTime' => $lastWebsite->getLoadingTime(),
+                    'queriesQuantity' => $lastWebsite->getQueriesQuantity(),
+                    'totalConsu' => $lastWebsite->getCarbonFootprint(),
+                ];
+            }
+        } elseif ($request->query->has('url_full')) {
+            return [
+                'url_full' => $request->get('url_full'),
+                'country' => $request->get('country'),
+                'pageSize' => (float)$request->get('pageSize'),
+                'loadingTime' => (float)$request->get('loadingTime'),
+                'queriesQuantity' => (int)$request->get('queriesQuantity'),
+                'totalConsu' => (float)$request->get('totalConsu'),
+            ];
+        }
+        return null;
+    }
+
+    // Fonction pour récupérer le drapeau et le code pays
+    private function getCountryData(string $country): array
+    {
+        $response = $this->httpClient->request('GET', 'https://restcountries.com/v3.1/name/' . strtolower($country));
+        $data = $response->toArray();
+        return [
+            $data[0]['flags']['svg'] ?? null,
+            $data[0]['cca2'] ?? null,
+        ];
+    }
+
+    // Fonction pour récupérer l'intensité carbone
+    private function getCarbonIntensity(string $countryCode): ?float
+    {
+        $apiToken = $_ENV['API_ELECTRICITY_MAP_KEY'];
+        $response = $this->httpClient->request('GET', 'https://api.electricitymap.org/v3/carbon-intensity/latest?', [
+            'headers' => [
+                'auth-token' => $apiToken,
+            ],
+            'query' => [
+                'zone' => $countryCode,
+            ],
+        ]);
+        $data = $response->toArray();
+        return $data['carbonIntensity'] ?? null;
     }
 }

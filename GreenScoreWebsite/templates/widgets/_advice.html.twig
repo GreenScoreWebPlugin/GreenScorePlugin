@@ -12,7 +12,7 @@
             {{advice}}
         </p>
         <div class="flex w-full justify-end">
-            <button class="{% if type == 'dev' %} bg-[#455a79]{% else %} bg-[#4b7d60]{% endif %} text-white px-4 py-2 mt-4 rounded-lg">En savoir plus</button>
+            <button class="{% if type == 'dev' %} bg-[#455a79]{% else %} bg-[#4b7d60]{% endif %} text-white px-4 py-2 mt-4 rounded-lg" onclick="window.location.href='{{ path('app_home') }}#advice'">En savoir plus</button>
         </div>
     {% else %}
         <p class="text-center text-gray-500 flex items-center justify-center h-full">pas de données</p>

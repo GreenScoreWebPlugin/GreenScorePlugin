@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'outfit': ['Outfit', 'sans-serif'],
+        'ovo': ['Ovo', 'serif']
       },
       colors: {
         'gs-green-950': '#233430',

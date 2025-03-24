@@ -16,76 +16,77 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
         parent::__construct($registry, MonitoredWebsite::class);
     }
     
-    // Recupere la derniere entree ajoutee en fonction de userId
+    // Récupère la dernière entrée ajoutée pour un utilisateur donné
     public function findLastAddedByUser(int $userId): ?MonitoredWebsite
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.user = :userId')
+            ->andWhere('m.user = :userId') // Filtre par userId
             ->setParameter('userId', $userId)
-            ->orderBy('m.id', 'DESC') 
-            ->setMaxResults(1)
+            ->orderBy('m.id', 'DESC')  // Trie par ID décroissant pour obtenir le dernier
+            ->setMaxResults(1)  // Limite à un seul résultat
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-    // Recupere la moyenne de l'empreinte carbone sur une journée en fonction de userId
+    // Récupère la moyenne de l'empreinte carbone journalière pour une liste d'utilisateurs
     public function getAverageDailyCarbonFootprint(array $usersIds): float
     {
         $qb = $this->createQueryBuilder('m')
             ->select('SUBSTRING(m.creationDate, 1, 10) as day, AVG(m.carbonFootprint) as dailyAverage')
-            ->where('m.user IN (:usersIds)')
+            ->where('m.user IN (:usersIds)') // Filtre par liste d'utilisateurs
             ->setParameter('usersIds', $usersIds)
-            ->groupBy('day');
+            ->groupBy('day');  // Groupement par jour
 
         $dailyAverages = $qb->getQuery()->getResult();
         
         if (empty($dailyAverages)) {
-            return 0.0;
+            return 0.0;  // Retourne 0 si aucune donnée n'est disponible
         }
-        
+
         $sum = 0;
         foreach ($dailyAverages as $daily) {
-            $sum += $daily['dailyAverage'];
+            $sum += $daily['dailyAverage'];  // Somme des moyennes journalières
         }
         
-        return round($sum / count($dailyAverages), 2);
+        return round($sum / count($dailyAverages), 2);  // Moyenne des moyennes, arrondie à 2 décimales
     }
 
-    // Recupere la moyenne de l'empreinte carbone sur une journée sur l'ensemble des utilisateurs
+    // Récupère la moyenne de l'empreinte carbone journalière globale
     public function getGlobalAverageDailyCarbonFootprint(): float
     {
         $qb = $this->createQueryBuilder('m')
             ->select('SUBSTRING(m.creationDate, 1, 10) as day, IDENTITY(m.user) as userId, AVG(m.carbonFootprint) as dailyAverage')
-            ->groupBy('day', 'm.user');
+            ->groupBy('day', 'm.user');  // Groupement par jour et utilisateur
 
         $dailyAverages = $qb->getQuery()->getResult();
         
         if (empty($dailyAverages)) {
-            return 0.0;
+            return 0.0;  // Retourne 0 si aucune donnée n'est disponible
         }
-        
+
         $sum = 0;
         foreach ($dailyAverages as $daily) {
-            $sum += $daily['dailyAverage'];
+            $sum += $daily['dailyAverage'];  // Somme des moyennes journalières
         }
         
-        return round($sum / count($dailyAverages), 2);
+        return round($sum / count($dailyAverages), 2);  // Moyenne globale, arrondie à 2 décimales
     }
 
-    // Recupere le top5 des sites les plus polluants en fonction d'une liste d'utilisateurs
+    // Récupère les 5 sites les plus polluants pour un ensemble d'utilisateurs
     public function getTop5PollutingSitesByUsers(array $usersIds): array
     {
         return $this->createQueryBuilder('m')
             ->select('m.urlDomain', 'SUM(m.carbonFootprint) as totalFootprint')
-            ->where('m.user IN (:usersIds)')
+            ->where('m.user IN (:usersIds)')  // Filtre par utilisateurs
             ->setParameter('usersIds', $usersIds)
-            ->groupBy('m.urlDomain')
-            ->orderBy('totalFootprint', 'DESC')
-            ->setMaxResults(5)
+            ->groupBy('m.urlDomain')  // Groupement par domaine de site
+            ->orderBy('totalFootprint', 'DESC')  // Trie par empreinte carbone totale décroissante
+            ->setMaxResults(5)  // Limite à 5 résultats
             ->getQuery()
             ->getResult();
     }
 
+    // Récupère la consommation carbone filtrée par jour, semaine ou mois
     public function getConsuByFilter(array $usersIds, string $filter): array
     {
         $date = new \DateTime();
@@ -93,24 +94,23 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
 
         switch ($filter) {
             case 'jour':
-                $startDate->modify('-6 days');
+                $startDate->modify('-6 days');  // 7 derniers jours
                 $select = 'DATE(m.creationDate) as period, SUM(m.carbonFootprint) as total_consumption';
                 $groupBy = 'period';
                 break;
             case 'semaine':
-                $startDate->modify('-3 weeks')->modify('monday this week');
+                $startDate->modify('-3 weeks')->modify('monday this week');  // Semaine précédente
                 $date->modify('sunday this week');
-                // On récupère simplement la date de création pour le traitement ultérieur
                 $select = 'DATE(m.creationDate) as period, SUM(m.carbonFootprint) as total_consumption';
                 $groupBy = 'period';
                 break;
             case 'mois':
-                $startDate->modify('-11 months');
+                $startDate->modify('-11 months');  // 12 derniers mois
                 $select = 'MONTH(m.creationDate) as month, YEAR(m.creationDate) as year, SUM(m.carbonFootprint) as total_consumption';
                 $groupBy = 'month, year';
                 break;
             default:
-                throw new \InvalidArgumentException('Filtre non valide');
+                throw new \InvalidArgumentException('Filtre non valide');  // Si le filtre n'est pas valide
         }
 
         $qb = $this->createQueryBuilder('m')
@@ -122,22 +122,23 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
             ->setParameter('endDate', $date->format('Y-m-d H:i:s'));
 
         if ($groupBy) {
-            $qb->groupBy($groupBy);
+            $qb->groupBy($groupBy);  // Groupement en fonction du filtre
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery()->getResult();  // Retourne les résultats filtrés
     }
-    
-    // Recupere la consommation totale sur un ensemble d'utilisateurs par rapport à leurs $usersIds
+
+    // Récupère la consommation totale de carbone pour un ensemble d'utilisateurs
     public function getTotalConsuOrga(array $usersIds): float
     {
         return $this->createQueryBuilder('m')
             ->select('SUM(m.carbonFootprint) as totalFootprint')
-            ->where('m.user IN (:usersIds)')
+            ->where('m.user IN (:usersIds)')  // Filtre par utilisateurs
             ->setParameter('usersIds', $usersIds)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult();  // Retourne la somme totale
     }
+
 
 
     //    /**
