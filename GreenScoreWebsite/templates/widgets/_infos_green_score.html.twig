@@ -4,7 +4,7 @@
     {% if letterGreenScore is not null %}
         <div class="flex flex-col items-center w-full gap-4">
             <!-- Bouton interactif avec couleur dynamique -->
-            <div class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 rounded-lg px-4 py-2 shadow-md 
+            <a onclick="window.location.href='{{ path('app_home') }}#greenscore'" class="text-2xl flex items-center font-bold hover:scale-105 gap-4 transition-transform duration-200 rounded-lg px-4 py-2 shadow-md cursor-pointer 
                 {% if letterGreenScore == 'A' %} bg-[#2e9b43]
                 {% elseif letterGreenScore == 'B' %} bg-[#347851]
                 {% elseif letterGreenScore == 'C' %} bg-[#cadd00]
@@ -27,7 +27,7 @@
                     {% endif %}">
                     {{ letterGreenScore }}
                 </div>
-            </div>
+            </a>
 
             <!-- Texte contextuel -->
             <p class="text-center text-lg font-medium w-4/5">
