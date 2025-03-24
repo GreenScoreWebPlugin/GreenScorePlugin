@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RegistrationLoginTest extends WebTestCase
 {
-    public function testSuccessfulRegistration(): void
+    public function testSuccessfulRegistrationUser(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/inscription');
@@ -26,12 +26,6 @@ class RegistrationLoginTest extends WebTestCase
         ]);
 
         $client->submit($form);
-/*
-        // Vérifier la redirection après inscription
-        $this->assertResponseRedirects('/login');
-
-        // Suivre la redirection
-        $client->followRedirect();*/
 
         // Vérifier que l'utilisateur existe en base de données
         $userRepository = static::getContainer()->get(UserRepository::class);
@@ -39,8 +33,34 @@ class RegistrationLoginTest extends WebTestCase
         $this->assertNotNull($user);
     }
 
+    public function testSuccessfulRegistrationOrga(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/inscription-organisation');
+
+        // Vérifier que la page s'affiche correctement
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h2', 'Observez l’empreinte carbonne de votre organisation sur le web !');
+
+        // Remplir et soumettre le formulaire
+        $form = $crawler->selectButton('Inscription')->form([
+            'registration_organisation_form[organisationName]' => 'test',
+            'registration_organisation_form[email]' => 'test@orga.com',
+            'registration_organisation_form[plainPassword]' => 'MotDePasse123!',
+            'registration_organisation_form[passwordConfirmation]' => 'MotDePasse123!',
+            'registration_organisation_form[agreeTerms]' => true,
+        ]);
+
+        $client->submit($form);
+
+        // Vérifier que l'utilisateur existe en base de données
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $user = $userRepository->findOneBy(['email' => 'test@orga.com']);
+        $this->assertNotNull($user);
+    }
+
     /**
-     * @depends testSuccessfulRegistration
+     * @depends testSuccessfulRegistrationUser
      */
     public function testInvalidRegistration(): void
     {
@@ -82,11 +102,5 @@ class RegistrationLoginTest extends WebTestCase
         // Vérifier la redirection vers la page d'accueil ou le dashboard
         $this->assertResponseRedirects();
         $client->followRedirect();
-
-        /*$userRepository = static::getContainer()->get(UserRepository::class);
-        $user = $userRepository->findOneByEmail('test@example.com');
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $entityManager->remove($user);
-        $entityManager->flush();*/
     }
 }

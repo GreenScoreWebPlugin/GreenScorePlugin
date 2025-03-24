@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -9,9 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class MyAccountTest extends WebTestCase
 {
     private static User $user;
+    private static User $orga;
 
     /**
-     * @depends App\Tests\RegistrationLoginTest::testSuccessfulRegistration
+     * @depends App\Tests\RegistrationLoginTest::testSuccessfulRegistrationOrga
      */
     public function testSuccessGetMyAccount()
     {
@@ -36,22 +37,6 @@ class MyAccountTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.grid h1', 'Vous n’avez pas encore rejoint d’organisation !');
-    }
-
-    /**
-     * @depends testSuccessGetMyAccountOrga
-     */
-    public function testSuccessOrgaExist()
-    {
-        $client = static::createClient();
-        $client->loginUser(self::$user);
-        $client->request('POST', '/mon-compte/organisation/exist', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['code' => 'N5DPL2MI']));
-
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString(
-            json_encode(['success' => true]),
-            $client->getResponse()->getContent()
-        );
     }
 
     /**
@@ -87,6 +72,37 @@ class MyAccountTest extends WebTestCase
     }
 
     /**
+     * @depends testSuccessGetMyAccount
+     */
+    public function testSuccessGetMyOrganisation()
+    {
+        $client = static::createClient();
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        self::$orga = $userRepository->findOneByEmail('test@orga.com');
+        $client->loginUser(self::$orga);
+        $client->request('GET', '/gerer-organisation');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Bonjour test!');
+    }
+
+    /**
+     * @depends testSuccessGetMyAccountOrga
+     */
+    public function testSuccessOrgaExist()
+    {
+        $client = static::createClient();
+        $client->loginUser(self::$user);
+        $client->request('POST', '/mon-compte/organisation/exist', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['code' => self::$orga->getIsAdminOf()->getOrganisationCode()]));
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonStringEqualsJsonString(
+            json_encode(['success' => true]),
+            $client->getResponse()->getContent()
+        );
+    }
+
+    /**
      * @depends testSuccessOrgaExist
      */
     public function testSuccessJoinOrga()
@@ -97,7 +113,7 @@ class MyAccountTest extends WebTestCase
 
         // Soumettre un formulaire avec un email invalide
         $form = $crawler->selectButton('Rejoindre')->form([
-            'codeOrganisation' => 'N5DPL2MI',
+            'codeOrganisation' => self::$orga->getIsAdminOf()->getOrganisationCode(),
         ]);
         $client->submit($form);
 
@@ -108,7 +124,7 @@ class MyAccountTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('div.text-green-800 div span', 'Vous avez bien rejoint l\'organisation nommée orga pour les tests');
+        $this->assertSelectorTextContains('div.text-green-800 div span', 'Vous avez bien rejoint l\'organisation nommée ' . self::$orga->getIsAdminOf()->getOrganisationName());
 
     }
 
@@ -157,7 +173,7 @@ class MyAccountTest extends WebTestCase
     /**
      * @depends testSuccessLeaveOrga
      */
-    public function testSuccessDeleteAccount()
+    public function testSuccessDeleteUserAccount()
     {
         $client = static::createClient();
         $client->loginUser(self::$user);
@@ -167,7 +183,20 @@ class MyAccountTest extends WebTestCase
             json_encode(['success' => true, 'redirect' => '/inscription']),
             $client->getResponse()->getContent()
         );
-        // Vérifier la redirection après inscription
-        //$this->assertResponseRedirects('/inscription');
+    }
+
+    /**
+     * @depends testSuccessGetMyOrganisation
+     */
+    public function testSuccessDeleteOrgaAccount()
+    {
+        $client = static::createClient();
+        $client->loginUser(self::$orga);
+        $client->request('DELETE', '/api/organization/delete');
+
+        $this->assertJsonStringEqualsJsonString(
+            json_encode(['success' => true, 'redirect' => '/inscription-organisation']),
+            $client->getResponse()->getContent()
+        );
     }
 }
