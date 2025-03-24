@@ -12,7 +12,7 @@ class MyAccountTest extends WebTestCase
     private static User $orga;
 
     /**
-     * @depends App\Tests\RegistrationLoginTest::testSuccessfulRegistrationOrga
+     * @depends App\Tests\Controller\RegistrationLoginTest::testSuccessfulRegistrationOrga
      */
     public function testSuccessGetMyAccount()
     {
