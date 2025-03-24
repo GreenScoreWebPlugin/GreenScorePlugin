@@ -16,22 +16,27 @@ class AdviceRepository extends ServiceEntityRepository
         parent::__construct($registry, Advice::class);
     }
 
-    // Recupere un conseil aleatoire en fonction de isDev
+    // Récupère un conseil aléatoire en fonction de la valeur de isDev
     public function findRandomByIsDev(bool $isDev): ?Advice
     {
+        // Crée une requête pour récupérer les IDs des conseils correspondant à isDev
         $qb = $this->createQueryBuilder('a')
             ->select('a.id')
-            ->where('a.isDev = :isDev')
+            ->where('a.isDev = :isDev') // Filtre par isDev
             ->setParameter('isDev', $isDev);
 
+        // Exécute la requête et extrait les IDs sous forme de tableau
         $ids = array_column($qb->getQuery()->getArrayResult(), 'id');
 
+        // Si aucun conseil n'est trouvé, retourne null
         if (empty($ids)) {
             return null;
         }
 
+        // Sélectionne un ID aléatoire parmi les résultats
         $randomId = $ids[array_rand($ids)];
 
+        // Retourne le conseil correspondant à l'ID aléatoire
         return $this->find($randomId);
     }
 
