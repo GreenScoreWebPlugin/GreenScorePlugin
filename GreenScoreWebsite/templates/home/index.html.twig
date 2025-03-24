@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="min-h-screen bg-gs-green-950 text-white font-['Ovo']">
-		<div class="bg-[url(../../public/images/background.png)] bg-cover flex flex-col items-center pt-16 pb-0 px-4 sm:px-6 lg:px-8 h-[calc(100vh-96px)] overflow-hidden md:justify-between">
+		<div class="bg-[url(../../public/images/background.png)] bg-cover flex flex-col items-center pt-20 pb-0 px-4 sm:px-6 lg:px-8 h-[calc(100vh-96px)] overflow-hidden md:justify-between">
 			<div class="max-w-4xl w-full text-center md:w-[703px]">
 				<h1 class="text-4xl text-gs-green-950 mb-4 font-outfit font-extrabold sm:text-5xl">Mesurez votre empreinte carbone sur le web !</h1>
 				
@@ -129,7 +129,7 @@
                     </p>
                     {% if app.user %}
                         <div id='browser-plugin-container' class="hidden lg:block">
-                            <div class="inline-flex items-center bg-gray-300 text-gray-500 font-outfit font-regular p-3 rounded-full mx-auto shadow-md cursor-not-allowed">
+                            <div class="inline-flex items-center bg-gray-300 text-gray-500 font-outfit font-regular py-3 px-5 rounded-full mx-auto shadow-md cursor-not-allowed">
                                 <span class="mr-4">S'inscrire</span>
                                 <span class="bg-gray-400 px-3 py-1.5 rounded-full flex items-center justify-center">
                                     <i class="fa-solid fa-arrow-right"></i>
@@ -230,24 +230,22 @@
                     <div class="swiper-container advice-swiper">
                         <div class="swiper-wrapper">
                             {% for item in advice %}
-                                <div class="swiper-slide h-full" data-isdev="{{ item.isDev }}">
-                                    <div class="bg-white rounded-xl shadow-md p-6 mx-1 h-full flex flex-col">
-                                        <div class="flex items-start h-full">
-                                            <div class="bg-[#F5F7FF] p-3 rounded-lg icon-square mr-4 flex-shrink-0">
-                                                <i class="{{ item.icon }} text-black text-4xl"></i>
-                                            </div>
-                                            <div class="flex-grow align-middle">
-                                                <h3 class="font-outfit font-regular mb-1">{{ item.title }}</h3>
-                                                <p class="text-sm font-extralight text-gray-600">{{ item.advice }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+							<div class="swiper-slide h-full" data-isdev="{{ item.isDev }}">
+								<div class="bg-white rounded-xl shadow-md p-4 h-full flex items-center mx-1">
+									<div class="bg-[#F5F7FF] p-3 rounded-lg icon-square mr-4 flex-shrink-0">
+										<i class="{{ item.icon }} text-black text-4xl"></i>
+									</div>
+									<div>
+										<h3 class="font-outfit font-regular mb-1">{{ item.title }}</h3>
+										<p class="text-sm font-extralight text-gray-600">{{ item.advice }}</p>
+									</div>
+								</div>
+							</div>							
                             {% endfor %}
                         </div>
                     </div>
 
-					<div class="swiper-button-prev custom-nav-btn absolute left-0 top-1/2 transform  z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
+					<div class="swiper-button-prev custom-nav-btn absolute left-0 top-1/2 transform z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
 					<div class="swiper-button-next custom-nav-btn absolute right-0 top-1/2 transform z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"></div>
 				</div>
 
@@ -549,7 +547,7 @@
 
 					swiper = new Swiper('.advice-swiper', {
 						slidesPerView: 1,
-						spaceBetween: 25,
+						spaceBetween: 8,
 						loop: false,
 						loopFillGroupWithBlank: true,
 						pagination: {
@@ -568,17 +566,17 @@
 						breakpoints: {
 							640: {
 								slidesPerView: 1,
-								spaceBetween: 25,
+								spaceBetween: 8,
 								slidesPerGroup: 1
 							},
 							1024: {
 								slidesPerView: 2,
-								spaceBetween: 25,
+								spaceBetween: 8,
 								slidesPerGroup: 2
 							},
 							1280: {
 								slidesPerView: 3,
-								spaceBetween: 25,
+								spaceBetween: 8,
 								slidesPerGroup: 3
 							}
 						},
