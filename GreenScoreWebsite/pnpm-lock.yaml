@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '-':
+        specifier: ^0.0.1
+        version: 0.0.1
       chart.js:
         specifier: ^4.4.6
         version: 4.4.6
+      stimulus:
+        specifier: ^3.2.2
+        version: 3.2.2
     devDependencies:
       '@babel/core':
         specifier: ^7.17.0
@@ -22,7 +28,7 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2
       '@hotwired/turbo':
-        specifier: ^7.1.1 || ^8.0
+        specifier: ^8.0.12
         version: 8.0.12
       '@symfony/stimulus-bridge':
         specifier: ^3.2.0
@@ -68,6 +74,9 @@ importers:
         version: 1.15.0
 
 packages:
+
+  '-@0.0.1':
+    resolution: {integrity: sha512-3HfneK3DGAm05fpyj20sT3apkNcvPpCuccOThOPdzz8sY7GgQGe0l93XH9bt+YzibcTIgUAIMoyVJI740RtgyQ==}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -2105,6 +2114,9 @@ packages:
   stackframe@1.3.4:
     resolution: {integrity: sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==}
 
+  stimulus@3.2.2:
+    resolution: {integrity: sha512-sEGK0ofeMuW+B2oPLTigCqxl47P9vRfZxeqzY5Hk1u0QPWS8DZhW+VOEEyngtzdHM+MutXKGBT8BkUKoA0060Q==}
+
   string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
@@ -2328,6 +2340,8 @@ packages:
     engines: {node: '>=12.20'}
 
 snapshots:
+
+  '-@0.0.1': {}
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -4419,6 +4433,11 @@ snapshots:
   source-map@0.6.1: {}
 
   stackframe@1.3.4: {}
+
+  stimulus@3.2.2:
+    dependencies:
+      '@hotwired/stimulus': 3.2.2
+      '@hotwired/stimulus-webpack-helpers': 1.0.1(@hotwired/stimulus@3.2.2)
 
   string-width@4.2.3:
     dependencies:

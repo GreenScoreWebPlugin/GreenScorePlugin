@@ -6,6 +6,9 @@ use App\Entity\Organisation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/*!
+ * Cette classe est le repository qui permet de trouver les organisations.
+ */
 /**
  * @extends ServiceEntityRepository<Organisation>
  */

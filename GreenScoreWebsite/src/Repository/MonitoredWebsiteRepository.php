@@ -3,9 +3,14 @@
 namespace App\Repository;
 
 use App\Entity\MonitoredWebsite;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use InvalidArgumentException;
 
+/*!
+ * Cette classe est le repository qui permet de trouver les sites monitorés par l'utilisateur.
+ */
 /**
  * @extends ServiceEntityRepository<MonitoredWebsite>
  */
@@ -89,7 +94,7 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
     // Récupère la consommation carbone filtrée par jour, semaine ou mois
     public function getConsuByFilter(array $usersIds, string $filter): array
     {
-        $date = new \DateTime();
+        $date = new DateTime();
         $startDate = clone $date;
 
         switch ($filter) {
@@ -110,7 +115,7 @@ class MonitoredWebsiteRepository extends ServiceEntityRepository
                 $groupBy = 'month, year';
                 break;
             default:
-                throw new \InvalidArgumentException('Filtre non valide');  // Si le filtre n'est pas valide
+                throw new InvalidArgumentException('Filtre non valide');  // Si le filtre n'est pas valide
         }
 
         $qb = $this->createQueryBuilder('m')

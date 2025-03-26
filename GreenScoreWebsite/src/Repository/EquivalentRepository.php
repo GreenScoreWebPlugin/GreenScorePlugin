@@ -6,6 +6,10 @@ use App\Entity\Equivalent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/*!
+ * Cette classe est une extension de la classe ServiceEntityRepository qui permet de récupérer des équivalents de
+ * manière aléatoire en faisant attention à avoir des valeurs cohérentes et qui restent compréhensibles.
+ */
 /**
  * @extends ServiceEntityRepository<Equivalent>
  */

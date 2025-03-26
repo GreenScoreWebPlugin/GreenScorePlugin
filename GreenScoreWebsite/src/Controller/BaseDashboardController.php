@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\MonitoredWebsiteRepository;
 use App\Service\EquivalentCalculatorService;
 use App\Service\CalculateGreenScoreService;
+use DateTime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,12 +14,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Psr\Log\LoggerInterface;
 
+/*!
+ * Cette classe est un controller qui contient toutes les routes de notre API afin de pouvoir les appeler depuis
+ * le frontend de l'application Web, mais aussi depuis le plugin.
+ */
 class BaseDashboardController extends AbstractController
 {
-    protected HttpClientInterface $httpClient;
-    protected LoggerInterface $logger;
-    protected EquivalentCalculatorService $equivalentCalculatorService;
-    protected CalculateGreenScoreService $calculateGreenScoreService;
+    protected HttpClientInterface $httpClient; ///< Stocke l'objet HttpClientInterface qui permet de faire des requêtes HTTP
+    protected LoggerInterface $logger; ///< Stocke l'objet LoggerInterface qui permet de logger les erreurs
+    protected EquivalentCalculatorService $equivalentCalculatorService; ///< Stocke l'objet EquivalentCalculatorService qui permet de calculer les équivalents
+    protected CalculateGreenScoreService $calculateGreenScoreService; ///< Stocke l'objet CalculateGreenScoreService qui permet de calculer le GreenScore
 
     public function __construct(HttpClientInterface $httpClient, LoggerInterface $logger, EquivalentCalculatorService $equivalentCalculatorService, CalculateGreenScoreService $calculateGreenScoreService)
     {
@@ -120,7 +125,7 @@ class BaseDashboardController extends AbstractController
             return $this->json(['error' => 'La liste des utilisateurs est vide ou invalide'], 400);
         }
 
-        $date = new \DateTime();
+        $date = new DateTime();
         $consuData = $repository->getConsuByFilter($usersIds, $filter);
         
         // Préparation des périodes et données
@@ -136,7 +141,7 @@ class BaseDashboardController extends AbstractController
         }
     }
 
-    protected function formatDailyData(array $consuData, \DateTime $currentDate): JsonResponse
+    protected function formatDailyData(array $consuData, DateTime $currentDate): JsonResponse
     {
         $labels = [];
         $data = [];
@@ -161,7 +166,7 @@ class BaseDashboardController extends AbstractController
         ]);
     }
 
-    protected function formatWeeklyData(array $consuData, \DateTime $currentDate): JsonResponse
+    protected function formatWeeklyData(array $consuData, DateTime $currentDate): JsonResponse
     {
         $labels = ['s-3', 's-2', 's-1', 's'];
         $data = array_fill(0, 4, 0);
@@ -181,7 +186,7 @@ class BaseDashboardController extends AbstractController
 
         // On traite chaque entrée de données
         foreach ($consuData as $item) {
-            $date = new \DateTime($item['period']);
+            $date = new DateTime($item['period']);
             
             // On cherche dans quelle semaine tombe cette date
             foreach ($weekStarts as $weekIndex => $weekDates) {
@@ -199,7 +204,7 @@ class BaseDashboardController extends AbstractController
         ]);
     }
 
-    protected function formatMonthlyData(array $consuData, \DateTime $currentDate): JsonResponse
+    protected function formatMonthlyData(array $consuData, DateTime $currentDate): JsonResponse
     {
         $labels = [];
         $data = array_fill(0, 12, 0);

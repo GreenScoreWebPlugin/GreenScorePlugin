@@ -1,12 +1,16 @@
 <?php
 namespace App\Controller;
 
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/*!
+ * Cette classe est un controller qui permet de conserver le cookie de consentement à l'utilisateur
+ */
 class CookieConsentController extends AbstractController
 {
     #[Route('/cookie/consent', name: 'cookie_consent', methods: ['POST'])]
@@ -16,7 +20,7 @@ class CookieConsentController extends AbstractController
         
         $cookie = Cookie::create('cookie_consent')
             ->withValue('accepted')
-            ->withExpires((new \DateTime())->modify('+1 year'))
+            ->withExpires((new DateTime())->modify('+1 year'))
             ->withPath('/')
             ->withSecure(true)
             ->withHttpOnly(true)

@@ -7,6 +7,9 @@ use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface; // Ajout pour logger les erreurs
 use Exception;
 
+/*!
+ * Cette classe permet de calculer le score de GreenScore en fonction de la consommation des utilisateurs.
+*/
 class CalculateGreenScoreService
 {
     public function __construct(

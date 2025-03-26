@@ -11,6 +11,9 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
+/*!
+ * Cette classe est le repository qui permet de trouver les utilisateurs.
+ */
 /**
  * @extends ServiceEntityRepository<User>
  */
