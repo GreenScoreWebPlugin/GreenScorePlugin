@@ -93,14 +93,6 @@ class RegistrationFormType extends AbstractType
                     new ConfirmPassword(),
                 ],
             ])
-            ->add('organisation', TextType::class, [
-                'label' => 'Vous souhaitez rejoindre une organisation ?',
-                'required' => false,
-                'error_bubbling' => false,
-                'attr' => [
-                    'placeholder' => 'Entrez le code que votre organisation vous a envoyé',
-                ],
-            ])
         ;
     }
 
