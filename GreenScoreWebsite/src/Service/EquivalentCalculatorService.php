@@ -3,7 +3,11 @@
 namespace App\Service;
 
 use App\Repository\EquivalentRepository;
+use Exception;
 
+/*!
+ * Cette classe permet de calculer les équivalents CO2 en fonction de la consommation des utilisateurs.
+ */
 class EquivalentCalculatorService
 {
     public function __construct(
@@ -24,7 +28,7 @@ class EquivalentCalculatorService
         // Récupération d'un nombre aléatoire d'équivalents, selon le ratio
         try {
             $equivalents = $this->equivalentRepository->findRandomEquivalents($count, $ratio);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Erreur lors de la récupération des équivalents : ' . $e->getMessage());
             return ['error' => 'Impossible de récupérer les équivalents à ce moment.'];
         }

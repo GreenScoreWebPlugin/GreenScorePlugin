@@ -4,46 +4,51 @@ namespace App\Entity;
 
 use App\Repository\MonitoredWebsiteRepository;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/*!
+* Cette classe est l'entité "Site monitoré", elle permet de stocker toutes les pages sur lequel l'utilisateur est allé
+* afin de pouvoir les monitorer et les afficher dans les différents dashboards ou sur le plugin.
+*/
 #[ORM\Entity(repositoryClass: MonitoredWebsiteRepository::class)]
 class MonitoredWebsite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = null; ///< L'id du site monitoré
 
     #[ORM\ManyToOne(inversedBy: 'monitoredWebsites')]
-    private ?User $user = null;
+    private ?User $user = null; ///< L'utilisateur qui monitore le site
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $urlDomain = null;
+    private ?string $urlDomain = null; ///< L'URL du domaine du site
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $urlFull = null;
+    private ?string $urlFull = null; ///< L'URL complète du site
 
     #[ORM\Column(nullable: true)]
-    private ?int $queriesQuantity = null;
+    private ?int $queriesQuantity = null; ///< Le nombre de requêtes effectuées sur la page
 
     #[ORM\Column(nullable: true)]
-    private ?float $carbonFootprint = null;
+    private ?float $carbonFootprint = null; ///< L'empreinte carbone de la page
 
     #[ORM\Column(nullable: true)]
-    private ?float $dataTransferred = null;
+    private ?float $dataTransferred = null; ///< Le poids des données transférées sur la page
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $resources = null;
+    private ?string $resources = null; ///< Les ressources nécessaires pour la page
 
     #[ORM\Column(nullable: true)]
-    private ?float $loadingTime = null;
+    private ?float $loadingTime = null; ///< Temps de chargement de la page
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $country = null;
+    private ?string $country = null; ///< Ville dans laquelle se trouve l'utilisateur
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeInterface $creationDate = null;
+    private ?DateTimeInterface $creationDate = null; ///< Date de création
 
     function __construct()
     {
@@ -163,12 +168,12 @@ class MonitoredWebsite
         return $this;
     }
 
-    public function getCreationDate(): ?\DateTimeInterface
+    public function getCreationDate(): ?DateTimeInterface
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(?\DateTimeInterface $creationDate): static
+    public function setCreationDate(?DateTimeInterface $creationDate): static
     {
         $this->creationDate = $creationDate;
 

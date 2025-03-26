@@ -16,6 +16,9 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Email;
 
+/*!
+ * Cette classe permet de créer le formulaire de création d'un compte.
+ */
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -88,14 +91,6 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Merci de confirmer votre mot de passe.',
                     ]),
                     new ConfirmPassword(),
-                ],
-            ])
-            ->add('organisation', TextType::class, [
-                'label' => 'Vous souhaitez rejoindre une organisation ?',
-                'required' => false,
-                'error_bubbling' => false,
-                'attr' => [
-                    'placeholder' => 'Entrez le code que votre organisation vous a envoyé',
                 ],
             ])
         ;

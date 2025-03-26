@@ -28,6 +28,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/*!
+ * Cette classe contient toutes les routes relatives à la gestion du compte de l'utilisateur.
+ */
 class MyAccountController extends AbstractController
 {
     #[IsGranted('ROLE_USER')]

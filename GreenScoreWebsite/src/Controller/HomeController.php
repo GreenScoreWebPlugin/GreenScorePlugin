@@ -11,6 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/*!
+ * Cette classe est un controller qui permet de récupérer la page d'accueil de notre site Web
+ */
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]

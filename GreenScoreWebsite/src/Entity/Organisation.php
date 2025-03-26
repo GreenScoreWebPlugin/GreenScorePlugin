@@ -10,6 +10,9 @@ use RuntimeException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints\Unique;
 
+/*!
+ * Cette classe est l'entité "Organisatioj", elle permet de stocker toutes les organisations.
+ */
 #[ORM\Entity(repositoryClass: OrganisationRepository::class)]
 #[UniqueEntity(fields: ['siret'], message: 'Ce numéro SIRET est déjà utilisé.')]
 class Organisation
@@ -17,28 +20,28 @@ class Organisation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = null; ///< Id de l'organisation
 
     #[ORM\Column(length: 255)]
-    private ?string $organisationName = null;
+    private ?string $organisationName = null; ///< Nom de l'organisation
 
     #[ORM\Column(length: 20)]
-    private ?string $organisationCode = null;
+    private ?string $organisationCode = null; ///< Code de l'organisation
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $city = null;
+    private ?string $city = null; ///< Ville de l'organisation
 
     #[ORM\Column(length: 14,nullable: true)]
-    private ?string $siret = null;
+    private ?string $siret = null; ///< Numéro SIRET de l'organisation
 
     /**
      * @var Collection<int, User>
      */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organisation')]
-    private Collection $users;
+    private Collection $users; ///< Les utilisateurs de l'organisation
 
     #[ORM\OneToOne(mappedBy: 'isAdminOf', cascade: ['persist', 'remove'])]
-    private ?User $organisationAdmin = null;
+    private ?User $organisationAdmin = null; ///< L'administrateur de l'organisation
 
     public function __construct()
     {

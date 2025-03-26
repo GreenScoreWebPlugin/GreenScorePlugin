@@ -1,0 +1,26 @@
+var class_app_1_1_entity_1_1_user =
+[
+    [ "__construct", "class_app_1_1_entity_1_1_user.html#a095c5d389db211932136b53f25f39685", null ],
+    [ "addMonitoredWebsite", "class_app_1_1_entity_1_1_user.html#abe86cf9a39635c33b15f12f7dbccec55", null ],
+    [ "eraseCredentials", "class_app_1_1_entity_1_1_user.html#ac565b8c00fe93ce673f8237849f072a6", null ],
+    [ "getEmail", "class_app_1_1_entity_1_1_user.html#a02a01849f28e2535e888ae4ec87b20f2", null ],
+    [ "getFirstName", "class_app_1_1_entity_1_1_user.html#ace5f32fc99c7c5989f7576755fc60972", null ],
+    [ "getId", "class_app_1_1_entity_1_1_user.html#a12251d0c022e9e21c137a105ff683f13", null ],
+    [ "getIsAdminOf", "class_app_1_1_entity_1_1_user.html#aedf5f709b5ee24b6314d6542347baa86", null ],
+    [ "getLastName", "class_app_1_1_entity_1_1_user.html#a717286a8348a6cf9f6d5fecb04a55fad", null ],
+    [ "getMonitoredWebsites", "class_app_1_1_entity_1_1_user.html#a7a8e8ba88443f4a81e95d413fdbe35bc", null ],
+    [ "getOrganisation", "class_app_1_1_entity_1_1_user.html#a6de2428c23efdaba843faa0ad56ae4f9", null ],
+    [ "getPassword", "class_app_1_1_entity_1_1_user.html#a04e0957baeb7acde9c0c86556da2d43f", null ],
+    [ "getRoles", "class_app_1_1_entity_1_1_user.html#aa676cae5ee8d7fb6862a8724adc2660d", null ],
+    [ "getTotalCarbonFootprint", "class_app_1_1_entity_1_1_user.html#a4c2fd2f35bdc46479dc8ece284289d1b", null ],
+    [ "getUserIdentifier", "class_app_1_1_entity_1_1_user.html#a189038d671f9143e20141026f1aa7969", null ],
+    [ "removeMonitoredWebsite", "class_app_1_1_entity_1_1_user.html#ab800e33807cc5f716052927fded0d3cc", null ],
+    [ "setEmail", "class_app_1_1_entity_1_1_user.html#a2d22391fa86fa0eaf3b9d2a3c29880bc", null ],
+    [ "setFirstName", "class_app_1_1_entity_1_1_user.html#a637eb11e9d855bad1249754812eff95c", null ],
+    [ "setIsAdminOf", "class_app_1_1_entity_1_1_user.html#af127ae21165af1c5cc82d066090a9ae5", null ],
+    [ "setLastName", "class_app_1_1_entity_1_1_user.html#a42a3db6fc0a1ec6a212b81f59dad6a76", null ],
+    [ "setOrganisation", "class_app_1_1_entity_1_1_user.html#a1bfc3d84cc344b07efe04352ecd63139", null ],
+    [ "setPassword", "class_app_1_1_entity_1_1_user.html#a81e0f429784973551fb5417d5b92b0db", null ],
+    [ "setRoles", "class_app_1_1_entity_1_1_user.html#aa3236c9c6688d04df16ea0ab3065530e", null ],
+    [ "setTotalCarbonFootprint", "class_app_1_1_entity_1_1_user.html#a48454cebba7fa03e144f7b4b79e3b15f", null ]
+];

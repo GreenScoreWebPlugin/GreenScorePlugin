@@ -6,6 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/*!
+ * Cette classe est un controller qui permet de récupérer les pages de la partie "footer" de notre site Web
+ */
 class FooterController extends AbstractController
 {
     #[Route('/conditions-generales-d-utilisation', name: 'app_get_conditions_generales_d_utilisation')]

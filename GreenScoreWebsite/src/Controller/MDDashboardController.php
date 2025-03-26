@@ -9,6 +9,10 @@ use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/*!
+ * Cette classe contient les routes pour consulter les dashboards d'un utilisateur.
+ * MDD : my datas dashboard
+ */
 class MDDashboardController extends BaseDashboardController
 {
     #[Route('/mes-donnees', name: 'app_my_datas')]

@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
+/*!
+ * Cette classe est le controller qui permet de récupérer les données de la dernière page Web consultée
+ * LPC : Last Page Consulted
+ */
 class LPCDashboardController extends BaseDashboardController
 {
     #[Route('/derniere-page-web-consultee', name: 'app_last_page_consulted')]

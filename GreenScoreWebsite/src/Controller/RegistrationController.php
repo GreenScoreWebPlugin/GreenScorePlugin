@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+/*!
+ * Cette classe est générée automatiquement par symfony console et permet de générer les routes relatives à l'inscription
+ */
 class RegistrationController extends AbstractController
 {
     public function __construct()

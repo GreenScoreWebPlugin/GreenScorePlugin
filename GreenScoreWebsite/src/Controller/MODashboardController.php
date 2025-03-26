@@ -9,6 +9,10 @@ use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/*!
+ * Cette classe contient les routes pour consulter les dashboards d'une organisation.
+ * MOD : my organisation dashboard
+ */
 class MODashboardController extends BaseDashboardController
 {
 

@@ -6,6 +6,9 @@ use App\Entity\Advice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/*!
+ * Cette classe est le repository qui permet de trouver un conseil aléatoire en fonction de la valeur de isDev.
+ */
 /**
  * @extends ServiceEntityRepository<Advice>
  */

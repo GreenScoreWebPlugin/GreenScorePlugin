@@ -12,6 +12,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 
+/*!
+ * Cette classe permet de créer le formulaire de modification de mon organisation.
+ */
 class MyOrganisationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
