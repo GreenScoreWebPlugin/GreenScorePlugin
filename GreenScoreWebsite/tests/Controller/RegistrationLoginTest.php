@@ -11,11 +11,9 @@ class RegistrationLoginTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/inscription');
 
-        // Vérifier que la page s'affiche correctement
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Prêts à agir ?');
 
-        // Remplir et soumettre le formulaire
         $form = $crawler->selectButton('Inscription')->form([
             'registration_form[firstName]' => 'test',
             'registration_form[lastName]' => 'test',
@@ -38,11 +36,9 @@ class RegistrationLoginTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/inscription-organisation');
 
-        // Vérifier que la page s'affiche correctement
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Observez l’empreinte carbonne de votre organisation sur le web !');
 
-        // Remplir et soumettre le formulaire
         $form = $crawler->selectButton('Inscription')->form([
             'registration_organisation_form[organisationName]' => 'test',
             'registration_organisation_form[email]' => 'test@orga.com',
@@ -53,7 +49,6 @@ class RegistrationLoginTest extends WebTestCase
 
         $client->submit($form);
 
-        // Vérifier que l'utilisateur existe en base de données
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['email' => 'test@orga.com']);
         $this->assertNotNull($user);
@@ -67,7 +62,6 @@ class RegistrationLoginTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/inscription');
 
-        // Soumettre un formulaire avec un email invalide
         $form = $crawler->selectButton('Inscription')->form([
             'registration_form[firstName]' => 'test',
             'registration_form[lastName]' => 'test',
@@ -87,11 +81,9 @@ class RegistrationLoginTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
-        // Vérifier que la page s'affiche correctement
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Vous nous avez manqué !');
 
-        // Remplir et soumettre le formulaire
         $form = $crawler->selectButton('Connexion')->form([
             'email' => 'test@example.com',
             'password' => 'MotDePasse123!',
@@ -99,7 +91,6 @@ class RegistrationLoginTest extends WebTestCase
 
         $client->submit($form);
 
-        // Vérifier la redirection vers la page d'accueil ou le dashboard
         $this->assertResponseRedirects();
         $client->followRedirect();
     }

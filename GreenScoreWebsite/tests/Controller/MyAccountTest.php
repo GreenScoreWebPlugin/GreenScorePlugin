@@ -138,16 +138,13 @@ class MyAccountTest extends WebTestCase
         $client->loginUser(self::$user);
         $crawler = $client->request('POST', '/mon-compte/organisation');
 
-        // Soumettre un formulaire avec un email invalide
         $form = $crawler->selectButton('Rejoindre')->form([
             'codeOrganisation' => self::$orga->getIsAdminOf()->getOrganisationCode(),
         ]);
         $client->submit($form);
 
-        // Vérifier la redirection après inscription
         $this->assertResponseRedirects('/mon-compte/organisation');
 
-        // Suivre la redirection
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
@@ -169,10 +166,8 @@ class MyAccountTest extends WebTestCase
             'codeOrganisation' => 'DKIZ2F10'
         ]);
 
-        // Vérifier la redirection après inscription
         $this->assertResponseRedirects('/mon-compte/organisation');
 
-        // Suivre la redirection
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
@@ -193,10 +188,8 @@ class MyAccountTest extends WebTestCase
         $client->loginUser(self::$user);
         $client->request('POST', '/mon-compte/organisation/remove-organisation');
 
-        // Vérifier la redirection après inscription
         $this->assertResponseRedirects('/mon-compte/organisation');
 
-        // Suivre la redirection
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
