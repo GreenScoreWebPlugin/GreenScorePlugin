@@ -16,12 +16,17 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessGetMyAccount()
     {
+        // GIVEN
         $client = static::createClient();
         $userRepository = static::getContainer()->get(UserRepository::class);
+        // Retrieves the user created in the testSuccessfulRegistrationUser
         self::$user = $userRepository->findOneByEmail('test@example.com');
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request('GET', '/mon-compte');
 
+        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Bonjour ' . self::$user->getFirstName());
     }
@@ -31,10 +36,14 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessGetMyAccountOrga()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request('GET', '/mon-compte/organisation');
 
+        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains(
             'div.grid h1',
@@ -47,8 +56,11 @@ class MyAccountTest extends WebTestCase
      */
     public function testFailOrgaExistBadLength()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request(
             'POST',
             '/mon-compte/organisation/exist',
@@ -58,6 +70,7 @@ class MyAccountTest extends WebTestCase
             json_encode(['code' => 'TEST'])
         );
 
+        // THEN
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonStringEqualsJsonString(
             json_encode(['success' => false, 'errorMessage' => 'Code invalide']),
@@ -70,8 +83,11 @@ class MyAccountTest extends WebTestCase
      */
     public function testFailOrgaExistNotExist()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request(
             'POST',
             '/mon-compte/organisation/exist',
@@ -81,6 +97,7 @@ class MyAccountTest extends WebTestCase
             json_encode(['code' => 'TESTTEST'])
         );
 
+        // THEN
         $this->assertResponseStatusCodeSame(400);
         $this->assertJsonStringEqualsJsonString(
             json_encode(['success' => false, 'errorMessage' => 'Ce code n\'est pas valide']),
@@ -93,12 +110,17 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessGetMyOrganisation()
     {
+        // GIVEN
         $client = static::createClient();
         $userRepository = static::getContainer()->get(UserRepository::class);
+        // Retrieves the organisation created in the testSuccessfulRegistrationOrga
         self::$orga = $userRepository->findOneByEmail('test@orga.com');
         $client->loginUser(self::$orga);
+
+        // WHEN
         $client->request('GET', '/gerer-organisation');
 
+        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains(
             'h1',
@@ -111,8 +133,11 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessOrgaExist()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request(
             'POST',
             '/mon-compte/organisation/exist',
@@ -122,6 +147,7 @@ class MyAccountTest extends WebTestCase
             json_encode(['code' => self::$orga->getIsAdminOf()->getOrganisationCode()])
         );
 
+        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertJsonStringEqualsJsonString(
             json_encode(['success' => true]),
@@ -134,8 +160,11 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessJoinOrga()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $crawler = $client->request('POST', '/mon-compte/organisation');
 
         $form = $crawler->selectButton('Rejoindre')->form([
@@ -143,6 +172,7 @@ class MyAccountTest extends WebTestCase
         ]);
         $client->submit($form);
 
+        // THEN
         $this->assertResponseRedirects('/mon-compte/organisation');
 
         $client->followRedirect();
@@ -160,12 +190,16 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessChangeOrga()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request('POST', '/mon-compte/organisation/change-or-join-organisation', [
             'codeOrganisation' => 'DKIZ2F10'
         ]);
 
+        // THEN
         $this->assertResponseRedirects('/mon-compte/organisation');
 
         $client->followRedirect();
@@ -184,10 +218,14 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessLeaveOrga()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request('POST', '/mon-compte/organisation/remove-organisation');
 
+        // THEN
         $this->assertResponseRedirects('/mon-compte/organisation');
 
         $client->followRedirect();
@@ -204,10 +242,14 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessDeleteUserAccount()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$user);
+
+        // WHEN
         $client->request('DELETE', '/api/user/delete');
 
+        // THEN
         $this->assertJsonStringEqualsJsonString(
             json_encode(['success' => true, 'redirect' => '/inscription']),
             $client->getResponse()->getContent()
@@ -219,10 +261,14 @@ class MyAccountTest extends WebTestCase
      */
     public function testSuccessDeleteOrgaAccount()
     {
+        // GIVEN
         $client = static::createClient();
         $client->loginUser(self::$orga);
+
+        // WHEN
         $client->request('DELETE', '/api/organization/delete');
 
+        // THEN
         $this->assertJsonStringEqualsJsonString(
             json_encode(['success' => true, 'redirect' => '/inscription-organisation']),
             $client->getResponse()->getContent()
