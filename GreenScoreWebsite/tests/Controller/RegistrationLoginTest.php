@@ -11,14 +11,11 @@ class RegistrationLoginTest extends WebTestCase
         // GIVEN
         $client = static::createClient();
 
-        // WHEN
         $crawler = $client->request('GET', '/inscription');
-
-        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Prêts à agir ?');
 
-        // GIVEN
+        // WHEN
         $form = $crawler->selectButton('Inscription')->form([
             'registration_form[firstName]' => 'test',
             'registration_form[lastName]' => 'test',
@@ -28,7 +25,6 @@ class RegistrationLoginTest extends WebTestCase
             'registration_form[agreeTerms]' => true,
         ]);
 
-        // WHEN
         $client->submit($form);
 
         // THEN
@@ -42,14 +38,11 @@ class RegistrationLoginTest extends WebTestCase
         // GIVEN
         $client = static::createClient();
 
-        // WHEN
         $crawler = $client->request('GET', '/inscription-organisation');
-
-        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Observez l’empreinte carbonne de votre organisation sur le web !');
 
-        // GIVEN
+        // WHEN
         $form = $crawler->selectButton('Inscription')->form([
             'registration_organisation_form[organisationName]' => 'test',
             'registration_organisation_form[email]' => 'test@orga.com',
@@ -58,7 +51,6 @@ class RegistrationLoginTest extends WebTestCase
             'registration_organisation_form[agreeTerms]' => true,
         ]);
 
-        // WHEN
         $client->submit($form);
 
         // THEN
@@ -75,14 +67,11 @@ class RegistrationLoginTest extends WebTestCase
         // GIVEN
         $client = static::createClient();
 
-        // WHEN
         $crawler = $client->request('GET', '/inscription');
-
-        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Prêts à agir ?');
 
-        // GIVEN
+        // WHEN
         $form = $crawler->selectButton('Inscription')->form([
             'registration_form[firstName]' => 'test',
             'registration_form[lastName]' => 'test',
@@ -92,7 +81,6 @@ class RegistrationLoginTest extends WebTestCase
             'registration_form[agreeTerms]' => false,
         ]);
 
-        // WHEN
         $client->submit($form);
 
         // THEN
@@ -105,24 +93,19 @@ class RegistrationLoginTest extends WebTestCase
         // GIVEN
         $client = static::createClient();
 
-        // WHEN
         $crawler = $client->request('GET', '/login');
-
-        // THEN
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h2', 'Vous nous avez manqué !');
 
-        // GIVEN
+        // WHEN
         $form = $crawler->selectButton('Connexion')->form([
             'email' => 'test@example.com',
             'password' => 'MotDePasse123!',
         ]);
 
-        // WHEN
         $client->submit($form);
 
         // THEN
         $this->assertResponseRedirects();
-        $client->followRedirect();
     }
 }
