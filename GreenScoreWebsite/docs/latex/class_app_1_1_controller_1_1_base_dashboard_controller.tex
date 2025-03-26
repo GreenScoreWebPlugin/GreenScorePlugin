@@ -1,0 +1,170 @@
+\doxysection{Base\+Dashboard\+Controller Class Reference}
+\hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller}{}\label{class_app_1_1_controller_1_1_base_dashboard_controller}\index{BaseDashboardController@{BaseDashboardController}}
+Inheritance diagram for Base\+Dashboard\+Controller\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_app_1_1_controller_1_1_base_dashboard_controller}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_af70a4afee41e01f5a5f7ab2e6a248a16}{\+\_\+\+\_\+construct}} (Http\+Client\+Interface \$http\+Client, Logger\+Interface \$logger, \mbox{\hyperlink{class_app_1_1_service_1_1_equivalent_calculator_service}{Equivalent\+Calculator\+Service}} \$equivalent\+Calculator\+Service, \mbox{\hyperlink{class_app_1_1_service_1_1_calculate_green_score_service}{Calculate\+Green\+Score\+Service}} \$calculate\+Green\+Score\+Service)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_afa5928c5c81cb93425481d0cd58591cd}{get\+Consu\+By\+User}} (Request \$request, \mbox{\hyperlink{class_app_1_1_repository_1_1_monitored_website_repository}{Monitored\+Website\+Repository}} \$repository, string \$filter)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_ab4f43ec0de5d6ee3ac60697bf2fcb347}{get\+Top\+Sites\+By\+Organisation}} (Request \$request, \mbox{\hyperlink{class_app_1_1_repository_1_1_monitored_website_repository}{Monitored\+Website\+Repository}} \$repository)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_af5b02cdc61e64e5796c1b41e5d3557aa}{get\+Equivalent}} (Request \$request)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a2ab0eac1de98e63bfa369f3c01d8544a}{format\+Consumption}} (?float \$total\+Consu)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a91d38ddfbb827191eea3bef460035157}{format\+Unit\+Consumption}} (?float \$total\+Consu)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a58fb1b88e882f61918b7f09b68081bb9}{format\+Size}} (?float \$size)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_ac541a2ab4e3472063aad7d0f11a43305}{format\+Unit\+Size}} (?float \$size)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a7461e9254011b7fbeb9b0286de2ffd8c}{format\+Daily\+Data}} (array \$consu\+Data, \textbackslash{}Date\+Time \$current\+Date)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a89975c7b8d0d067f2aa57f614f2029df}{format\+Weekly\+Data}} (array \$consu\+Data, \textbackslash{}Date\+Time \$current\+Date)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a1fcb6e784844fb5be5f87a18a8bae911}{format\+Monthly\+Data}} (array \$consu\+Data, \textbackslash{}Date\+Time \$current\+Date)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Http\+Client\+Interface \mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_aaaf10de3cbbf06c43234aa5337d817dc}{\$http\+Client}}
+\begin{DoxyCompactList}\small\item\em Stocke l\textquotesingle{}objet Http\+Client\+Interface qui permet de faire des requêtes HTTP. \end{DoxyCompactList}\item 
+Logger\+Interface \mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_ad0d21473a15cfd8c4df0d0eb013c9546}{\$logger}}
+\begin{DoxyCompactList}\small\item\em Stocke l\textquotesingle{}objet Logger\+Interface qui permet de logger les erreurs. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_app_1_1_service_1_1_equivalent_calculator_service}{Equivalent\+Calculator\+Service}} \mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a1b50f871ae82558dadbf96547a480273}{\$equivalent\+Calculator\+Service}}
+\begin{DoxyCompactList}\small\item\em Stocke l\textquotesingle{}objet Equivalent\+Calculator\+Service qui permet de calculer les équivalents. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_app_1_1_service_1_1_calculate_green_score_service}{Calculate\+Green\+Score\+Service}} \mbox{\hyperlink{class_app_1_1_controller_1_1_base_dashboard_controller_a8efbc5f302a97fc053872664f741683a}{\$calculate\+Green\+Score\+Service}}
+\begin{DoxyCompactList}\small\item\em Stocke l\textquotesingle{}objet Calculate\+Green\+Score\+Service qui permet de calculer le Green\+Score. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Cette classe est un controller qui contient toutes les routes de notre API afin de pouvoir les appeler depuis le frontend de l\textquotesingle{}application Web, mais aussi depuis le plugin. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_af70a4afee41e01f5a5f7ab2e6a248a16}\index{BaseDashboardController@{BaseDashboardController}!\_\_construct@{\_\_construct}}
+\index{\_\_construct@{\_\_construct}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{\_\_construct()}{\_\_construct()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_af70a4afee41e01f5a5f7ab2e6a248a16} 
+\+\_\+\+\_\+construct (\begin{DoxyParamCaption}\item[{Http\+Client\+Interface}]{\$http\+Client}{, }\item[{Logger\+Interface}]{\$logger}{, }\item[{\mbox{\hyperlink{class_app_1_1_service_1_1_equivalent_calculator_service}{Equivalent\+Calculator\+Service}}}]{\$equivalent\+Calculator\+Service}{, }\item[{\mbox{\hyperlink{class_app_1_1_service_1_1_calculate_green_score_service}{Calculate\+Green\+Score\+Service}}}]{\$calculate\+Green\+Score\+Service}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a2ab0eac1de98e63bfa369f3c01d8544a}\index{BaseDashboardController@{BaseDashboardController}!formatConsumption@{formatConsumption}}
+\index{formatConsumption@{formatConsumption}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatConsumption()}{formatConsumption()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a2ab0eac1de98e63bfa369f3c01d8544a} 
+format\+Consumption (\begin{DoxyParamCaption}\item[{?float}]{\$total\+Consu}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a7461e9254011b7fbeb9b0286de2ffd8c}\index{BaseDashboardController@{BaseDashboardController}!formatDailyData@{formatDailyData}}
+\index{formatDailyData@{formatDailyData}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatDailyData()}{formatDailyData()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a7461e9254011b7fbeb9b0286de2ffd8c} 
+format\+Daily\+Data (\begin{DoxyParamCaption}\item[{array}]{\$consu\+Data}{, }\item[{\textbackslash{}Date\+Time}]{\$current\+Date}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a1fcb6e784844fb5be5f87a18a8bae911}\index{BaseDashboardController@{BaseDashboardController}!formatMonthlyData@{formatMonthlyData}}
+\index{formatMonthlyData@{formatMonthlyData}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatMonthlyData()}{formatMonthlyData()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a1fcb6e784844fb5be5f87a18a8bae911} 
+format\+Monthly\+Data (\begin{DoxyParamCaption}\item[{array}]{\$consu\+Data}{, }\item[{\textbackslash{}Date\+Time}]{\$current\+Date}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a58fb1b88e882f61918b7f09b68081bb9}\index{BaseDashboardController@{BaseDashboardController}!formatSize@{formatSize}}
+\index{formatSize@{formatSize}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatSize()}{formatSize()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a58fb1b88e882f61918b7f09b68081bb9} 
+format\+Size (\begin{DoxyParamCaption}\item[{?float}]{\$size}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a91d38ddfbb827191eea3bef460035157}\index{BaseDashboardController@{BaseDashboardController}!formatUnitConsumption@{formatUnitConsumption}}
+\index{formatUnitConsumption@{formatUnitConsumption}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatUnitConsumption()}{formatUnitConsumption()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a91d38ddfbb827191eea3bef460035157} 
+format\+Unit\+Consumption (\begin{DoxyParamCaption}\item[{?float}]{\$total\+Consu}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_ac541a2ab4e3472063aad7d0f11a43305}\index{BaseDashboardController@{BaseDashboardController}!formatUnitSize@{formatUnitSize}}
+\index{formatUnitSize@{formatUnitSize}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatUnitSize()}{formatUnitSize()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_ac541a2ab4e3472063aad7d0f11a43305} 
+format\+Unit\+Size (\begin{DoxyParamCaption}\item[{?float}]{\$size}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a89975c7b8d0d067f2aa57f614f2029df}\index{BaseDashboardController@{BaseDashboardController}!formatWeeklyData@{formatWeeklyData}}
+\index{formatWeeklyData@{formatWeeklyData}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{formatWeeklyData()}{formatWeeklyData()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a89975c7b8d0d067f2aa57f614f2029df} 
+format\+Weekly\+Data (\begin{DoxyParamCaption}\item[{array}]{\$consu\+Data}{, }\item[{\textbackslash{}Date\+Time}]{\$current\+Date}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_afa5928c5c81cb93425481d0cd58591cd}\index{BaseDashboardController@{BaseDashboardController}!getConsuByUser@{getConsuByUser}}
+\index{getConsuByUser@{getConsuByUser}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{getConsuByUser()}{getConsuByUser()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_afa5928c5c81cb93425481d0cd58591cd} 
+get\+Consu\+By\+User (\begin{DoxyParamCaption}\item[{Request}]{\$request}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_monitored_website_repository}{Monitored\+Website\+Repository}}}]{\$repository}{, }\item[{string}]{\$filter}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_af5b02cdc61e64e5796c1b41e5d3557aa}\index{BaseDashboardController@{BaseDashboardController}!getEquivalent@{getEquivalent}}
+\index{getEquivalent@{getEquivalent}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{getEquivalent()}{getEquivalent()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_af5b02cdc61e64e5796c1b41e5d3557aa} 
+get\+Equivalent (\begin{DoxyParamCaption}\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_ab4f43ec0de5d6ee3ac60697bf2fcb347}\index{BaseDashboardController@{BaseDashboardController}!getTopSitesByOrganisation@{getTopSitesByOrganisation}}
+\index{getTopSitesByOrganisation@{getTopSitesByOrganisation}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{getTopSitesByOrganisation()}{getTopSitesByOrganisation()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_ab4f43ec0de5d6ee3ac60697bf2fcb347} 
+get\+Top\+Sites\+By\+Organisation (\begin{DoxyParamCaption}\item[{Request}]{\$request}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_monitored_website_repository}{Monitored\+Website\+Repository}}}]{\$repository}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Field Documentation}
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a8efbc5f302a97fc053872664f741683a}\index{BaseDashboardController@{BaseDashboardController}!\$calculateGreenScoreService@{\$calculateGreenScoreService}}
+\index{\$calculateGreenScoreService@{\$calculateGreenScoreService}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{\$calculateGreenScoreService}{\$calculateGreenScoreService}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a8efbc5f302a97fc053872664f741683a} 
+\mbox{\hyperlink{class_app_1_1_service_1_1_calculate_green_score_service}{Calculate\+Green\+Score\+Service}} \$calculate\+Green\+Score\+Service\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Stocke l\textquotesingle{}objet Calculate\+Green\+Score\+Service qui permet de calculer le Green\+Score. 
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_a1b50f871ae82558dadbf96547a480273}\index{BaseDashboardController@{BaseDashboardController}!\$equivalentCalculatorService@{\$equivalentCalculatorService}}
+\index{\$equivalentCalculatorService@{\$equivalentCalculatorService}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{\$equivalentCalculatorService}{\$equivalentCalculatorService}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_a1b50f871ae82558dadbf96547a480273} 
+\mbox{\hyperlink{class_app_1_1_service_1_1_equivalent_calculator_service}{Equivalent\+Calculator\+Service}} \$equivalent\+Calculator\+Service\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Stocke l\textquotesingle{}objet Equivalent\+Calculator\+Service qui permet de calculer les équivalents. 
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_aaaf10de3cbbf06c43234aa5337d817dc}\index{BaseDashboardController@{BaseDashboardController}!\$httpClient@{\$httpClient}}
+\index{\$httpClient@{\$httpClient}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{\$httpClient}{\$httpClient}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_aaaf10de3cbbf06c43234aa5337d817dc} 
+Http\+Client\+Interface \$http\+Client\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Stocke l\textquotesingle{}objet Http\+Client\+Interface qui permet de faire des requêtes HTTP. 
+
+\Hypertarget{class_app_1_1_controller_1_1_base_dashboard_controller_ad0d21473a15cfd8c4df0d0eb013c9546}\index{BaseDashboardController@{BaseDashboardController}!\$logger@{\$logger}}
+\index{\$logger@{\$logger}!BaseDashboardController@{BaseDashboardController}}
+\doxysubsubsection{\texorpdfstring{\$logger}{\$logger}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_base_dashboard_controller_ad0d21473a15cfd8c4df0d0eb013c9546} 
+Logger\+Interface \$logger\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Stocke l\textquotesingle{}objet Logger\+Interface qui permet de logger les erreurs. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Controller/\mbox{\hyperlink{_base_dashboard_controller_8php}{Base\+Dashboard\+Controller.\+php}}\end{DoxyCompactItemize}

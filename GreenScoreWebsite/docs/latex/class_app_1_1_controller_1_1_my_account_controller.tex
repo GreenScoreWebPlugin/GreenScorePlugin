@@ -1,0 +1,105 @@
+\doxysection{My\+Account\+Controller Class Reference}
+\hypertarget{class_app_1_1_controller_1_1_my_account_controller}{}\label{class_app_1_1_controller_1_1_my_account_controller}\index{MyAccountController@{MyAccountController}}
+Inheritance diagram for My\+Account\+Controller\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_app_1_1_controller_1_1_my_account_controller}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a959086a407e7479d04061eaaa3873e87}{\+\_\+\+\_\+construct}} (private Entity\+Manager\+Interface \$entity\+Manager, Logger\+Interface \$logger)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a97b6d58e605d9d45aca3f3dcf46afa2b}{my\+Organisation}} (Entity\+Manager\+Interface \$entity\+Manager, Request \$request,)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a609337e8318d0f319c0aa8fa6d9284ff}{leave\+Organisation}} (Request \$request, Entity\+Manager\+Interface \$entity\+Manager)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_aeccec013d0db56d9eb6004f67c8a7b39}{check\+Code\+Organisation\+Exists}} (Request \$request, Entity\+Manager\+Interface \$entity\+Manager)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a891db0156b3785a66c0e7c643a5624a2}{change\+Or\+Join\+Organisation}} (Request \$request, \mbox{\hyperlink{class_app_1_1_repository_1_1_organisation_repository}{Organisation\+Repository}} \$organisation\+Repository, Entity\+Manager\+Interface \$entity\+Manager)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_ad8f10664d6e31da7767508bf40cb3a6f}{delete\+User}} (Entity\+Manager\+Interface \$entity\+Manager, \mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}} \$user\+Repository, Token\+Storage\+Interface \$token\+Storage, Session\+Interface \$session)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a50761d57e7e402caad98fbcc90355035}{my\+Organisation\+Account}} (Entity\+Manager\+Interface \$entity\+Manager, Request \$request, User\+Password\+Hasher\+Interface \$user\+Password\+Hasher)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a2b5ead4bd0518724517a724ba2d0a64e}{handle\+Organisation\+Members}} (Entity\+Manager\+Interface \$entity\+Manager, \mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}} \$user\+Repository, Request \$request)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a765e2b9f38a7a45422010d4438318186}{remove\+Member}} (int \$id, Entity\+Manager\+Interface \$entity\+Manager, \mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}} \$user\+Repository)
+\item 
+\mbox{\hyperlink{class_app_1_1_controller_1_1_my_account_controller_a29020b91223cfe5fd26994d09f714b46}{delete}} (Entity\+Manager\+Interface \$entity\+Manager, \mbox{\hyperlink{class_app_1_1_repository_1_1_organisation_repository}{Organisation\+Repository}} \$organisation\+Repository, \mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}} \$user\+Repository,)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Cette classe contient toutes les routes relatives à la gestion du compte de l\textquotesingle{}utilisateur. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a959086a407e7479d04061eaaa3873e87}\index{MyAccountController@{MyAccountController}!\_\_construct@{\_\_construct}}
+\index{\_\_construct@{\_\_construct}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{\_\_construct()}{\_\_construct()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a959086a407e7479d04061eaaa3873e87} 
+\+\_\+\+\_\+construct (\begin{DoxyParamCaption}\item[{private Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{Logger\+Interface}]{\$logger}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a891db0156b3785a66c0e7c643a5624a2}\index{MyAccountController@{MyAccountController}!changeOrJoinOrganisation@{changeOrJoinOrganisation}}
+\index{changeOrJoinOrganisation@{changeOrJoinOrganisation}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{changeOrJoinOrganisation()}{changeOrJoinOrganisation()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a891db0156b3785a66c0e7c643a5624a2} 
+change\+Or\+Join\+Organisation (\begin{DoxyParamCaption}\item[{Request}]{\$request}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_organisation_repository}{Organisation\+Repository}}}]{\$organisation\+Repository}{, }\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_aeccec013d0db56d9eb6004f67c8a7b39}\index{MyAccountController@{MyAccountController}!checkCodeOrganisationExists@{checkCodeOrganisationExists}}
+\index{checkCodeOrganisationExists@{checkCodeOrganisationExists}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{checkCodeOrganisationExists()}{checkCodeOrganisationExists()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_aeccec013d0db56d9eb6004f67c8a7b39} 
+check\+Code\+Organisation\+Exists (\begin{DoxyParamCaption}\item[{Request}]{\$request}{, }\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a29020b91223cfe5fd26994d09f714b46}\index{MyAccountController@{MyAccountController}!delete@{delete}}
+\index{delete@{delete}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{delete()}{delete()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a29020b91223cfe5fd26994d09f714b46} 
+delete (\begin{DoxyParamCaption}\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_organisation_repository}{Organisation\+Repository}}}]{\$organisation\+Repository}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}}}]{\$user\+Repository}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_ad8f10664d6e31da7767508bf40cb3a6f}\index{MyAccountController@{MyAccountController}!deleteUser@{deleteUser}}
+\index{deleteUser@{deleteUser}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{deleteUser()}{deleteUser()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_ad8f10664d6e31da7767508bf40cb3a6f} 
+delete\+User (\begin{DoxyParamCaption}\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}}}]{\$user\+Repository}{, }\item[{Token\+Storage\+Interface}]{\$token\+Storage}{, }\item[{Session\+Interface}]{\$session}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a2b5ead4bd0518724517a724ba2d0a64e}\index{MyAccountController@{MyAccountController}!handleOrganisationMembers@{handleOrganisationMembers}}
+\index{handleOrganisationMembers@{handleOrganisationMembers}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{handleOrganisationMembers()}{handleOrganisationMembers()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a2b5ead4bd0518724517a724ba2d0a64e} 
+handle\+Organisation\+Members (\begin{DoxyParamCaption}\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}}}]{\$user\+Repository}{, }\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a609337e8318d0f319c0aa8fa6d9284ff}\index{MyAccountController@{MyAccountController}!leaveOrganisation@{leaveOrganisation}}
+\index{leaveOrganisation@{leaveOrganisation}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{leaveOrganisation()}{leaveOrganisation()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a609337e8318d0f319c0aa8fa6d9284ff} 
+leave\+Organisation (\begin{DoxyParamCaption}\item[{Request}]{\$request}{, }\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a97b6d58e605d9d45aca3f3dcf46afa2b}\index{MyAccountController@{MyAccountController}!myOrganisation@{myOrganisation}}
+\index{myOrganisation@{myOrganisation}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{myOrganisation()}{myOrganisation()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a97b6d58e605d9d45aca3f3dcf46afa2b} 
+my\+Organisation (\begin{DoxyParamCaption}\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a50761d57e7e402caad98fbcc90355035}\index{MyAccountController@{MyAccountController}!myOrganisationAccount@{myOrganisationAccount}}
+\index{myOrganisationAccount@{myOrganisationAccount}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{myOrganisationAccount()}{myOrganisationAccount()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a50761d57e7e402caad98fbcc90355035} 
+my\+Organisation\+Account (\begin{DoxyParamCaption}\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{Request}]{\$request}{, }\item[{User\+Password\+Hasher\+Interface}]{\$user\+Password\+Hasher}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_controller_1_1_my_account_controller_a765e2b9f38a7a45422010d4438318186}\index{MyAccountController@{MyAccountController}!removeMember@{removeMember}}
+\index{removeMember@{removeMember}!MyAccountController@{MyAccountController}}
+\doxysubsubsection{\texorpdfstring{removeMember()}{removeMember()}}
+{\footnotesize\ttfamily \label{class_app_1_1_controller_1_1_my_account_controller_a765e2b9f38a7a45422010d4438318186} 
+remove\+Member (\begin{DoxyParamCaption}\item[{int}]{\$id}{, }\item[{Entity\+Manager\+Interface}]{\$entity\+Manager}{, }\item[{\mbox{\hyperlink{class_app_1_1_repository_1_1_user_repository}{User\+Repository}}}]{\$user\+Repository}{}\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Controller/\mbox{\hyperlink{_my_account_controller_8php}{My\+Account\+Controller.\+php}}\end{DoxyCompactItemize}

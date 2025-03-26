@@ -1,0 +1,25 @@
+var class_app_1_1_entity_1_1_monitored_website =
+[
+    [ "__construct", "class_app_1_1_entity_1_1_monitored_website.html#a095c5d389db211932136b53f25f39685", null ],
+    [ "getCarbonFootprint", "class_app_1_1_entity_1_1_monitored_website.html#af728643ef5f84011b218ccee2854a628", null ],
+    [ "getCountry", "class_app_1_1_entity_1_1_monitored_website.html#ad92da151b159c2bdbb64cbe7a4790d1a", null ],
+    [ "getCreationDate", "class_app_1_1_entity_1_1_monitored_website.html#a17072aae3ddaedb292d72eb55cfbe045", null ],
+    [ "getDataTransferred", "class_app_1_1_entity_1_1_monitored_website.html#a8427c97285d63a17b55b34921c09776d", null ],
+    [ "getId", "class_app_1_1_entity_1_1_monitored_website.html#a12251d0c022e9e21c137a105ff683f13", null ],
+    [ "getLoadingTime", "class_app_1_1_entity_1_1_monitored_website.html#a13c096f935faad112eef90d0b25b63c2", null ],
+    [ "getQueriesQuantity", "class_app_1_1_entity_1_1_monitored_website.html#a02d74cbbbf98ae2bd63c6a9738ae07a4", null ],
+    [ "getResources", "class_app_1_1_entity_1_1_monitored_website.html#acfe6846338dbf5cf990a593d55cbdc4c", null ],
+    [ "getUrlDomain", "class_app_1_1_entity_1_1_monitored_website.html#acea190f5440a03e49995317f9a1518e0", null ],
+    [ "getUrlFull", "class_app_1_1_entity_1_1_monitored_website.html#a9afa39c2042d87b1b5eb506ea0699a3e", null ],
+    [ "getUser", "class_app_1_1_entity_1_1_monitored_website.html#ae81b7186fb97a7c6457edcc68c9aa2ef", null ],
+    [ "setCarbonFootprint", "class_app_1_1_entity_1_1_monitored_website.html#aee7e5cedf648fa1abfcb320114bd30ee", null ],
+    [ "setCountry", "class_app_1_1_entity_1_1_monitored_website.html#a0b27c85e15d4a410ff8802a750e0c87a", null ],
+    [ "setCreationDate", "class_app_1_1_entity_1_1_monitored_website.html#af47de60ff3d73bc0cd5cdadf43f4a786", null ],
+    [ "setDataTransferred", "class_app_1_1_entity_1_1_monitored_website.html#a6e78cae432070cf04254a8511f5c3ed6", null ],
+    [ "setLoadingTime", "class_app_1_1_entity_1_1_monitored_website.html#aef78c883b82d882644f393cead10ea63", null ],
+    [ "setQueriesQuantity", "class_app_1_1_entity_1_1_monitored_website.html#acef096deb964c47c16f3d55c1cb226dc", null ],
+    [ "setResources", "class_app_1_1_entity_1_1_monitored_website.html#a78d92fa3f919ec528829f2bb597099b9", null ],
+    [ "setUrlDomain", "class_app_1_1_entity_1_1_monitored_website.html#a9d85e06416e025d2ebee345d3fc476e7", null ],
+    [ "setUrlFull", "class_app_1_1_entity_1_1_monitored_website.html#aaafae4f390912fdf21a6688cfbec2508", null ],
+    [ "setUser", "class_app_1_1_entity_1_1_monitored_website.html#a406a111868b45aad6d4c8ab5b0c5bcb9", null ]
+];
