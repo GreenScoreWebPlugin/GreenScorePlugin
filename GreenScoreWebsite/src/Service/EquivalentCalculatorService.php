@@ -1,5 +1,4 @@
 <?php
-// src/Service/EquivalentCalculator.php
 
 namespace App\Service;
 

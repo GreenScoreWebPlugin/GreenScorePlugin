@@ -1,16 +1,15 @@
 <?php
-// src/Service/CalculateGreenScoreService.php
-
 namespace App\Service;
 
 use App\Repository\UserRepository;
-use Psr\Log\LoggerInterface; // Ajout pour logger les erreurs
+use Psr\Log\LoggerInterface;
 use Exception;
 
 class CalculateGreenScoreService
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -22,25 +21,24 @@ class CalculateGreenScoreService
 
         // Cas spécifique pour les pages 'mon-organisation' et 'mes-donnees'
         if ($page == 'mon-organisation' || $page == 'mes-donnees') {
-            // Sélection de la consommation moyenne et de la consommation la plus faible selon la page
-            if ($page == 'mon-organisation') {
-                // Récupère la moyenne de consommation carbone et la consommation la plus faible pour l'organisation
-                $averageConsumption = $this->userRepository->getOrganisationGlobalAverageCarbonFootprint();
-                $leastConsumption = $this->userRepository->getOrganisationLeastConsumptionCarbonFootprint();
-            }
-            if ($page == 'mes-donnees') {
-                // Récupère la moyenne de consommation carbone et la consommation la plus faible pour tous les utilisateurs
-                $averageConsumption = $this->userRepository->getGlobalAverageCarbonFootprint();
-                $leastConsumption = $this->userRepository->getLeastConsumptionCarbonFootprint();
-            }
+            try {
+                // Sélection de la consommation moyenne et de la consommation la plus faible selon la page
+                if ($page == 'mon-organisation') {
+                    // Récupère la moyenne de consommation carbone et la consommation la plus faible pour l'organisation
+                    $averageConsumption = $this->userRepository->getOrganisationGlobalAverageCarbonFootprint();
+                    $leastConsumption = $this->userRepository->getOrganisationLeastConsumptionCarbonFootprint();
+                } else {
+                    // Récupère la moyenne de consommation carbone et la consommation la plus faible pour tous les utilisateurs
+                    $averageConsumption = $this->userRepository->getGlobalAverageCarbonFootprint();
+                    $leastConsumption = $this->userRepository->getLeastConsumptionCarbonFootprint();
+                }
 
-            // Vérification des données nécessaires avant de calculer le score
-            if ($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu !== null) {
-                // Calcul de la plage de consommation
-                $maxConsumption = ($averageConsumption - $leastConsumption) * 2;
-                $scale = ($maxConsumption - $leastConsumption) / 7;
+                // Vérification des données nécessaires avant de calculer le score
+                if ($averageConsumption && $leastConsumption && $averageConsumption > 0 && $totalConsu !== null) {
+                    // Calcul de la plage de consommation
+                    $maxConsumption = ($averageConsumption - $leastConsumption) * 2;
+                    $scale = ($maxConsumption - $leastConsumption) / 7;
 
-                try {
                     // Détermine la catégorie en fonction de la consommation totale
                     switch (true) {
                         case ($totalConsu < $leastConsumption + $scale):
@@ -67,7 +65,7 @@ class CalculateGreenScoreService
                             $envNomination = 'Exploitant Intense';
                             $letterGreenScore = 'F';
                             break;
-                        case ($totalConsu >= $leastConsumption + $scale * 7):
+                        case ($totalConsu >= $leastConsumption + $scale * 6):
                             $envNomination = 'Grand Consommateur';
                             $letterGreenScore = 'G';
                             break;
@@ -76,12 +74,12 @@ class CalculateGreenScoreService
                             $letterGreenScore = null;
                             break;
                     }
-                } catch (Exception $e) {
-                    // Gestion des erreurs avec logging
-                    $this->logger->error('Erreur lors de la récupération du badge GreenScore : ' . $e->getMessage());
-                    $envNomination = null;
-                    $letterGreenScore = null;
                 }
+            } catch (Exception $e) {
+                // Gestion des erreurs avec logging
+                $this->logger->error('Erreur lors de la récupération du badge GreenScore : ' . $e->getMessage());
+                $envNomination = null;
+                $letterGreenScore = null;
             }
 
             // Retourne la réponse avec les données calculées
@@ -92,7 +90,6 @@ class CalculateGreenScoreService
 
             return $response;
         } else {
-            // Cas pour d'autres pages où l'échelle est basée sur une valeur fixe (0.25)
             try {
                 $echelle = 0.25;  // Définition de l'échelle pour d'autres pages
 
@@ -102,27 +99,27 @@ class CalculateGreenScoreService
                         $envNomination = 'Maître des Forêts';
                         $letterGreenScore = 'A';
                         break;
-                    case ($totalConsu > $echelle && $totalConsu < $echelle * 2):
+                    case ($totalConsu >= $echelle && $totalConsu < $echelle * 2):
                         $envNomination = 'Protecteur des Bois';
                         $letterGreenScore = 'B';
                         break;
-                    case ($totalConsu > $echelle * 2 && $totalConsu < $echelle * 3):
+                    case ($totalConsu >= $echelle * 2 && $totalConsu < $echelle * 3):
                         $envNomination = 'Frère des Arbres';
                         $letterGreenScore = 'C';
                         break;
-                    case ($totalConsu > $echelle * 3 && $totalConsu < $echelle * 4):
+                    case ($totalConsu >= $echelle * 3 && $totalConsu < $echelle * 4):
                         $envNomination = 'Initié de la Nature';
                         $letterGreenScore = 'D';
                         break;
-                    case ($totalConsu > $echelle * 4 && $totalConsu < $echelle * 5):
+                    case ($totalConsu >= $echelle * 4 && $totalConsu < $echelle * 5):
                         $envNomination = 'Explorateur Imprudent';
                         $letterGreenScore = 'E';
                         break;
-                    case ($totalConsu > $echelle * 5 && $totalConsu < $echelle * 6):
+                    case ($totalConsu >= $echelle * 5 && $totalConsu < $echelle * 6):
                         $envNomination = 'Tempête Numérique';
                         $letterGreenScore = 'F';
                         break;
-                    case ($totalConsu > $echelle * 6):
+                    case ($totalConsu >= $echelle * 6):
                         $envNomination = 'Bouleverseur des Écosystèmes';
                         $letterGreenScore = 'G';
                         break;
@@ -142,7 +139,7 @@ class CalculateGreenScoreService
             } catch (Exception $e) {
                 // Gestion des erreurs avec logging
                 $this->logger->error('Erreur lors de la récupération du badge GreenScore : ' . $e->getMessage());
-                $letterEcoIndex = null;
+                return [['envNomination' => null, 'letterGreenScore' => null]];
             }
         }
     }
