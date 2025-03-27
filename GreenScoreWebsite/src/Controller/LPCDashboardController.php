@@ -38,7 +38,7 @@ class LPCDashboardController extends BaseDashboardController
         $flagUrl = null;
         $error = null;
 
-        if (!$noData && $user) {
+        if (!$noData) {
             try {
                 // Récupération du drapeau et du code pays
                 [$flagUrl, $countryCode] = $this->getCountryData($data['country']);
@@ -78,7 +78,7 @@ class LPCDashboardController extends BaseDashboardController
             }
         }
 
-        if ($user) {
+        if (!$noData) {
             return $this->render('dashboards/last_page_consulted.html.twig', [
                 'page' => 'derniere-page-web-consultee',
                 'title' => 'Dernière page web consultée',
@@ -123,7 +123,7 @@ class LPCDashboardController extends BaseDashboardController
                     'totalConsu' => $lastWebsite->getCarbonFootprint(),
                 ];
             }
-        } elseif ($request->query->has('url_full')) {
+        } else if ($request->query->has('url_full')) {
             return [
                 'url_full' => $request->get('url_full'),
                 'country' => $request->get('country'),
