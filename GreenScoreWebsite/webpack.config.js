@@ -23,6 +23,7 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('dashboard', './assets/js/dashboard.js')
     .addEntry('base', './assets/js/base.js')
+    .addEntry('home', './assets/js/home.js')
     .addEntry('my_account', './assets/controllers/my_account_controller.js')
     .addEntry('cookie_consent', './assets/js/cookie-consent.js')
 
