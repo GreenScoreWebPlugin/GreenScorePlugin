@@ -24,8 +24,14 @@ cd GreenScorePlugin
 cd GreenScoreWebsite
 ```
 
-#### Nous demander pour pouvoir tester !!!
-Pour que le projet fonctionne en local, il vous faut les identifiants de la base de données dans un fichier .env.local que nous vous enverrons, et qui sera à placer à la racine du dossier GreenScoreWebsite.
+#### Ajouter les .env.local
+Pour que le projet fonctionne en local, il vous faut les identifiants de la base de données dans deux fichier .env.local. Pour cela, vous pouvez utiliser les deux .env.local suivant :
+
+- Site : [.env.local](./generic_env_local/website.env.local), que vous devrez mettre à la racine du dossier 'GreenScoreWebsite'
+- Plugin : [.env.local](./generic_env_local/plugin.env.local), que vous devrez mettre à la racine du dossier 'BackendPlugin'
+
+Pensez a correctement les renommer '.env.local' et à changer les valeurs dans les .env.local pour qu'ils fonctionnent correctement avec votre base de données.
+Pour que la récupération de l'empreinte carbone fonctionne, pensez à créer une clé API et l'ajouter correctement dans le .env.local du site.
 
 
 #### Installer les dépendances
