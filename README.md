@@ -33,6 +33,10 @@ Pour que le projet fonctionne en local, il vous faut les identifiants de la base
 Pensez a correctement les renommer '.env.local' et à changer les valeurs dans les .env.local pour qu'ils fonctionnent correctement avec votre base de données.
 Pour que la récupération de l'empreinte carbone fonctionne, pensez à créer une clé API et l'ajouter correctement dans le .env.local du site.
 
+#### Base de données
+Pour que la base de données puisse fonctionner, il vous faut utiliser le .sql suivant :
+
+[greenscore.sql](./generic_env_local/greenscore.sql)
 
 #### Installer les dépendances
 Installez les dépendances nécessaires à Symfony :
