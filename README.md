@@ -33,6 +33,9 @@ Pour que le projet fonctionne en local, il vous faut les identifiants de la base
 Pensez a correctement les renommer '.env.local' et à changer les valeurs dans les .env.local pour qu'ils fonctionnent correctement avec votre base de données.
 Pour que la récupération de l'empreinte carbone fonctionne, pensez à créer une clé API et l'ajouter correctement dans le .env.local du site.
 
+#### Modifier les adresses du plugin
+Pour que le plugin puisse fonctionner correctement, il vous faut paramétrer le fichier [config.js](./Plugin/src/config.js) pour permettre au plugin une connexion vers son backend, ainsi que l'accès au site et l'API.
+
 #### Base de données
 Pour que la base de données puisse fonctionner, il vous faut utiliser le .sql suivant :
 

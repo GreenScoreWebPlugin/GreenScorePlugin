@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <p class="text-3xl font-bold font-outfit">${message.message}</p>
           <a
             id="details-button"
-            href="127.0.0.1:8000/#"
+            href="${CONFIG.BACKEND.BASE_URL}/#"
             class="flex justify-center items-center py-2 px-4 text-white font-outfit font-medium bg-gs-green-950 rounded-lg"
           >
             Plus d'informations
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (detailsButton) {
           detailsButton.addEventListener("click", (event) => {
             event.preventDefault(); // Empêche la navigation par défaut
-            browser.tabs.create({ url: "http://127.0.0.1:8000/#" });
+            browser.tabs.create({ url: `${CONFIG.BACKEND.BASE_URL}/#` });
           });
         }
       }
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           loginSection.innerHTML = `
           <span class="text-sm text-grey-950">Vous souhaitez enregistrer ce résultat ?&nbsp;</span>
-          <a href="http://127.0.0.1:8000/login" class="text-[#6D874B] font-bold underline">Se connecter</a>
+          <a href="${CONFIG.BACKEND.LOGIN_URL}" class="text-[#6D874B] font-bold underline">Se connecter</a>
         `;
         }
       }
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             type: "getFullDetails",
           });
 
-          let url = "http://127.0.0.1:8000/derniere-page-web-consultee";
+          let url = CONFIG.BACKEND.DETAILS_URL;
 
           if (!userData.isLoggedIn) {
             // Construction des paramètres d'URL si non connecté

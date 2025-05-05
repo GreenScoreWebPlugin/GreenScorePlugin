@@ -14,7 +14,7 @@
         "http://127.0.0.1/index.php"
     ],
     "background": {
-        "scripts": ["src/background.js"],
+        "scripts": ["src/background.js", "src/config.js"],
         "persistent": true
     },
     "browser_action": {

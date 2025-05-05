@@ -81,7 +81,7 @@ async function getLatestCarbonIntensity(countryCode) {
 async function sendDataToServer(data) {
   try {
     console.log("Sending data to server:", data);
-    const response = await fetch("http://127.0.0.1:8080/index.php", {
+    const response = await fetch(CONFIG.BACKEND.PLUGIN_BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -136,7 +136,7 @@ function shouldSendData(oldData, newData) {
 async function getSymfonyUserId() {
   try {
     const cookies = await browser.cookies.getAll({
-      domain: "127.0.0.1",
+      domain: CONFIG.BACKEND.DOMAIN,
     });
 
     const sessionCookie = cookies.find((cookie) => cookie.name === "PHPSESSID");
@@ -146,7 +146,7 @@ async function getSymfonyUserId() {
       return null;
     }
 
-    const response = await fetch("http://127.0.0.1:8000/api/user-info", {
+    const response = await fetch(`${CONFIG.BACKEND.BASE_URL}/api/user-info`, {
       credentials: "include",
       headers: {
         Accept: "application/json",
@@ -612,7 +612,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/equivalent?gCO2=${gCO2}&count=${count}`,
+          `${CONFIG.BACKEND.BASE_URL}/api/equivalent?gCO2=${gCO2}&count=${count}`,
           {
             method: "GET",
             headers: {
@@ -622,6 +622,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         );
 
         if (!response.ok) {
+          console.log(`${CONFIG.BACKEND.BASE_URL}/api/equivalent?gCO2=${gCO2}&count=${count}`)
           throw new Error(`Erreur API Symfony : ${response.status}`);
         }
 
